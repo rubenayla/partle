@@ -1,3 +1,5 @@
+import ListView from "./pages/ListView";
+
 export default function App() {
   return (
     <main className="max-w-xl mx-auto p-6">
@@ -9,9 +11,7 @@ export default function App() {
         placeholder="Search a part (e.g. JST 6-pin)"
         className="w-full border rounded p-2 mb-4"
       />
-      <div className="bg-gray-100 p-4 rounded text-gray-600">
-        👋 Tailwind is working.
-      </div>
+      <ListView />
     </main>
   );
 }
