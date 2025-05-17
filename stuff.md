@@ -25,3 +25,29 @@ http://localhost:8000/docs#/Parts/add_part_v1_parts_post
   "price": 0.45,
   "store_id": 1
 }
+
+
+{
+  "name": "4-Channel Logic Level Converter",
+  "sku": "LLC-4CH",
+  "stock": 10,
+  "price": 1.80,
+  "store_id": 1
+}
+
+
+{
+  "name": "Soldering Iron 60W Adjustable",
+  "sku": "SI-60W",
+  "stock": 5,
+  "price": 12.95,
+  "store_id": 1
+}
+
+{
+  "name": "Soldering Iron 60W Adjustable",
+  "sku": "SI-60W",
+  "stock": 5,
+  "price": 12.95,
+  "store_id": 1
+}
