@@ -30,51 +30,51 @@ export default function App() {
   
   return (
     <main className="min-h-screen bg-gray-50 text-gray-900">
-      <div className="max-w-3xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-blue-600 mb-4">Partle</h1>
+      <div className="w-full max-w-5xl mx-auto px-4 py-4">
+      <div className="flex flex-wrap items-center gap-2 mb-6">
+        <span className="text-2xl font-bold text-blue-600 mr-4">Partle</span>
 
-        <div className="flex gap-2 mb-4">
-          <input
-            type="text"
-            placeholder="Search a part (e.g. JST 6-pin)"
-            className="flex-1 border rounded p-2"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          <button
-            className="px-4 py-2 bg-blue-600 text-white rounded"
-            onClick={() => {}} // No-op, since search is live
-          >
-            Search
-          </button>
-        </div>
+        <button
+          className={`px-4 py-2 rounded ${
+            view === "list" ? "bg-blue-600 text-white" : "bg-gray-200"
+          }`}
+          onClick={() => setView("list")}
+        >
+          List
+        </button>
+        <button
+          className={`px-4 py-2 rounded ${
+            view === "map" ? "bg-blue-600 text-white" : "bg-gray-200"
+          }`}
+          onClick={() => setView("map")}
+        >
+          Map
+        </button>
 
+        <input
+          type="text"
+          placeholder="Search a part..."
+          className="flex-1 border rounded p-2 min-w-[180px]"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
 
-        <div className="flex gap-2 mb-4">
-          <button
-            className={`flex-1 px-4 py-2 rounded ${
-              view === "list" ? "bg-blue-600 text-white" : "bg-gray-200"
-            }`}
-            onClick={() => setView("list")}
-          >
-            List
-          </button>
-          <button
-            className={`flex-1 px-4 py-2 rounded ${
-              view === "map" ? "bg-blue-600 text-white" : "bg-gray-200"
-            }`}
-            onClick={() => setView("map")}
-          >
-            Map
-          </button>
-        </div>
-
-        {view === "list" ? (
-          <ListView results={filtered} />
-        ) : (
-          <MapView results={results} highlights={filtered.map((r) => r.storeId)} />
-        )}
+        <button
+          className="px-4 py-2 bg-blue-600 text-white rounded"
+          onClick={() => {}}
+        >
+          Search
+        </button>
       </div>
+
+      {/* content */}
+      {view === "list" ? (
+        <ListView results={filtered} />
+      ) : (
+        <MapView results={results} highlights={filtered.map((r) => r.storeId)} />
+      )}
+    </div>
+
     </main>
   );
 }
