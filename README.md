@@ -3,11 +3,32 @@
 Search and find electronic/hardware parts near you. Fast. Local. Stock-based.
 
 ## 🚀 Features
-
 - 🔍 Search by part name or spec (e.g. "JST 6-pin", "M8 locking nut")
 - 📍 View available stock in nearby stores
 - 🗺 Toggle between list and map view
 - ⚡ No login, no fluff—just results
+
+## To-Do
+- Hosting partle.rubenayla.xyz
+- Backend
+- Add Accounts (so they can add stuff with no spamming capability)
+- Add API so clients can add products (and stores?)
+- Add UI to add stores
+- Add UI to add products
+- Tune the reliability rating of the info uploaded. It should go -1 to 1. Start at 0, depending on other people ratings get modified.
+- Get data
+    - Scraping?
+        - Google Maps
+        - Amazon
+        - Wallapop?
+    - Ask gpt sources
+    - 
+
+### Long term, not urgent
+- Mobile version (bottom to top, bar at the bottom with easy interface. Go ahead to new standards)
+- Make map take the whole screen while keeping list with 4xl
+Can I use that public key login method i thought of? Just add your public key when logging in and let your browser authenticate you, just like websites authenticate themselves with ssl certificates. However if the private key is lost, it should be reset with email or something, like normal passwords. However the key is safer and easier to use (automatic)
+
 
 ## 🛠 Tech Stack
 
@@ -152,8 +173,3 @@ Then visit `http://localhost:5173` in your browser.
     - Facebook Business Manager
     - Stripe
     - Mailchimp
-
-## To-Do
-- Backend
-- Make map take the whole screen while keeping list with 4xl
-- Mobile version (bottom to top, bar at the bottom with easy interface. Go ahead to new standards)
