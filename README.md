@@ -155,4 +155,5 @@ Then visit `http://localhost:5173` in your browser.
 
 ## To-Do
 - Backend
+- Make map take the whole screen while keeping list with 4xl
 - Mobile version (bottom to top, bar at the bottom with easy interface. Go ahead to new standards)

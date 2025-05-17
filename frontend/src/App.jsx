@@ -33,7 +33,7 @@ export default function App() {
       {/* Full-width background bar */}
       <div className="w-screen bg-gray-50">
         {/* Centered content container with narrower max-width */}
-        <div className="w-full max-w-3xl mx-auto px-8 py-6">
+        <div className="w-full max-w-4xl mx-auto px-8 py-6">
           {/* Header: logo/buttons on left, search on right */}
           <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-4">
