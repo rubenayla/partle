@@ -30,16 +30,25 @@ export default function App() {
   
   return (
     <main className="min-h-screen bg-gray-50 text-gray-900">
-      <div className="max-w-xl mx-auto p-6">
+      <div className="max-w-3xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-blue-600 mb-4">Partle</h1>
 
-        <input
-          type="text"
-          placeholder="Search a part (e.g. JST 6-pin)"
-          className="w-full border rounded p-2 mb-4"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
+        <div className="flex gap-2 mb-4">
+          <input
+            type="text"
+            placeholder="Search a part (e.g. JST 6-pin)"
+            className="flex-1 border rounded p-2"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          <button
+            className="px-4 py-2 bg-blue-600 text-white rounded"
+            onClick={() => {}} // No-op, since search is live
+          >
+            Search
+          </button>
+        </div>
+
 
         <div className="flex gap-2 mb-4">
           <button

@@ -152,4 +152,7 @@ Then visit `http://localhost:5173` in your browser.
     - Facebook Business Manager
     - Stripe
     - Mailchimp
-    - 
+
+## To-Do
+- Backend
+- Mobile version (bottom to top, bar at the bottom with easy interface. Go ahead to new standards)
