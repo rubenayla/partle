@@ -8,14 +8,41 @@ export default function App() {
   const [results, setResults] = useState([]);
   const [filtered, setFiltered] = useState([]);
 
-  // Load data once
+  // Load data once from backend
   useEffect(() => {
-    fetch("/api/search.json")
-      .then((res) => res.json())
-      .then((data) => {
-        setResults(data);
-        setFiltered(data);
+    Promise.all([
+      fetch("http://localhost:8000/v1/parts").then((res) => res.json()),
+      fetch("http://localhost:8000/v1/stores").then((res) => res.json()),
+    ]).then(([parts, stores]) => {
+      const storeMap = {};
+      for (const store of stores) {
+        storeMap[store.id] = store.name;
+      }
+      
+      
+      const enriched = parts.map((p) => {
+        const store = stores.find((s) => s.id === p.store_id);
+        return {
+          id: p.id,
+          name: p.name,
+          sku: p.sku, // Stock Keeping Unit: Id of store, not manufacturer
+          price: p.price,
+          qty: p.stock,
+          storeId: p.store_id,
+          storeName: store?.name || "Unknown store",
+          lat: store?.lat,
+          lng: store?.lon,
+          distanceKm: 0                // ⏱ placeholder for now
+        };
       });
+
+      console.log("Fetched parts:", parts);
+      console.log("Fetched stores:", stores);
+      console.log("Enriched:", enriched);
+      
+      setResults(enriched);
+      setFiltered(enriched);
+    });
   }, []);
 
   // React to search input
@@ -23,18 +50,16 @@ export default function App() {
     const q = query.toLowerCase();
     setFiltered(
       results.filter((item) =>
-        `${item.storeName} ${item.partName}`.toLowerCase().includes(q)
+        `${item.storeName} ${item.name}`.toLowerCase().includes(q)
       )
     );
   }, [query, results]);
 
   return (
     <main className="min-h-screen bg-gray-50 text-gray-900">
-      {/* Full-width background bar */}
       <div className="w-screen bg-gray-50">
-        {/* Centered content container with narrower max-width */}
         <div className="w-full max-w-4xl mx-auto px-8 py-6">
-          {/* Header: logo/buttons on left, search on right */}
+          {/* Header */}
           <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-4">
               <span className="text-2xl font-bold text-blue-600">Partle</span>

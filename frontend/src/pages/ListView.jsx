@@ -3,8 +3,8 @@ export default function ListView({ results }) {
       <div className="flex flex-col gap-4">
         {results.map((item) => (
           <div key={item.storeId} className="border p-4 rounded shadow-sm">
-            <div className="font-semibold text-lg">{item.storeName}</div>
-            <div className="text-sm text-gray-600 mb-1">{item.partName}</div>
+            <div className="font-semibold text-lg">{item.name}</div>
+            <div className="text-sm text-gray-600 mb-1">{item.storeName}</div>
             <div className="text-sm mb-2">
               €{item.price.toFixed(2)} • {item.qty} in stock • {item.distanceKm} km
             </div>

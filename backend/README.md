@@ -12,6 +12,7 @@ Ensure you have:
 
 - Git
 - Python 3.12.x (recommended via `pyenv`)
+- SQLite (bundled)
 - curl (optional, for testing)
 
 ---
@@ -78,11 +79,21 @@ This installs:
 
 ---
 
+## Create the database tables
+
+```bash
+python -m app.db.base
+```
+
 ## ▶️ Run the development server
 
 ```bash
 uvicorn app.main:app --reload --port 8000
 ```
+
+- http://localhost:8000/docs – interactive API
+    - http://localhost:8000/docs#/Parts/add_part_v1_parts_post
+- http://localhost:8000/v1/parts – get all parts
 
 Then open:  
 [http://localhost:8000/api/search?q=JST](http://localhost:8000/api/search?q=JST)

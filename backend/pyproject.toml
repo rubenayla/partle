@@ -5,11 +5,14 @@ description = "FastAPI backend for Partle"
 readme = "README.md"
 requires-python = ">=3.9"
 authors = [
-  { name = "Rubén Jiménez Mejías", email = "ruben.jimenezmejias@gmail.com" }
+    { name = "Rubén Jiménez Mejías", email = "ruben.jimenezmejias@gmail.com" }
 ]
 dependencies = [
-  "fastapi>=0.95.0",
-  "uvicorn[standard]>=0.22.0"
+    "fastapi>=0.95.0",
+    "uvicorn[standard]>=0.22.0",
+    "fastapi>=0.95.0",
+    "SQLAlchemy>=2.0",
+    "pydantic>=2.0",
 ]
 
 [build-system]

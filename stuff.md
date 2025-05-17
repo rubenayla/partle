@@ -3,7 +3,7 @@ Possible names: Partle, PartNow, Localon
 MVP: Need search bar, map, and list of stores with their locations. Each product must have a name, price, associated store, qty in stock, reliability for each data such as price etc. Let the users adjust it. Optional: picture, description, ratings...
 
 - Suggested start by gpt:
-    - Backend with Python (FastAPI), PostgreSQL (open source and more powerful)
+    - Backend with Python (FastAPI), PostgreSQL (open source and more powerful) but SQLite for MVP
     - Auth: None for now. Admin only.
     - Hosting: Railway.app or Fly.io for MVP. Why not cloudflare?
     - Frontend: React + Vite + Tailwind CSS + Leaflet
@@ -14,3 +14,14 @@ MVP: Need search bar, map, and list of stores with their locations. Each product
         - Leaflet:   Lightweight open-source map library to display stores as pins on a map
 
 Data
+
+## to add part (part post, try it out)
+http://localhost:8000/docs#/Parts/add_part_v1_parts_post
+
+{
+  "name": "PH connector 6-pin",
+  "sku": "JST-XH-6",
+  "stock": 20,
+  "price": 0.45,
+  "store_id": 1
+}
