@@ -1,6 +1,9 @@
 # Partle
+Search and find products near you, in any store.
 
-Search and find electronic/hardware parts near you. Fast. Local. Stock-based.
+Wallapop has commercial accounts now, with lots of expensive products littering the app because the stores are willing to pay premium subscriptions, because they actually need the visibility. Google Maps is trying (unsuccessfully) to integrate the products into the app too. I think the need is there, you can see it in these tangential apps trying to do it but not implementing it well.
+
+
 
 ## 🚀 Features
 - 🔍 Search by part name or spec (e.g. "JST 6-pin", "M8 locking nut")
@@ -12,6 +15,8 @@ Search and find electronic/hardware parts near you. Fast. Local. Stock-based.
 - Hosting partle.rubenayla.xyz
 - Backend
 - Add Accounts (so they can add stuff with no spamming capability)
+    - Up to down, "we advise you to use the passkey since you won't need to enter passwords or use your phone. The browser will remember the passwords and it will be safer". passkeys/WebAuthn in the FIDO2 standard
+    - Otherwise, here's you can register/login it with email and password (Just enter your details. If an account exists, it will log you in, otherwise it will create a new one)
 - Add API so clients can add products (and stores?)
 - Add UI to add stores
 - Add UI to add products
