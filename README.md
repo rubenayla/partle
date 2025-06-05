@@ -14,9 +14,11 @@ Wallapop has commercial accounts now, with lots of expensive products littering 
 ## To-Do
 - Hosting partle.rubenayla.xyz
 - Backend
-- Add Accounts (so they can add stuff with no spamming capability)
-    - Up to down, "we advise you to use the passkey since you won't need to enter passwords or use your phone. The browser will remember the passwords and it will be safer". passkeys/WebAuthn in the FIDO2 standard
+- Add Accounts
+    > Required mainly just to upload products. Also rate them, save favourites, skip ads with paid tiers etc.
+    - Up to down, "You'll probably like the passkey method, since you won't need to enter passwords or use your phone. The browser will remember the keys and it will be safer". passkeys/WebAuthn in the FIDO2 standard
     - Otherwise, here's you can register/login it with email and password (Just enter your details. If an account exists, it will log you in, otherwise it will create a new one)
+- add modification date to db and system
 - Add API so clients can add products (and stores?)
 - Add UI to add stores
 - Add UI to add products
@@ -27,7 +29,8 @@ Wallapop has commercial accounts now, with lots of expensive products littering 
         - Amazon
         - Wallapop?
     - Ask gpt sources
-    - 
+- The product of each store must have a unique name. If you don't agree with the data, several versions will appear, with capability to up/down vote them. It just like several products squished together in the same frontend card.
+- Mechanism to store searches performed by users so we can know what products are demanded
 
 ### Long term, not urgent
 - Mobile version (bottom to top, bar at the bottom with easy interface. Go ahead to new standards)
