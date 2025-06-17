@@ -161,7 +161,10 @@ And in `src/index.css`, add:
 
 ### 4. Start the app
 
+Run the frontend development server from inside the `frontend/` folder:
+
 ```bash
+cd frontend
 npm run dev
 ```
 
