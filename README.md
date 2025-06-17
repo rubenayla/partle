@@ -98,6 +98,12 @@ levelsio uses gcloud Google Compute Engine
 
 ## 🛠 Dev Setup
 
+If you just want to bootstrap everything automatically, run:
+
+```bash
+./dev_setup.sh
+```
+
 ### 1. Install Node.js (Ubuntu)
 
 Recommended: use **nvm** for easier upgrades.
