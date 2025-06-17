@@ -184,3 +184,11 @@ Then visit `http://localhost:5173` in your browser.
     - Facebook Business Manager
     - Stripe
     - Mailchimp
+
+## 🧪 Running tests
+
+Unit tests live under `backend/tests/` and use **pytest**. To run them:
+
+```bash
+PYTHONPATH=backend pytest backend/tests
+```
