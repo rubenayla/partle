@@ -37,6 +37,7 @@ Yes, Amazon and AliExpress are taking a huge part of the market, but they are no
 - Consider removing Tailwind CSS. What's it for?
 
 ### Long term, not urgent
+- What if i put the search terms at the left, the search bar at the top of the left section, and on startup the website already includes products as suggestions? The left search terms stay there, and the scroll only includes the products. The right is blank or left for ads etc.
 - Mobile version (bottom to top, bar at the bottom with easy interface. Go ahead to new standards)
 - Make map take the whole screen while keeping list with 4xl
 Explore direct public key login (passkeys) so the browser handles authentication. If the key is lost, allow email-based reset.
