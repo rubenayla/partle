@@ -1,4 +1,7 @@
-Possible names: Partle, PartNow, Localon
+# Possible names
+Partora, Partle, PartNow, Localon, Locado,
+- Discarded:
+  - Partle: too hard to pronounce
 
 MVP: Need search bar, map, and list of stores with their locations. Each product must have a name, price, associated store, qty in stock, reliability for each data such as price etc. Let the users adjust it. Optional: picture, description, ratings...
 

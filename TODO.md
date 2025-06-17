@@ -9,6 +9,7 @@
 - Add API so clients can add products (and stores?)
 - Add UI to add stores
 - Add UI to add products
+- Think of better name. People don't understand what it is, how to write etc.
 - Tune the reliability rating of the info uploaded. It should go -1 to 1. Start at 0, depending on other people ratings get modified.
 - Get data
     - Scraping?
