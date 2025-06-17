@@ -161,18 +161,29 @@ And in `src/index.css`, add:
 
 ---
 
-### 4. Start the app
+### 4. Start the backend API
 
-Run the frontend development server from inside the `frontend/` folder:
+From the `backend/` folder start the FastAPI server:
 
 ```bash
-cd frontend
+cd backend
+uvicorn app.main:app --reload --port 8000
+```
+
+The API will be available at `http://localhost:8000`.
+
+### 5. Start the frontend app
+
+Run the Vite dev server from inside the `frontend/` folder:
+
+```bash
+cd ../frontend
 npm run dev
 ```
 
-Then visit `http://localhost:5173` in your browser.
-**Important:** use `localhost` in the URL (not `127.0.0.1`) so it matches the
-CORS rule configured in `backend/app/main.py`.
+Then visit `http://localhost:5173` in your browser. **Important:** use
+`localhost` in the URL (not `127.0.0.1`) so it matches the CORS rule configured
+in `backend/app/main.py`.
 
 
 ## References
