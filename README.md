@@ -11,15 +11,16 @@ Yes, Amazon and AliExpress are taking a huge part of the market, but they are no
 - 🔍 Search by part name or spec (e.g. "JST 6-pin", "M8 locking nut")
 - 📍 View available stock in nearby stores
 - 🗺 Toggle between list and map view
-- ⚡ No login, no fluff—just results
+- ⚡ Quick sign-in with passkeys (fallback to email + password)
 
 ## To-Do
 - Hosting partle.rubenayla.xyz
 - Backend
 - Add Accounts
     > Required mainly just to upload products. Also rate them, save favourites, skip ads with paid tiers etc.
-    - Up to down, "You'll probably like the passkey method, since you won't need to enter passwords or use your phone. The browser will remember the keys and it will be safer". passkeys/WebAuthn in the FIDO2 standard
-    - Otherwise, here's you can register/login it with email and password (Just enter your details. If an account exists, it will log you in, otherwise it will create a new one)
+    - Default sign-in uses passkeys (WebAuthn/FIDO2)
+    - Fallback to email + password
+    - Single email field: existing emails sign in, new ones create an account
 - add modification date to db and system
 - Add API so clients can add products (and stores?)
 - Add UI to add stores
@@ -38,7 +39,7 @@ Yes, Amazon and AliExpress are taking a huge part of the market, but they are no
 ### Long term, not urgent
 - Mobile version (bottom to top, bar at the bottom with easy interface. Go ahead to new standards)
 - Make map take the whole screen while keeping list with 4xl
-Can I use that public key login method i thought of? Just add your public key when logging in and let your browser authenticate you, just like websites authenticate themselves with ssl certificates. However if the private key is lost, it should be reset with email or something, like normal passwords. However the key is safer and easier to use (automatic)
+Explore direct public key login (passkeys) so the browser handles authentication. If the key is lost, allow email-based reset.
 - Do evaluation of each metric by the users, when
 - Consider composite search mode with slide bars to select what I care more about, and instead of filter do a score assignation. For example, prioritize stock and distance over price when it's urgent, or prioritize price 
 - Do AI search, consider external services or a language model that maps high level abstraction of the query with the closest product matches in the vector space.
