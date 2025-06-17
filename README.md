@@ -169,6 +169,8 @@ npm run dev
 ```
 
 Then visit `http://localhost:5173` in your browser.
+**Important:** use `localhost` in the URL (not `127.0.0.1`) so it matches the
+CORS rule configured in `backend/app/main.py`.
 
 
 ## References

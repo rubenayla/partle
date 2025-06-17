@@ -27,7 +27,7 @@ export default function MapView({ results, highlights = [] }) {
 
         return (
             <Marker
-            key={item.storeId}
+            key={item.id}
             position={[item.lat, item.lng]}
             icon={
                 isHighlighted
@@ -45,7 +45,7 @@ export default function MapView({ results, highlights = [] }) {
             <Popup>
                 <div className="text-sm">
                 <div className="font-semibold">{item.storeName}</div>
-                <div className="text-gray-600">{item.partName}</div>
+                <div className="text-gray-600">{item.name}</div>
                 <div className="mt-1">
                     €{item.price.toFixed(2)} • {item.qty} in stock
                 </div>
