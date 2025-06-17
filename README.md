@@ -13,29 +13,6 @@ Yes, Amazon and AliExpress are taking a huge part of the market, but they are no
 - 🗺 Toggle between list and map view
 - ⚡ Quick sign-in with passkeys (fallback to email + password)
 
-## To-Do
-- Hosting partle.rubenayla.xyz
-- Backend
-- Add Accounts
-    > Required mainly just to upload products. Also rate them, save favourites, skip ads with paid tiers etc.
-    - Default sign-in uses passkeys (WebAuthn/FIDO2)
-    - Fallback to email + password
-    - Single email field: existing emails sign in, new ones create an account
-- add modification date to db and system
-- Add API so clients can add products (and stores?)
-- Add UI to add stores
-- Add UI to add products
-- Tune the reliability rating of the info uploaded. It should go -1 to 1. Start at 0, depending on other people ratings get modified.
-- Get data
-    - Scraping?
-        - Google Maps
-        - Amazon
-        - Wallapop?
-    - Ask gpt sources
-- The product of each store must have a unique name. If you don't agree with the data, several versions will appear, with capability to up/down vote them. It just like several products squished together in the same frontend card.
-- Mechanism to store searches performed by users so we can know what products are more demanded
-- Consider removing Tailwind CSS. What's it for?
-
 ### Long term, not urgent
 - What if i put the search terms at the left, the search bar at the top of the left section, and on startup the website already includes products as suggestions? The left search terms stay there, and the scroll only includes the products. The right is blank or left for ads etc.
 - Mobile version (bottom to top, bar at the bottom with easy interface. Go ahead to new standards)
@@ -97,7 +74,6 @@ Let people rate the business, products, and accuracy of the data (schedule)
 levelsio uses gcloud Google Compute Engine
 
 ## 🛠 Dev Setup
-
 If you just want to bootstrap everything automatically, run:
 
 ```bash
