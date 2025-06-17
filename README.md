@@ -3,7 +3,9 @@ Search and find products near you, in any store.
 
 Wallapop has commercial accounts now, with lots of expensive products littering the app because the stores are willing to pay premium subscriptions, because they actually need the visibility. Google Maps is trying (unsuccessfully) to integrate the products into the app too. I think the need is there, you can see it in these tangential apps trying to do it but not quite implementing it well.
 
-Yes, Amazon and AliExpress are taking a huge part of the market, but they are not ideal for super fast small purchases people often do on the go, to finish a task now, not tomorrow. Also, lots of stores are fed up of Amazon rules and want to sell their own way, with freedom. This market will never die.
+For example, I want to search a product, sort by price and location, and find stores that are open now.
+
+Yes, Amazon and AliExpress are taking a huge part of the market, but they are not ideal for super fast small purchases people often do on the go, to finish a task now, not tomorrow. Also, lots of stores are fed up of Amazon rules and want to sell their own way, with freedom. This market will never die. On top of that, there's a big push to buy and manufacture locally that will benefit this app.
 
 ## 🚀 Features
 - 🔍 Search by part name or spec (e.g. "JST 6-pin", "M8 locking nut")
@@ -30,13 +32,16 @@ Yes, Amazon and AliExpress are taking a huge part of the market, but they are no
         - Wallapop?
     - Ask gpt sources
 - The product of each store must have a unique name. If you don't agree with the data, several versions will appear, with capability to up/down vote them. It just like several products squished together in the same frontend card.
-- Mechanism to store searches performed by users so we can know what products are demanded
+- Mechanism to store searches performed by users so we can know what products are more demanded
+- Consider removing Tailwind CSS. What's it for?
 
 ### Long term, not urgent
 - Mobile version (bottom to top, bar at the bottom with easy interface. Go ahead to new standards)
 - Make map take the whole screen while keeping list with 4xl
 Can I use that public key login method i thought of? Just add your public key when logging in and let your browser authenticate you, just like websites authenticate themselves with ssl certificates. However if the private key is lost, it should be reset with email or something, like normal passwords. However the key is safer and easier to use (automatic)
-
+- Do evaluation of each metric by the users, when
+- Consider composite search mode with slide bars to select what I care more about, and instead of filter do a score assignation. For example, prioritize stock and distance over price when it's urgent, or prioritize price 
+- Do AI search, consider external services or a language model that maps high level abstraction of the query with the closest product matches in the vector space.
 
 ## 🛠 Tech Stack
 
