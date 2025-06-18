@@ -1,11 +1,19 @@
 # Partle
 Search and find products near you, in any store.
+For stores, show any product you have in stock to get more sales.
 
-Wallapop has commercial accounts now, with lots of expensive products littering the app because the stores are willing to pay premium subscriptions, because they actually need the visibility. Google Maps is trying (unsuccessfully) to integrate the products into the app too. I think the need is there, you can see it in these tangential apps trying to do it but not quite implementing it well.
+When I want a strange M8 left-handed lock nut, instead of having to drive to 30 stores, 20 of which are closed, to maybe get 1 that might have it at super expensive price after spending all day, I search in Partle, sort by price and distance, and go to the store that is open and has in stock.
 
-For example, I want to search a product, sort by price and location, and find stores that are open now.
+Yes, it looks like the kind of thing Google would do, but it doesn't exist. Google Maps has products and stores and might end up working in the future, but it doesn't work now. You won't find the products you're looking for. Just try.
 
-Yes, Amazon and AliExpress are taking a huge part of the market, but they are not ideal for super fast small purchases people often do on the go, to finish a task now, not tomorrow. Also, lots of stores are fed up of Amazon rules and want to sell their own way, with freedom. This market will never die. On top of that, there's a big push to buy and manufacture locally that will benefit this app.
+Wallapop has commercial accounts now, with lots of new expensive products littering the app because the stores are willing to pay premium subscriptions, because they actually need the visibility. You can see the need is there, in these tangential apps trying to do it but not quite implementing it well.
+
+Yes, Amazon and AliExpress are taking a huge part of the market, but they are not so fast as you going yourself, not as good as being able to see the product before you buy it, and they come with inner politics that bother lots of businesses. Lots of stores are fed up of Amazon rules and want to sell their own way, with freedom. About AliExpress, there's a powerful push to manufacture locally, not depend on one country to make everything in the world.
+
+In the long term: connect local business databases with the app so all products are listed there.
+
+Monetize with ads and premium positioning, like wallapop.
+However, our idea is not to buy through the app, but just locate the products so they can be bought in person. It's for people who want to buy locally (super fast now), not online. For online shopping Aliexpress and Amazon are unbeatable.
 
 ## 🚀 Features
 - 🔍 Search by part name or spec (e.g. "JST 6-pin", "M8 locking nut")
@@ -13,20 +21,13 @@ Yes, Amazon and AliExpress are taking a huge part of the market, but they are no
 - 🗺 Toggle between list and map view
 - ⚡ Quick sign-in with passkeys (fallback to email + password)
 
-### Long term, not urgent
-- What if i put the search terms at the left, the search bar at the top of the left section, and on startup the website already includes products as suggestions? The left search terms stay there, and the scroll only includes the products. The right is blank or left for ads etc.
-- Mobile version (bottom to top, bar at the bottom with easy interface. Go ahead to new standards)
-- Make map take the whole screen while keeping list with 4xl
-Explore direct public key login (passkeys) so the browser handles authentication. If the key is lost, allow email-based reset.
-- Do evaluation of each metric by the users, when
-- Consider composite search mode with slide bars to select what I care more about, and instead of filter do a score assignation. For example, prioritize stock and distance over price when it's urgent, or prioritize price 
-- Do AI search, consider external services or a language model that maps high level abstraction of the query with the closest product matches in the vector space.
-
 ## 🛠 Tech Stack
+- **frontend/** uses Node.js, Vite + React + Tailwind CSS, and Leaflet (OpenStreetMap) for map view
+    - Manages dependencies with npm. No Python virtual environment is needed.
+- **backend/** uses Python, FastAPI
+    - Running `make setup` creates `backend/.venv` and installs dependencies there.
 
-- Vite + React + Tailwind CSS
-- Leaflet (OpenStreetMap) for map view
-- FastAPI (planned) for backend API
+Keeping these environments independent prevents dependency conflicts, keeps tooling isolated, and simplifies debugging. Stick with this layout—it is industry standard.
 
 ## 📦 Project Structure
 partle/
@@ -59,19 +60,6 @@ partle/
 ├── .gitignore
 ├── README.md                           # Top-level docs
 └── dev.md                              # Dev notes, changelog, todos
-
-
-## Introduction
-Long term idea: When I want a strange M8 left-handed lock nut, some large metal zip tie or connector, having to go to 30 stores asking for the product is innefficient. Connect local business databases with the app so all products are listed there. Add AI thingy to load them to the database just by recording with the phone. It recognizes the products, screenshots them, lists the price, geo location and everything. You can go around stores and record to add thousands of products.
-Add ratings.
-Monetize with ads and premium positioning. Similar to wallapop (actually there are already businesses uploading stuff there). However, our idea is not to buy through the app, but just locate the products so they can be bought in person. It's for people who want to buy locally (super fast now), not online. For online shopping Aliexpress and Amazon are unbeatable.
-
-Like Amazon, Aliexpress, Temu, Banggood, etc., but just lists products that are already available in local shops.
-
-Let local businesses make an account, list the products, address, prices
-Let people rate the business, products, and accuracy of the data (schedule)
-
-levelsio uses gcloud Google Compute Engine
 
 ## 🛠 Dev Setup
 Use the provided **Makefile** to set up the Python environment:
