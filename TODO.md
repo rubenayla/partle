@@ -20,3 +20,4 @@
 - The product of each store must have a unique name. If you don't agree with the data, several versions will appear, with capability to up/down vote them. It just like several products squished together in the same frontend card.
 - Mechanism to store searches performed by users so we can know what products are more demanded
 - Consider removing Tailwind CSS. What's it for?
+- seo for chatgpt searches so I can get pro users that will actually buy, being of benefit to the stores. Can charge the stores instead of the user, since use through chatgpt will be free
