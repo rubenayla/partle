@@ -6,6 +6,7 @@ from app.schemas.part import PartCreate, PartOut
 
 router = APIRouter()
 
+
 def get_db():
     db = SessionLocal()
     try:
@@ -13,9 +14,11 @@ def get_db():
     finally:
         db.close()
 
+
 @router.get("/", response_model=list[PartOut])
 def get_parts(db: Session = Depends(get_db)):
     return db.query(models.Part).all()
+
 
 @router.post("/", response_model=PartOut)
 def add_part(part: PartCreate, db: Session = Depends(get_db)):

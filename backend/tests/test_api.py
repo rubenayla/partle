@@ -21,12 +21,14 @@ Base.metadata.create_all(bind=engine)
 
 # Dependency override
 
+
 def override_get_db():
     db = TestingSessionLocal()
     try:
         yield db
     finally:
         db.close()
+
 
 app.dependency_overrides[parts.get_db] = override_get_db
 app.dependency_overrides[stores.get_db] = override_get_db
@@ -48,7 +50,13 @@ def test_create_store_and_part():
     store_id = store_resp.json()["id"]
 
     # create part associated with store
-    part_data = {"name": "Widget", "sku": "W-1", "stock": 5, "price": 1.0, "store_id": store_id}
+    part_data = {
+        "name": "Widget",
+        "sku": "W-1",
+        "stock": 5,
+        "price": 1.0,
+        "store_id": store_id,
+    }
     part_resp = client.post("/v1/parts/", json=part_data)
     assert part_resp.status_code == 200
     part_json = part_resp.json()

@@ -61,6 +61,14 @@ python -m venv .venv
 source .venv/bin/activate
 ```
 
+Alternatively, from the project root you can run:
+
+```bash
+make setup
+```
+Run this from the repository root without an active virtualenv so it uses your
+system Python.
+
 ---
 
 ### 4. Install backend project + dependencies
@@ -68,7 +76,14 @@ source .venv/bin/activate
 ```bash
 pip install --upgrade pip
 pip install -e .
+
+# or use the Makefile target from the repository root which creates the
+# virtualenv and installs everything in one go
+make setup
 ```
+
+Run it from the repository root without an active virtualenv so it uses
+your system Python.
 
 This installs:
 

@@ -80,6 +80,17 @@ If you just want to bootstrap everything automatically, run:
 ./dev_setup.sh
 ```
 
+Alternatively you can use the provided **Makefile** to set up the
+Python environment:
+
+```bash
+make setup
+```
+
+Run it from the repository root with no virtualenv active so it uses your
+system Python. This creates `backend/.venv` and installs the backend in
+editable mode.
+
 ### 1. Install Node.js (Ubuntu)
 
 Recommended: use **nvm** for easier upgrades.
@@ -154,6 +165,12 @@ uvicorn app.main:app --reload --port 8000
 
 The API will be available at `http://localhost:8000`.
 
+You can also start it with Makefile:
+
+```bash
+make run
+```
+
 ### 5. Start the frontend app
 
 Run the Vite dev server from inside the `frontend/` folder:
@@ -193,4 +210,10 @@ Unit tests live under `backend/tests/` and use **pytest**. To run them:
 
 ```bash
 PYTHONPATH=backend pytest backend/tests
+```
+
+Or simply run:
+
+```bash
+make test
 ```
