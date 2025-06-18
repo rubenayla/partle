@@ -6,6 +6,7 @@ from app.schemas.store import StoreCreate, StoreOut
 
 router = APIRouter()
 
+
 def get_db():
     db = SessionLocal()
     try:
@@ -13,9 +14,11 @@ def get_db():
     finally:
         db.close()
 
+
 @router.get("/", response_model=list[StoreOut])
 def get_stores(db: Session = Depends(get_db)):
     return db.query(models.Store).all()
+
 
 @router.post("/", response_model=StoreOut)
 def add_store(store: StoreCreate, db: Session = Depends(get_db)):
