@@ -4,9 +4,8 @@ PYTHON=python3
 .PHONY: setup test run
 
 setup:
-	$(PYTHON) -m venv $(VENV_DIR)
-	$(VENV_DIR)/bin/pip install --upgrade pip
-	$(VENV_DIR)/bin/pip install -e backend
+	$(PYTHON) -m venv --upgrade-deps $(VENV_DIR)
+	$(VENV_DIR)/bin/pip install -e backend pytest
 
 test:
 	PYTHONPATH=backend $(VENV_DIR)/bin/pytest backend/tests

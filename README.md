@@ -74,14 +74,7 @@ Let people rate the business, products, and accuracy of the data (schedule)
 levelsio uses gcloud Google Compute Engine
 
 ## 🛠 Dev Setup
-If you just want to bootstrap everything automatically, run:
-
-```bash
-./dev_setup.sh
-```
-
-Alternatively you can use the provided **Makefile** to set up the
-Python environment:
+Use the provided **Makefile** to set up the Python environment:
 
 ```bash
 make setup
@@ -89,72 +82,41 @@ make setup
 
 Run it from the repository root with no virtualenv active so it uses your
 system Python. This creates `backend/.venv` and installs the backend in
-editable mode.
+editable mode along with `pytest` for running tests.
 
-### 1. Install Node.js (Ubuntu)
+### 1. Install Node.js
+Make sure Node.js 18+ is available. The `nvm` tool is recommended but not
+required.
 
-Recommended: use **nvm** for easier upgrades.
+### 2. Prepare the frontend
 
-```bash
-# Install nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-
-# Load nvm into shell
-export NVM_DIR="$HOME/.nvm"
-source "$NVM_DIR/nvm.sh"
-
-# Install and use latest LTS version of Node.js
-nvm install --lts
-nvm use --lts
-```
-
----
-
-### 2. Create and run the frontend app
-
-From the project root (`partle/`):
+From the project root run:
 
 ```bash
-npm create vite@latest frontend -- --template react
 cd frontend
 npm install
 ```
 
----
+Tailwind CSS is already configured (see `tailwind.config.js`).
 
-### 3. Install Tailwind CSS (stable version)
+### 3. Start the backend API
 
-> ⚠️ Use **Tailwind CSS v3** for compatibility with tooling
+From the `backend/` folder start the FastAPI server:
 
 ```bash
-npm install -D tailwindcss@^3 postcss autoprefixer
-npx tailwindcss init -p
+cd backend
+uvicorn app.main:app --reload --port 8000
 ```
 
-This creates:
-- `tailwind.config.js`
-- `postcss.config.js`
+The API will be available at `http://localhost:8000`.
 
-Then edit `tailwind.config.js`:
+You can also start it with Makefile:
 
-```js
-content: [
-  "./index.html",
-  "./src/**/*.{js,ts,jsx,tsx}",
-],
+```bash
+make run
 ```
 
-And in `src/index.css`, add:
-
-```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
-
----
-
-### 4. Start the backend API
+### 4. Start the frontend app
 
 From the `backend/` folder start the FastAPI server:
 
