@@ -3,6 +3,7 @@ from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
+
 class Store(Base):
     __tablename__ = "stores"
     id = Column(Integer, primary_key=True)
@@ -11,6 +12,7 @@ class Store(Base):
     lon = Column(Float, nullable=False)
 
     parts = relationship("Part", back_populates="store")
+
 
 class Part(Base):
     __tablename__ = "parts"

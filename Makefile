@@ -1,5 +1,5 @@
 VENV_DIR=backend/.venv
-PYTHON=$(shell which python3)
+PYTHON=python3
 
 .PHONY: setup test run
 

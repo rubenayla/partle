@@ -87,7 +87,9 @@ Python environment:
 make setup
 ```
 
-This creates `backend/.venv` and installs the backend in editable mode.
+Run it from the repository root with no virtualenv active so it uses your
+system Python. This creates `backend/.venv` and installs the backend in
+editable mode.
 
 ### 1. Install Node.js (Ubuntu)
 
