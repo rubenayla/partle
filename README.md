@@ -13,7 +13,6 @@ Yes, Amazon and AliExpress are taking a huge part of the market, but they are no
 In the long term: connect local business databases with the app so all products are listed there.
 
 Monetize with ads and premium positioning, like wallapop.
-However, our idea is not to buy through the app, but just locate the products so they can be bought in person. It's for people who want to buy locally (super fast now), not online. For online shopping Aliexpress and Amazon are unbeatable.
 
 ## 🚀 Features
 - 🔍 Search by part name or spec (e.g. "JST 6-pin", "M8 locking nut")
@@ -24,7 +23,11 @@ However, our idea is not to buy through the app, but just locate the products so
 ## 🛠 Tech Stack
 - **frontend/** uses Node.js, Vite + React + Tailwind CSS, and Leaflet (OpenStreetMap) for map view
     - Manages dependencies with npm. No Python virtual environment is needed.
-- **backend/** uses Python, FastAPI
+- **backend/**
+    - uses pyenv Python, so i can pick versions easily with no /usr/bin/python mess
+    - Poetry to manage dependencies in one tool, possibly combine with uv for fast installation. Should be compatible, and it's not a dependency per se.
+    - FastAPI
+    - PostgreSQL, SQLAlchemy ORM to access it, and Alembic to manage migrations
     - Running `make setup` creates `backend/.venv` and installs dependencies there.
 
 Keeping these environments independent prevents dependency conflicts, keeps tooling isolated, and simplifies debugging. Stick with this layout—it is industry standard.

@@ -54,3 +54,24 @@ http://localhost:8000/docs#/Parts/add_part_v1_parts_post
   "price": 12.95,
   "store_id": 1
 }
+
+# 2025-06-19
+```
+sudo apt install -y \
+  build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev \
+  libsqlite3-dev libncurses-dev libffi-dev liblzma-dev uuid-dev \
+  libgdbm-dev tk-dev libnss3-dev libdb-dev libexpat1-dev \
+  libxml2-dev libxmlsec1-dev libx11-dev libxext-dev libxrender-dev \
+  xz-utils
+
+pyenv uninstall 3.12.3  # if you haven't already
+pyenv install 3.12.3
+pyenv global 3.12.3
+
+cd ~/repos/partle/backend
+rm -rf .venv
+poetry config virtualenvs.in-project true
+poetry env use $(pyenv which python)
+poetry install
+poetry shell
+```
