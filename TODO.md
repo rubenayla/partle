@@ -24,7 +24,7 @@
 - Mechanism to store searches performed by users so we can know what products are more demanded
 - Consider removing Tailwind CSS. What's it for?
 - seo for chatgpt searches so I can get pro users that will actually buy, being of benefit to the stores. Can charge the stores instead of the user, since use through chatgpt will be free
-
+- Users report products (illegal etc)
 
 ## Not urgent, long term
 - AI thingy to load them to the database just by recording with the phone. It recognizes the products, screenshots them, lists the price, geo location and everything. You can go around stores and record to add thousands of products.

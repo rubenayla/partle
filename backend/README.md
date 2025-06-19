@@ -138,10 +138,3 @@ backend/
 curl "http://localhost:8000/api/search?q=connector"
 ```
 
----
-
-Let me know if you want:
-
-- Swagger/OpenAPI docs
-- CORS setup for frontend
-- Deployment config (e.g. Docker, Fly.io, etc.)

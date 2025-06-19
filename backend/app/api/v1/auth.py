@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
 
-from app.db.session import SessionLocal          #  ← absolute import
+from app.auth.security import get_current_user
+from app.db.session import SessionLocal
 from app.db.models import User
 from app.schemas import auth as schema
 from app.auth.utils import (
@@ -44,3 +45,7 @@ def login(
         raise HTTPException(status_code=401, detail="Invalid credentials")
     token = create_access_token({"sub": str(user.id)})
     return {"access_token": token, "token_type": "bearer"}
+
+@router.get("/me", response_model=schema.UserRead)
+def read_me(current_user: User = Depends(get_current_user)):
+    return current_user
