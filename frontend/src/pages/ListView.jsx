@@ -13,7 +13,7 @@ export default function ListView({ products }) {
   if (!Array.isArray(items)) return <p className="text-red-600">ListView: products must be an array</p>;
 
   return (
-    <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
       {items.map((p) => (
         <li key={p.id} className="border rounded p-4 shadow-sm">
           <h3 className="font-semibold mb-1">{p.name}</h3>
