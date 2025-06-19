@@ -1,103 +1,97 @@
 // frontend/src/components/TopBar.jsx
-import { useState } from "react";
+import { useState } from 'react';
 
 export default function TopBar({
-  mode = "list",
+  mode = 'list',
   onModeChange = () => {},
   onSearch = () => {},
   onFiltersChange = () => {},
 }) {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
   const [priceMin, setPriceMin] = useState(0);
   const [priceMax, setPriceMax] = useState(500);
-  const [sortBy, setSortBy] = useState("relevance");
+  const [sortBy, setSortBy] = useState('relevance');
 
-  const handleSearchSubmit = (e) => {
+  const handleSearch = (e) => {
     e.preventDefault();
-    onSearch(query.trim());
+    onSearch({ query, priceMin, priceMax, sortBy });
   };
 
-  const emitFilters = (extra = {}) =>
-    onFiltersChange({ priceMin, priceMax, sortBy, ...extra });
-
   return (
-    <header className="sticky top-0 left-0 z-20 w-screen bg-white shadow-sm">
-      <div className="flex items-center gap-4 px-4 py-2 overflow-x-auto whitespace-nowrap">
+    <header className="sticky top-0 left-0 right-0 w-screen bg-white shadow z-20">
+      <div className="flex items-center justify-between w-full px-4 py-3">
         {/* Logo */}
-        <a href="/" className="text-xl font-semibold flex-shrink-0">
+        <a href="/" className="text-2xl font-bold text-indigo-600 flex-shrink-0">
           Partle
         </a>
 
-        {/* Search */}
-        <form onSubmit={handleSearchSubmit} className="flex-1 min-w-[200px]">
+        {/* Search & filters pill */}
+        <form
+          onSubmit={handleSearch}
+          className="flex flex-1 mx-6 bg-gray-100 rounded-full shadow px-4 py-2 items-center space-x-4"
+        >
+          {/* Search input */}
           <input
             type="search"
-            placeholder="Search products…"
+            placeholder="What are you looking for?"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full border rounded px-3 py-2"
+            className="bg-transparent flex-1 placeholder-gray-500 focus:outline-none"
           />
+
+          {/* Vertical separator */}
+          <div className="h-6 border-l border-gray-300" />
+
+          {/* Price range */}
+          <div className="flex items-center space-x-1">
+            <input
+              type="number"
+              min={0}
+              value={priceMin}
+              onChange={(e) => setPriceMin(Number(e.target.value))}
+              className="w-16 bg-transparent placeholder-gray-500 focus:outline-none text-sm"
+              placeholder="Min"
+            />
+            —
+            <input
+              type="number"
+              min={0}
+              value={priceMax}
+              onChange={(e) => setPriceMax(Number(e.target.value))}
+              className="w-16 bg-transparent placeholder-gray-500 focus:outline-none text-sm"
+              placeholder="Max"
+            />
+          </div>
+
+          {/* Separator */}
+          <div className="h-6 border-l border-gray-300" />
+
+          {/* Sort select */}
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="bg-transparent focus:outline-none text-sm"
+          >
+            <option value="relevance">Relevance</option>
+            <option value="price_asc">Price ↑</option>
+            <option value="price_desc">Price ↓</option>
+            <option value="distance">Closest</option>
+          </select>
+
+          {/* Search button */}
+          <button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2"
+          >
+            🔍
+          </button>
         </form>
 
-        {/* Price range filters */}
-        <label className="flex items-center gap-1 flex-shrink-0">
-          €
-          <input
-            type="number"
-            value={priceMin}
-            min={0}
-            onChange={(e) => {
-              const v = Number(e.target.value);
-              setPriceMin(v);
-              emitFilters({ priceMin: v });
-            }}
-            className="w-16 border rounded px-1"
-          />
-          —
-          <input
-            type="number"
-            value={priceMax}
-            min={0}
-            onChange={(e) => {
-              const v = Number(e.target.value);
-              setPriceMax(v);
-              emitFilters({ priceMax: v });
-            }}
-            className="w-16 border rounded px-1"
-          />
-        </label>
-
-        {/* Sort dropdown */}
-        <select
-          value={sortBy}
-          onChange={(e) => {
-            setSortBy(e.target.value);
-            emitFilters({ sortBy: e.target.value });
-          }}
-          className="border rounded px-2 py-1 flex-shrink-0"
-        >
-          <option value="relevance">Relevance</option>
-          <option value="price_asc">Price ↑</option>
-          <option value="price_desc">Price ↓</option>
-          <option value="distance">Closest</option>
-        </select>
-
-        {/* View toggle */}
-        <button
-          onClick={() => onModeChange(mode === "list" ? "map" : "list")}
-          className="border px-2 py-1 rounded flex-shrink-0"
-          title={mode === "list" ? "Switch to map" : "Switch to list"}
-        >
-          {mode === "list" ? "🗺️" : "📋"}
-        </button>
-
-        {/* Account button */}
-        <a
-          href="/login"
-          className="ml-auto border rounded-full w-8 h-8 flex items-center justify-center bg-gray-100 flex-shrink-0"
-          title="Account"
-        >
-          👤
+        {/* Account icon */}
+        <a href="/login" title="My Account" className="text-gray-600 hover:text-gray-800 flex-shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 15c2.485 0 4.817.656 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
         </a>
       </div>
     </header>
