@@ -1,15 +1,29 @@
-from pydantic import BaseModel, HttpUrl
+# backend/app/schemas/product.py
+from decimal import Decimal
 from typing import Optional
 
+from pydantic import BaseModel, ConfigDict, HttpUrl
+
+
 class ProductIn(BaseModel):
-    store_id: int
+    """Fields a client may send when creating a product."""
+    store_id: Optional[int] = None        # nullable → orphan products allowed
     name: str
     spec: Optional[str] = None
-    price: Optional[float] = None
+    price: Optional[Decimal] = None       # Decimal ↔ SQLAlchemy Numeric
     url: Optional[HttpUrl] = None
+    lat: Optional[float] = None
+    lon: Optional[float] = None
+    description: Optional[str] = None
+
+    model_config = ConfigDict(from_attributes=True)  # pydantic-v2 replacement for orm_mode
+
+
+class ProductUpdate(ProductIn):
+    """PATCH body – every field becomes optional."""
+    name: Optional[str] = None
+
 
 class ProductOut(ProductIn):
+    """What the API returns."""
     id: int
-
-    class Config:
-        orm_mode = True

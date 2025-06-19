@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1 import auth
 from app.api.v1 import products
 
-app = FastAPI(title="Partle API", redirect_slashes=False)
+app = FastAPI(title="Partle API")
 
 app.include_router(parts.router, prefix="/v1/parts", tags=["Parts"])
 app.include_router(stores.router, prefix="/v1/stores", tags=["Stores"])

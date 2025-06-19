@@ -1,14 +1,20 @@
 # backend/app/api/v1/products.py
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
-from app.db.session import SessionLocal
-from app.db.models import Product, Store, User
-from app.schemas.product import ProductIn, ProductOut
-from app.auth.security import get_current_user
 from collections.abc import Generator
+
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+
+from app.db.models import Product, User
+from app.db.session import SessionLocal
+from app.schemas import product as schema
+from app.auth.security import get_current_user
 
 router = APIRouter()
 
+
+# ───────────────────────────────────────────
+# Shared dependency
+# ───────────────────────────────────────────
 def get_db() -> Generator[Session, None, None]:
     db = SessionLocal()
     try:
@@ -16,24 +22,68 @@ def get_db() -> Generator[Session, None, None]:
     finally:
         db.close()
 
-@router.post("/", response_model=ProductOut, status_code=status.HTTP_201_CREATED)
-def create_product(
-    payload: ProductIn,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-):
-    if not db.get(Store, payload.store_id):
-        raise HTTPException(404, "Store not found")
-    prod = Product(**payload.model_dump())
-    db.add(prod)
-    db.commit()
-    db.refresh(prod)
-    return prod
 
-@router.get("/store/{store_id}", response_model=list[ProductOut])
-def list_for_store(
-    store_id: int,
+# ───────────────────────────────────────────
+# CRUD endpoints
+# ───────────────────────────────────────────
+@router.get("/", response_model=list[schema.ProductOut])
+def list_products(
+    store_id: int | None = None,
+    db: Session = Depends(get_db),
+):
+    q = db.query(Product)
+    if store_id is not None:
+        q = q.filter(Product.store_id == store_id)
+    return q.all()
+
+@router.post("/", response_model=schema.ProductOut, status_code=201)
+def create_product(
+    payload: schema.ProductIn,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return db.query(Product).filter_by(store_id=store_id).all()
+    product = Product(**payload.model_dump())
+    db.add(product)
+    db.commit()
+    db.refresh(product)
+    return product
+
+
+@router.get("/{product_id}", response_model=schema.ProductOut)
+def get_product(product_id: int, db: Session = Depends(get_db)):
+    product = db.get(Product, product_id)
+    if not product:
+        raise HTTPException(404, "Product not found")
+    return product
+
+
+@router.patch("/{product_id}", response_model=schema.ProductOut)
+def update_product(
+    product_id: int,
+    payload: schema.ProductUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    product = db.get(Product, product_id)
+    if not product:
+        raise HTTPException(404, "Product not found")
+
+    for field, value in payload.model_dump(exclude_unset=True).items():
+        setattr(product, field, value)
+
+    db.commit()
+    db.refresh(product)
+    return product
+
+
+@router.delete("/{product_id}", status_code=204)
+def delete_product(
+    product_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    product = db.get(Product, product_id)
+    if not product:
+        raise HTTPException(404, "Product not found")
+    db.delete(product)
+    db.commit()

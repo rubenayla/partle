@@ -81,3 +81,26 @@ http://localhost:8000/
 http://localhost:8000/docs
 http://localhost:8000/v1/parts
 
+# Poetry reminder
+To enable venv: poetry shell
+To run with venv but then come back: poetry run ...
+
+# to login with terminal
+```bash
+LOGIN_RESPONSE=$(
+  curl -s -X POST http://localhost:8000/auth/login \
+    -F "username=ruben.jimenezmejias@gmail.com" \
+    -F "password=partle"
+)
+TOKEN=$(echo $LOGIN_RESPONSE | jq -r .access_token)
+echo "$TOKEN"
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZXhwIjoxNzUwMzU4NTMwfQ.ASnHKm2AQda8nZYc4Ct5GRt5VYBkiw_EqGi0VeXiU6g
+curl -X POST http://localhost:8000/v1/products/ \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"JST-PH 2-pin","price":"0.12","store_id":1}'
+{"store_id":1,"name":"JST-PH 2-pin","spec":null,"price":"0.12","url":null,"lat":null,"lon":null,"description":null,"id":1}curl http://localhost:8000/v1/products/?store_id=1                 curl http://localhost:8000/v1/products/?store_id=1
+[{"store_id":1,"name":"JST-PH 2-pin","spec":null,"price":"0.12","url":null,"lat":null,"lon":null,"description":null,"id":1}]
+```
+
+#
