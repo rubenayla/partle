@@ -17,14 +17,14 @@ export default function TopBar({
     onSearch(query.trim());
   };
 
-  const emit = (extra = {}) =>
+  const emitFilters = (extra = {}) =>
     onFiltersChange({ priceMin, priceMax, sortBy, ...extra });
 
   return (
-    <header className="sticky top-0 z-20 w-full bg-white shadow-sm">
+    <header className="sticky top-0 left-0 z-20 w-screen bg-white shadow-sm">
       <div className="flex items-center gap-4 px-4 py-2 overflow-x-auto whitespace-nowrap">
         {/* Logo */}
-        <a href="/" className="text-xl font-semibold mr-2 flex-shrink-0">
+        <a href="/" className="text-xl font-semibold flex-shrink-0">
           Partle
         </a>
 
@@ -39,7 +39,7 @@ export default function TopBar({
           />
         </form>
 
-        {/* Price */}
+        {/* Price range filters */}
         <label className="flex items-center gap-1 flex-shrink-0">
           €
           <input
@@ -49,7 +49,7 @@ export default function TopBar({
             onChange={(e) => {
               const v = Number(e.target.value);
               setPriceMin(v);
-              emit({ priceMin: v });
+              emitFilters({ priceMin: v });
             }}
             className="w-16 border rounded px-1"
           />
@@ -61,18 +61,18 @@ export default function TopBar({
             onChange={(e) => {
               const v = Number(e.target.value);
               setPriceMax(v);
-              emit({ priceMax: v });
+              emitFilters({ priceMax: v });
             }}
             className="w-16 border rounded px-1"
           />
         </label>
 
-        {/* Sort */}
+        {/* Sort dropdown */}
         <select
           value={sortBy}
           onChange={(e) => {
             setSortBy(e.target.value);
-            emit({ sortBy: e.target.value });
+            emitFilters({ sortBy: e.target.value });
           }}
           className="border rounded px-2 py-1 flex-shrink-0"
         >
