@@ -1,8 +1,8 @@
 // frontend/src/App.jsx
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import RequireAuth from "./components/RequireAuth";   // only for actions like adding
-import Login from "./pages/Login";
-import Home from "./pages/Home";                       // new home page
+import RequireAuth from "./components/RequireAuth"; // only for actions like adding
+import Account from "./pages/Account";
+import Home from "./pages/Home"; // new home page
 import Stores from "./pages/Stores";
 import Products from "./pages/Products";
 import AddProduct from "./pages/AddProduct";
@@ -13,7 +13,7 @@ export default function App() {
       <Routes>
         {/* public routes */}
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/account" element={<Account />} />
         <Route path="/stores" element={<Stores />} />
         <Route path="/stores/:id/products" element={<Products />} />
 
