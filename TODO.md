@@ -1,3 +1,8 @@
+- Login flow (1 → 2) – proves JWT from browser works.
+- Store CRUD (3 → 4) – lets you seed real data from the UI.
+- Parts under stores (5 → 6) – completes the core data model.
+- Map toggle (7) – visual polish that sells the idea.
+
 - Demo user and part
     - http://localhost:8000/docs
 
@@ -14,6 +19,7 @@
 - Add UI to add products
 - Think of better name. People don't understand what it is, how to write etc.
 - Tune the reliability rating of the info uploaded. It should go -1 to 1. Start at 0, depending on other people ratings get modified.
+- Try Vercel to have it live
 - Get data
     - Scraping?
         - Google Maps
