@@ -15,7 +15,7 @@ Monetize with ads and premium positioning, like wallapop.
 
 In the long term:
 
-* connect local business databases with the app so all products are listed there.
+* Connect local business databases with the app so all products are listed there.
 * Leverage AI to search with natural language, human-like queries and descriptions, images etc.
 * Let user find cool things close by, knowing what they like in depth. Notification when passing by a liked product.
 
@@ -23,130 +23,124 @@ In the long term:
 
 * 🔍 Search by part name or spec (e.g. "JST 6-pin", "M8 locking nut")
 * 📍 View available stock in nearby stores
-* 🗺 Toggle between list and map view
+* 🟘 Toggle between list and map view
 * ⚡ Quick sign-in with passkeys (fallback to email + password)
 
-## 🛠 Tech Stack
+## 📦 Tech Stack
 
 * **frontend/** uses Node.js, Vite + React + Tailwind CSS, and Leaflet (OpenStreetMap) for map view
 
   * Manages dependencies with npm. No Python virtual environment is needed.
 * **backend/**
 
-  * uses pyenv Python, so i can pick versions easily with no /usr/bin/python mess
-  * Poetry to manage dependencies in one tool, possibly combine with uv for fast installation. Should be compatible, and it's not a dependency per se.
-  * FastAPI
-  * PostgreSQL, SQLAlchemy ORM to access it, and Alembic to manage migrations
-  * Running `make setup` creates `backend/.venv` and installs dependencies there.
+  * Uses `pyenv` to manage Python versions
+  * Poetry for Python dependency management, optionally combined with `uv` for fast installation
+  * FastAPI as backend server
+  * PostgreSQL with SQLAlchemy ORM and Alembic for migrations
+  * Running `make setup` creates `backend/.venv` and installs dependencies
 
-Keeping these environments independent prevents dependency conflicts, keeps tooling isolated, and simplifies debugging. Stick with this layout—it is industry standard.
+This separation avoids dependency conflicts and is standard practice.
 
-## 📦 Project Structure
+## 📆 Project Structure
 
-```
+```bash
 partle/
-├── frontend/                           # React + Vite + Tailwind + Leaflet
-│   ├── public/                         # Static assets (e.g. icons)
+├── frontend/
+│   ├── public/                         # Static assets
 │   └── src/
-│       ├── assets/                     # Images, logos, etc.
-│       ├── components/                 # Reusable components (e.g. Header, Card)
-│       ├── pages/                      # Views (ListView, MapView)
-│       ├── data/                       # (temp) mock inventory JSON
-│       ├── App.jsx                     # Main app logic (routing, layout)
-│       ├── main.jsx                    # React entry point
-│       └── index.css                   # Tailwind CSS entrypoint
-│
+│       ├── assets/                    # Logos, icons, etc
+│       ├── components/                # Reusable UI components
+│       ├── pages/                     # Views (Home, Stores, Products, etc.)
+│       ├── data/                      # Temp: mock JSON data
+│       ├── App.jsx                    # Main routing
+│       ├── main.jsx                   # React root
+│       └── index.css                  # Tailwind entrypoint
 │   ├── index.html
 │   ├── package.json
 │   ├── tailwind.config.js
 │   └── vite.config.js
 │
-├── backend/                            # FastAPI backend
+├── backend/
 │   ├── app/
-│   │   ├── api/
-│   │   │   └── v1/                     # Versioned routes
-│   │   │       ├── auth.py
-│   │   │       ├── parts.py
-│   │   │       └── stores.py
-│   │   ├── auth/                       # Auth helpers
-│   │   │   └── utils.py
-│   │   ├── db/                         # SQLAlchemy setup
+│   │   ├── api/v1/                    # Routes
+│   │   │   ├── auth.py
+│   │   │   ├── parts.py
+│   │   │   └── stores.py
+│   │   ├── auth/utils.py              # Auth logic
+│   │   ├── db/                        # DB engine
 │   │   │   ├── base.py
 │   │   │   ├── base_class.py
 │   │   │   ├── models.py
 │   │   │   └── session.py
-│   │   ├── schemas/                    # Pydantic schemas
+│   │   ├── schemas/                   # Pydantic schemas
 │   │   │   ├── auth.py
 │   │   │   ├── part.py
 │   │   │   └── store.py
-│   │   └── main.py                     # FastAPI entrypoint
-│   ├── alembic/                        # Database migrations
+│   │   └── main.py                    # FastAPI entrypoint
+│   ├── alembic/                       # Migrations
 │   ├── alembic.ini
-│   ├── partle.db                       # SQLite dev database
-│   ├── tests/
+│   ├── partle.db                      # SQLite (dev only)
+│   ├── tests/                         # Backend tests
 │   │   ├── test_api.py
 │   │   └── test_fast_api.py
-│   ├── pyproject.toml                  # Poetry config
-│   ├── poetry.lock                     # Locked dependencies
-│   └── README.md                       # Backend usage notes
-│
-├── .gitignore
-├── README.md                           # Top-level docs
-├── AGENTS.md
+│   ├── pyproject.toml                 # Poetry config
+│   ├── poetry.lock
+│   └── README.md                      # Backend usage
 ├── Makefile
-├── TODO.md
 ├── dev_setup.sh
-└── package-lock.json
+├── README.md                          # (this file)
+├── .gitignore
+├── package-lock.json
+├── AGENTS.md
+└── TODO.md
 ```
 
-## Development setup
-
-### 🚀 Quick start (new machine)
+## 🚀 Install (new machine)
 
 ```bash
 # 1. Clone repo
-git clone https://github.com/<your-github-org>/partle.git && cd partle   # replace <your-github-org> with your GitHub org or username
+git clone https://github.com/<your-github-org>/partle.git && cd partle
 
-# 2. First‑time install (backend deps via Poetry, frontend deps via npm)
+# 2. Install all deps
 make install
+```
 
-# 3. Launch everything (creates DB, runs migrations, starts API & React)
+Default backend DB URL:
+
+```bash
+postgresql://postgres:partl3p4ss@localhost:5432/partle
+```
+
+To override:
+
+```bash
+make dev DATABASE_URL=postgresql://user:pw@host:port/db
+```
+
+## 🏃‍♂️ Run the app
+
+```bash
+# start both frontend and backend
 make dev
 ```
 
-The backend expects `DATABASE_URL` to default to
-`postgresql://postgres:partl3p4ss@localhost:5432/partle`.
-If you use a different user / password / host:
+Or run separately:
 
 ```bash
-make dev DATABASE_URL=postgresql://myuser:mypw@dbhost:5432/partle
+make backend   # starts FastAPI
+make frontend  # starts Vite + React
 ```
 
----
+## 🔮 References
 
-### Manual steps (optional)
+* UI prototyping: Figma, Sketch, PopApp, Invision
+* MVP tooling: Wix, Stripe, Mailchimp, WordPress, Site123
 
-If you prefer to run things separately:
-
-```bash
-# backend only (ensures DB + migrations)
-make backend
-
-# frontend only
-make frontend
-```
-
----
-
-## References
-
-* Prototype tools: PopApp, Marvel, Sketch, Figma, Invision
-* MVP helpers: Wix, LaunchRocks, WordPress, Site123, Stripe, Mailchimp, etc.
-
-## 🧪 Running tests
+## 🤕 Tests
 
 ```bash
-PYTHONPATH=backend pytest backend/tests
-# or simply
+# backend tests
 make test
+# or directly
+PYTHONPATH=backend pytest backend/tests
 ```

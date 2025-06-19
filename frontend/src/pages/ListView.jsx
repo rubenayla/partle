@@ -1,29 +1,25 @@
-export default function ListView({ results }) {
-    return (
-      <div className="flex flex-col gap-4">
-        {results.map((item) => (
-          <div key={item.id} className="border p-4 rounded shadow-sm">
-            <div className="font-semibold text-lg">{item.name}</div>
-            <div className="text-sm text-gray-600 mb-1">{item.storeName}</div>
-            <div className="text-sm mb-2">
-              €{item.price.toFixed(2)} • {item.qty} in stock • {item.distanceKm} km
-            </div>
-            <div className="flex gap-2">
-              <a href={`tel:+34900000000`} className="text-blue-600 underline text-sm">
-                📞 Call
-              </a>
-              <a
-                href={`https://maps.google.com/?q=${item.lat},${item.lng}`}
-                className="text-blue-600 underline text-sm"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                📍 Navigate
-              </a>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-  }
-  
+// frontend/src/pages/ListView.jsx
+
+/**
+ * Simple list view to unblock the UI.
+ * – Uses static mock data if no `products` prop is passed.
+ */
+export default function ListView({ products }) {
+  const items = products ?? [
+    { id: 1, name: "M8 Left‑Hand Lock Nut", price: 1.2, store: "Ferretería Paco" },
+    { id: 2, name: "JST‑XH 6‑pin", price: 0.5, store: "Electrónica Vega" },
+  ];
+
+  if (!Array.isArray(items)) return <p className="text-red-600">ListView: products must be an array</p>;
+
+  return (
+    <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {items.map((p) => (
+        <li key={p.id} className="border rounded p-4 shadow-sm">
+          <h3 className="font-semibold mb-1">{p.name}</h3>
+          <p className="text-sm text-gray-600">€{p.price} — {p.store}</p>
+        </li>
+      ))}
+    </ul>
+  );
+}

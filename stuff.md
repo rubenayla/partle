@@ -103,4 +103,8 @@ curl -X POST http://localhost:8000/v1/products/ \
 [{"store_id":1,"name":"JST-PH 2-pin","spec":null,"price":"0.12","url":null,"lat":null,"lon":null,"description":null,"id":1}]
 ```
 
-#
+# websites for ui inspiration
+- https://www.airbnb.com/
+- https://www.olx.com.br/
+- https://www.etsy.com/
+- https://www.zillow.com/

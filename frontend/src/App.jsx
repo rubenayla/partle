@@ -1,26 +1,29 @@
 // frontend/src/App.jsx
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import RequireAuth from "./components/RequireAuth";   // new guard component
-import Login from "./pages/Login";                    // login form
-import Stores from "./pages/Stores";                  // list + map view
+import RequireAuth from "./components/RequireAuth";   // only for actions like adding
+import Login from "./pages/Login";
+import Home from "./pages/Home";                       // new home page
+import Stores from "./pages/Stores";
 import Products from "./pages/Products";
+import AddProduct from "./pages/AddProduct";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* public route */}
+        {/* public routes */}
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/stores" element={<Stores />} />
+        <Route path="/stores/:id/products" element={<Products />} />
 
-        {/* everything below this guard needs a valid JWT */}
+        {/* only adding/editing products requires login */}
         <Route element={<RequireAuth />}>
-          <Route path="/stores" element={<Stores />} />
-          <Route path="/stores/:id/products" element={<Products />} />
-          {/* add more protected routes here (store detail, parts, profile…) */}
+          <Route path="/products/new" element={<AddProduct />} />
         </Route>
 
-        {/* catch-all → go to main page */}
-        <Route path="*" element={<Navigate to="/stores" replace />} />
+        {/* catch-all → go to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
