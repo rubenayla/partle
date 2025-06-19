@@ -1,3 +1,6 @@
+- Demo user and part
+    - http://localhost:8000/docs
+
 - Hosting partle.rubenayla.xyz
 - Backend
 - Add Accounts

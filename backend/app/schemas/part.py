@@ -1,20 +1,24 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from typing import Optional
 
 
-class PartBase(BaseModel):
+class ProductBase(BaseModel):
     name: str
-    sku: str | None = None
-    stock: int
-    price: float | None = None
-    store_id: int
+    spec: Optional[str] = None
+    price: Optional[float] = None
+    url: Optional[str] = None
+    lat: Optional[float] = None
+    lon: Optional[float] = None
+    description: Optional[str] = None
+    store_id: Optional[int] = None
 
 
-class PartCreate(PartBase):
+class ProductCreate(ProductBase):
     pass
 
 
-class PartOut(PartBase):
+class ProductRead(ProductBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
