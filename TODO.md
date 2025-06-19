@@ -26,6 +26,7 @@
         - Amazon
         - Wallapop?
     - Ask gpt sources
+- Mobile version (bar at the bottom with easy interface. Go ahead to new standards)
 - The product of each store must have a unique name. If you don't agree with the data, several versions will appear, with capability to up/down vote them. It just like several products squished together in the same frontend card.
 - Mechanism to store searches performed by users so we can know what products are more demanded
 - Consider removing Tailwind CSS. What's it for?
@@ -35,7 +36,6 @@
 ## Not urgent, long term
 - AI thingy to load them to the database just by recording with the phone. It recognizes the products, screenshots them, lists the price, geo location and everything. You can go around stores and record to add thousands of products.
 - What if i put the search terms at the left, the search bar at the top of the left section, and on startup the website already includes products as suggestions? The left search terms stay there, and the scroll only includes the products. The right is blank or left for ads etc.
-- Mobile version (bottom to top, bar at the bottom with easy interface. Go ahead to new standards)
 - Make map take the whole screen while keeping list with 4xl
 Explore direct public key login (passkeys) so the browser handles authentication. If the key is lost, allow email-based reset.
 - Do evaluation of each metric by the users, when

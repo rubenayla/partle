@@ -108,3 +108,7 @@ curl -X POST http://localhost:8000/v1/products/ \
 - https://www.olx.com.br/
 - https://www.etsy.com/
 - https://www.zillow.com/
+
+# 2025-06-20
+![](stuff/20250620003901.png)
+

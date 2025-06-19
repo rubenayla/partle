@@ -1,7 +1,7 @@
-// frontend/src/components/TopBar.jsx
+// frontend/src/components/SearchBar.jsx
 import { useState, useRef, useEffect } from 'react';
 
-export default function TopBar({
+export default function SearchBar({
   mode = 'list',
   onModeChange = () => {},
   onSearch = () => {},
