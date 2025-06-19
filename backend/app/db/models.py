@@ -1,3 +1,4 @@
+# backend/app/db/models.py
 from typing import Optional, TYPE_CHECKING
 from enum import Enum
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, Enum as PgEnum, Numeric, Text

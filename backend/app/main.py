@@ -1,3 +1,4 @@
+# backend/app/main.py
 from fastapi import FastAPI
 from app.api.v1 import parts, stores
 from fastapi.middleware.cors import CORSMiddleware

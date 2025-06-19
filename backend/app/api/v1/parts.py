@@ -1,3 +1,4 @@
+# backend/app/api/v1/parts.py
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.db.models import Product, Store, User
