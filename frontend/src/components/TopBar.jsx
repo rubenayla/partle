@@ -1,5 +1,7 @@
 // frontend/src/components/TopBar.jsx
 import { useState } from 'react';
+import { Search } from 'lucide-react';
+import { User } from 'lucide-react';
 
 export default function TopBar({
   mode = 'list',
@@ -36,10 +38,10 @@ export default function TopBar({
             placeholder="What are you looking for?"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="bg-transparent flex-1 placeholder-gray-500 focus:outline-none"
+            className="bg-transparent flex-1 placeholder-gray-700 text-gray-800 focus:outline-none"
           />
 
-          {/* Vertical separator */}
+          {/* Separator */}
           <div className="h-6 border-l border-gray-300" />
 
           {/* Price range */}
@@ -49,8 +51,8 @@ export default function TopBar({
               min={0}
               value={priceMin}
               onChange={(e) => setPriceMin(Number(e.target.value))}
-              className="w-16 bg-transparent placeholder-gray-500 focus:outline-none text-sm"
               placeholder="Min"
+              className="w-16 bg-transparent placeholder-gray-700 text-gray-800 focus:outline-none text-sm"
             />
             —
             <input
@@ -58,8 +60,8 @@ export default function TopBar({
               min={0}
               value={priceMax}
               onChange={(e) => setPriceMax(Number(e.target.value))}
-              className="w-16 bg-transparent placeholder-gray-500 focus:outline-none text-sm"
               placeholder="Max"
+              className="w-16 bg-transparent placeholder-gray-700 text-gray-800 focus:outline-none text-sm"
             />
           </div>
 
@@ -70,7 +72,7 @@ export default function TopBar({
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="bg-transparent focus:outline-none text-sm"
+            className="bg-transparent text-gray-800 focus:outline-none text-sm"
           >
             <option value="relevance">Relevance</option>
             <option value="price_asc">Price ↑</option>
@@ -78,20 +80,18 @@ export default function TopBar({
             <option value="distance">Closest</option>
           </select>
 
-          {/* Search button */}
+          {/* Submit button with lucide-react icon */}
           <button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2"
+            className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 flex items-center justify-center"
           >
-            🔍
+            <Search className="h-5 w-5" />
           </button>
         </form>
 
         {/* Account icon */}
         <a href="/login" title="My Account" className="text-gray-600 hover:text-gray-800 flex-shrink-0">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 15c2.485 0 4.817.656 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
+          <User className="h-8 w-8 text-gray-800" />
         </a>
       </div>
     </header>
