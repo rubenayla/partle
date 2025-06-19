@@ -1,3 +1,4 @@
+# backend/app/api/v1/auth.py
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm

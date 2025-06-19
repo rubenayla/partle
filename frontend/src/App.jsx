@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import RequireAuth from "./components/RequireAuth";   // new guard component
 import Login from "./pages/Login";                    // login form
 import Stores from "./pages/Stores";                  // list + map view
+import Products from "./pages/Products";
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
         {/* everything below this guard needs a valid JWT */}
         <Route element={<RequireAuth />}>
           <Route path="/stores" element={<Stores />} />
+          <Route path="/stores/:id/products" element={<Products />} />
           {/* add more protected routes here (store detail, parts, profile…) */}
         </Route>
 

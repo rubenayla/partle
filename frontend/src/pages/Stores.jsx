@@ -1,6 +1,7 @@
 // frontend/src/pages/Stores.jsx
 import { useEffect, useState } from "react";
 import api from "../api";
+import { Link } from "react-router-dom";
 
 export default function Stores() {
   const [stores, setStores] = useState([]);
@@ -8,7 +9,7 @@ export default function Stores() {
   const [form, setForm]       = useState({ name: "", address: "", lat: 0, lon: 0 });
 
   useEffect(() => {
-    api.get("/v1/stores").then(res => setStores(res.data));
+    api.get("/v1/stores/").then(res => setStores(res.data));
   }, []);
 
   function handleChange(e) {
@@ -17,7 +18,7 @@ export default function Stores() {
 
   async function createStore(e) {
     e.preventDefault();
-    const { data } = await api.post("/v1/stores", form);
+    const { data } = await api.post("/v1/stores/", form);
     setStores(prev => [...prev, data]);
     setOpenForm(false);
     setForm({ name: "", address: "", lat: 0, lon: 0 });
@@ -37,6 +38,9 @@ export default function Stores() {
         {stores.map(s => (
           <li key={s.id} className="border p-3 rounded">
             <strong>{s.name}</strong>
+              <Link to={`/stores/${s.id}/products`} className="text-blue-600 hover:underline">
+                <strong>{s.name}</strong>
+              </Link>
             <div className="text-sm text-gray-600">{s.address}</div>
           </li>
         ))}
