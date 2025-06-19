@@ -15,6 +15,9 @@ pydantic = "^2.0"
 httpx = "^0.28.1"
 alembic = "^1.13"
 psycopg2-binary = "^2.9"
+python-jose = "^3.3.0"
+passlib = { extras = ["bcrypt"], version = "^1.7.4" }
+
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0"

@@ -1,26 +1,58 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey
-from sqlalchemy.orm import declarative_base, relationship
+from typing import Optional, TYPE_CHECKING
+from enum import Enum
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Enum as PgEnum, Numeric, Text
+from sqlalchemy.orm import relationship, Mapped, mapped_column
+from app.db.base import Base
 
-Base = declarative_base()
+
+class StoreType(str, Enum):
+    PHYSICAL = "physical"
+    ONLINE = "online"
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    email: Mapped[str] = mapped_column(String, unique=True, index=True)
+    password_hash: Mapped[str] = mapped_column(String)
+    stores: Mapped[list["Store"]] = relationship(back_populates="owner")
 
 
 class Store(Base):
     __tablename__ = "stores"
-    id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
-    lat = Column(Float, nullable=False)
-    lon = Column(Float, nullable=False)
 
-    parts = relationship("Part", back_populates="store")
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String)
+    type: Mapped[StoreType] = mapped_column(
+        PgEnum(StoreType, name="store_type"),
+        default=StoreType.PHYSICAL
+    )
+    lat: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    lon: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    address: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    homepage: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+
+    owner_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
+    owner: Mapped[Optional[User]] = relationship(back_populates="stores")
+    products: Mapped[list["Product"]] = relationship(back_populates="store")
 
 
-class Part(Base):
-    __tablename__ = "parts"
-    id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
-    sku = Column(String, nullable=True)
-    stock = Column(Integer, default=0)
-    price = Column(Float, nullable=True)
+class Product(Base):
+    __tablename__ = "products"
 
-    store_id = Column(Integer, ForeignKey("stores.id"))
-    store = relationship("Store", back_populates="parts")
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String)
+    spec: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    price: Mapped[Optional[float]] = mapped_column(Numeric(10, 2), nullable=True)
+    url: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    lat: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    lon: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    store_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("stores.id", ondelete="SET NULL"), nullable=True
+    )
+    store: Mapped[Optional[Store]] = relationship(back_populates="products")

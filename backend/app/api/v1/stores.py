@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.db import SessionLocal
-from app.models import Store
+from app.db.session import SessionLocal
+from app.db.models import Product, Store, User
 from app.schemas import store as schema
 from collections.abc import Generator
 
