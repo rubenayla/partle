@@ -102,6 +102,20 @@ Then open:
 
 ---
 
+### 🧪 Quick test
+
+Alternatively run the server via the Makefile:
+
+```bash
+make run
+```
+
+Then visit:
+
+- <http://localhost:8000/> → `{"status":"ok","version":"v1","docs":"/docs"}`
+- <http://localhost:8000/docs> → Swagger UI
+- <http://localhost:8000/v1/parts> → should return `404` if the router is empty (or list your endpoints)
+
 ## 📂 Directory structure
 
 ```

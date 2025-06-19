@@ -2,8 +2,7 @@ from typing import Optional, TYPE_CHECKING
 from enum import Enum
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, Enum as PgEnum, Numeric, Text
 from sqlalchemy.orm import relationship, Mapped, mapped_column
-from app.db.base import Base
-
+from app.db.base_class import Base
 
 class StoreType(str, Enum):
     PHYSICAL = "physical"

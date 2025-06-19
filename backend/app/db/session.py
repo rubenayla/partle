@@ -1,9 +1,9 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from pathlib import Path
+from sqlalchemy.orm import sessionmaker, declarative_base
 
-db_path = Path(__file__).resolve().parents[2] / "partle.db"
-DATABASE_URL = f"sqlite:///{db_path}"
+# Update with your real credentials / database
+DATABASE_URL = "postgresql://postgres:password@localhost:5432/partle"
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
-SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
+engine = create_engine(DATABASE_URL, echo=False)
+SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+Base = declarative_base()
