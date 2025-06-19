@@ -8,17 +8,24 @@ export default function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+
+    // build x-www-form-urlencoded body
+    const body = new URLSearchParams();
+    body.append("username", email);   // field MUST be `username`
+    body.append("password", password);
+
     try {
-      const { data } = await api.post("/auth/login", {
-        username: email,          // OAuth2PasswordRequestForm expects these keys
-        password,
+      const { data } = await api.post("/auth/login", body, {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
       });
+
       localStorage.setItem("token", data.access_token);
       window.location.href = "/stores";
     } catch {
       setError("Invalid credentials");
     }
   }
+
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-gray-50">
