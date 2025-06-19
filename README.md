@@ -131,6 +131,13 @@ make backend   # starts FastAPI
 make frontend  # starts Vite + React
 ```
 
+## View the app
+- http://localhost:5173/
+- http://localhost:8000/docs (API docs)
+- http://localhost:8000/redoc (ReDoc docs)
+- http://localhost:8000/api/v1/parts (API endpoint)
+- http://localhost:8000/api/v1/stores (API endpoint)
+
 ## 🔮 References
 
 * UI prototyping: Figma, Sketch, PopApp, Invision

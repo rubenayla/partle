@@ -6,6 +6,7 @@
 - Demo user and part
     - http://localhost:8000/docs
 
+- account ui look like menu over home page, with background darkened
 - Backend
 - Add Accounts
     > Required mainly just to upload products. Also rate them, save favourites, skip ads with paid tiers etc.
