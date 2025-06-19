@@ -63,18 +63,40 @@ partle/
 │
 ├── backend/                            # FastAPI backend
 │   ├── app/
-│   │   ├── main.py                     # FastAPI entrypoint (uvicorn)
-│   │   ├── api.py                      # /search, /stores endpoints
-│   │   ├── models.py                   # Pydantic schemas: Part, Store, Query
-│   │   ├── db.py                       # Data loader (CSV → memory or DB)
-│   │   └── store_data.csv              # CSV inventory store (for now)
+│   │   ├── api/
+│   │   │   └── v1/                     # Versioned routes
+│   │   │       ├── auth.py
+│   │   │       ├── parts.py
+│   │   │       └── stores.py
+│   │   ├── auth/                       # Auth helpers
+│   │   │   └── utils.py
+│   │   ├── db/                         # SQLAlchemy setup
+│   │   │   ├── base.py
+│   │   │   ├── base_class.py
+│   │   │   ├── models.py
+│   │   │   └── session.py
+│   │   ├── schemas/                    # Pydantic schemas
+│   │   │   ├── auth.py
+│   │   │   ├── part.py
+│   │   │   └── store.py
+│   │   └── main.py                     # FastAPI entrypoint
+│   ├── alembic/                        # Database migrations
+│   ├── alembic.ini
+│   ├── partle.db                       # SQLite dev database
+│   ├── tests/
+│   │   ├── test_api.py
+│   │   └── test_fast_api.py
 │   ├── pyproject.toml                  # Poetry config
 │   ├── poetry.lock                     # Locked dependencies
 │   └── README.md                       # Backend usage notes
 │
 ├── .gitignore
 ├── README.md                           # Top-level docs
-└── dev.md                              # Dev notes, changelog, todos
+├── AGENTS.md
+├── Makefile
+├── TODO.md
+├── dev_setup.sh
+└── package-lock.json
 ```
 
 ## Development setup
