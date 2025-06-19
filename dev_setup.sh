@@ -3,6 +3,15 @@
 # Partle setup script based on README instructions
 set -e
 
+# ---- System packages required for building Python ----
+sudo apt update
+sudo apt install -y \
+  build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev \
+  libsqlite3-dev libncurses-dev libffi-dev liblzma-dev uuid-dev \
+  libgdbm-dev tk-dev libnss3-dev libdb-dev libexpat1-dev \
+  libxml2-dev libxmlsec1-dev libx11-dev libxext-dev libxrender-dev \
+  xz-utils
+
 # ---- Node.js via nvm ----
 if ! command -v nvm >/dev/null 2>&1; then
     echo "Installing nvm..."
@@ -33,25 +42,19 @@ cd ..
 if ! command -v pyenv >/dev/null 2>&1; then
     echo "Installing pyenv..."
     git clone https://github.com/pyenv/pyenv.git ~/.pyenv
-    export PYENV_ROOT="$HOME/.pyenv"
-    export PATH="$PYENV_ROOT/bin:$PATH"
-    eval "$(pyenv init -)"
-else
-    export PYENV_ROOT="$HOME/.pyenv"
-    export PATH="$PYENV_ROOT/bin:$PATH"
-    eval "$(pyenv init -)"
 fi
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
 
 PY_VERSION="3.12.3"
-if ! pyenv versions --bare | grep -q "$PY_VERSION"; then
-    pyenv install "$PY_VERSION"
-fi
+pyenv install -s "$PY_VERSION"
+pyenv global "$PY_VERSION"
 
 cd backend
-pyenv local "$PY_VERSION"
-python -m venv .venv
-source .venv/bin/activate
-pip install --upgrade pip
-pip install -e .
+rm -rf .venv
+poetry config virtualenvs.in-project true
+poetry env use "$(pyenv which python)"
+poetry install
 
-echo "Setup complete. Activate the virtualenv with 'source backend/.venv/bin/activate'"
+echo "Setup complete. Activate with 'poetry shell' inside backend/"

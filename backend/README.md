@@ -24,10 +24,11 @@ Ensure you have:
 ```bash
 sudo apt update
 sudo apt install -y \
-  make build-essential libssl-dev zlib1g-dev libbz2-dev \
-  libreadline-dev libsqlite3-dev wget curl llvm \
-  libncurses5-dev xz-utils tk-dev libxml2-dev \
-  libxmlsec1-dev libffi-dev liblzma-dev python3-full
+  build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev \
+  libsqlite3-dev libncurses-dev libffi-dev liblzma-dev uuid-dev \
+  libgdbm-dev tk-dev libnss3-dev libdb-dev libexpat1-dev \
+  libxml2-dev libxmlsec1-dev libx11-dev libxext-dev libxrender-dev \
+  xz-utils
 ```
 
 ---
@@ -42,10 +43,11 @@ echo 'eval "$(pyenv init -)"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-Then install Python 3.12.3:
+Then install and activate Python 3.12.3:
 
 ```bash
-pyenv install 3.12.3
+pyenv install -s 3.12.3
+pyenv global 3.12.3
 ```
 
 ---
@@ -56,9 +58,10 @@ From inside the `backend/` folder:
 
 ```bash
 cd backend
-pyenv local 3.12.3
-python -m venv .venv
-source .venv/bin/activate
+rm -rf .venv
+poetry config virtualenvs.in-project true
+poetry env use $(pyenv which python)
+poetry install
 ```
 
 Alternatively, from the project root you can run:
@@ -67,30 +70,14 @@ Alternatively, from the project root you can run:
 make setup
 ```
 Run this from the repository root without an active virtualenv so it uses your
-system Python.
+pyenv Python.
 
 ---
 
 ### 4. Install backend project + dependencies
 
-```bash
-pip install --upgrade pip
-pip install -e .
-
-# or use the Makefile target from the repository root which creates the
-# virtualenv and installs everything in one go
-make setup
-```
-
-Run it from the repository root without an active virtualenv so it uses
-your system Python.
-
-This installs:
-
-- FastAPI
-- Uvicorn
-- Project itself (editable mode)
-- Uses `pyproject.toml` with `hatchling` (declared in `[build-system]`)
+Dependencies are installed via Poetry in the previous step. You can also run
+`make setup` from the repository root to perform the same actions.
 
 ---
 

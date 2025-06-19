@@ -57,7 +57,8 @@ partle/
 │   │   ├── models.py                   # Pydantic schemas: Part, Store, Query
 │   │   ├── db.py                       # Data loader (CSV → memory or DB)
 │   │   └── store_data.csv              # CSV inventory store (for now)
-│   ├── requirements.txt                # pip deps: fastapi, uvicorn, etc.
+│   ├── pyproject.toml                  # Poetry config
+│   ├── poetry.lock                     # Locked dependencies
 │   └── README.md                       # Backend usage notes
 │
 ├── .gitignore
@@ -65,15 +66,15 @@ partle/
 └── dev.md                              # Dev notes, changelog, todos
 
 ## 🛠 Dev Setup
-Use the provided **Makefile** to set up the Python environment:
+Use the provided **Makefile** to set up the Python environment (via Poetry):
 
 ```bash
 make setup
 ```
 
 Run it from the repository root with no virtualenv active so it uses your
-system Python. This creates `backend/.venv` and installs the backend in
-editable mode along with `pytest` for running tests.
+pyenv-managed Python. This creates `backend/.venv` with Poetry and installs
+all dependencies.
 
 ### 1. Install Node.js
 Make sure Node.js 18+ is available. The `nvm` tool is recommended but not
