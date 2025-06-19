@@ -112,3 +112,5 @@ curl -X POST http://localhost:8000/v1/products/ \
 # 2025-06-20
 ![](stuff/20250620003901.png)
 
+![](stuff/20250620005012.png)
+

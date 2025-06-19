@@ -19,9 +19,15 @@ help:  ## list targets
 
 # -------- dependencies ----------------------------------------------------
 .PHONY: install
-install:  ## poetry + npm install (first-time setup)
-	@(cd $(BACKEND_DIR)  && poetry install)
-	@[ -d $(FRONTEND_DIR) ] && npm --prefix $(FRONTEND_DIR) install || true
+install:
+	@echo "Setting up backend environment..."
+	@if ! command -v python3 >/dev/null; then \
+		echo "Python 3 is required but not found."; exit 1; \
+	fi
+	@python3 -m venv backend/.venv
+	@backend/.venv/bin/pip install -U pip
+	@backend/.venv/bin/pip install poetry
+	@cd backend && ../backend/.venv/bin/poetry install
 
 # -------- database & migrations ------------------------------------------
 .PHONY: db-init
