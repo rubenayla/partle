@@ -1,9 +1,20 @@
 # backend/app/db/models.py
 from typing import Optional, TYPE_CHECKING
 from enum import Enum
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, Enum as PgEnum, Numeric, Text
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Float,
+    ForeignKey,
+    Enum as PgEnum,
+    Numeric,
+    Text,
+    LargeBinary,
+)
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from app.db.base_class import Base
+
 
 class StoreType(str, Enum):
     PHYSICAL = "physical"
@@ -16,6 +27,8 @@ class User(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(String, unique=True, index=True)
     password_hash: Mapped[str] = mapped_column(String)
+    fido_id: Mapped[Optional[bytes]] = mapped_column(LargeBinary, nullable=True)
+    fido_pubkey: Mapped[Optional[bytes]] = mapped_column(LargeBinary, nullable=True)
     stores: Mapped[list["Store"]] = relationship(back_populates="owner")
 
 
@@ -25,8 +38,7 @@ class Store(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String)
     type: Mapped[StoreType] = mapped_column(
-        PgEnum(StoreType, name="store_type"),
-        default=StoreType.PHYSICAL
+        PgEnum(StoreType, name="store_type"), default=StoreType.PHYSICAL
     )
     lat: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     lon: Mapped[Optional[float]] = mapped_column(Float, nullable=True)

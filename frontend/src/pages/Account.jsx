@@ -1,10 +1,29 @@
 import { useState } from "react";
 import api from "../api";
+import { fidoLoginBegin, fidoLoginFinish, register, login } from "../api/auth";
 
 export default function Account() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  async function handleFido(e) {
+    e.preventDefault();
+    try {
+      const options = await fidoLoginBegin(email);
+      const cred = await navigator.credentials.get({ publicKey: options });
+      await fidoLoginFinish({
+        email,
+        credential_id: cred.rawId,
+        client_data_json: cred.response.clientDataJSON,
+        authenticator_data: cred.response.authenticatorData,
+        signature: cred.response.signature,
+      });
+      window.location.href = "/stores";
+    } catch (err) {
+      setError("Security key failed");
+    }
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -12,7 +31,7 @@ export default function Account() {
     // Attempt to register first. If the email already exists, the API will
     // return a 400 error which we ignore and then try to log in.
     try {
-      await api.post("/auth/register", { email, password });
+      await register(email, password);
     } catch (err) {
       if (!err.response || err.response.status !== 400) {
         setError("Unable to register");
@@ -20,16 +39,8 @@ export default function Account() {
       }
     }
 
-    const body = new URLSearchParams();
-    body.append("username", email); // field MUST be `username`
-    body.append("password", password);
-
     try {
-      const { data } = await api.post("/auth/login", body, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      });
-
-      localStorage.setItem("token", data.access_token);
+      await login(email, password);
       window.location.href = "/stores";
     } catch {
       setError("Invalid credentials");
@@ -60,8 +71,14 @@ export default function Account() {
 
         {error && <span className="text-red-500 text-sm">{error}</span>}
 
+        <button
+          onClick={handleFido}
+          className="bg-green-600 text-white py-2 rounded hover:bg-green-700"
+        >
+          Use Security Key
+        </button>
         <button className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
-          Continue
+          Continue with Password
         </button>
       </form>
     </div>
