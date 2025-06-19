@@ -55,7 +55,7 @@ http://localhost:8000/docs#/Parts/add_part_v1_parts_post
   "store_id": 1
 }
 
-# 2025-06-19
+# 2025-06-18
 ```
 sudo apt install -y \
   build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev \
@@ -75,3 +75,9 @@ poetry env use $(pyenv which python)
 poetry install
 poetry shell
 ```
+
+# 2025-06-19
+http://localhost:8000/ 
+http://localhost:8000/docs
+http://localhost:8000/v1/parts
+

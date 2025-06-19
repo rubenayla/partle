@@ -10,9 +10,12 @@ Wallapop has commercial accounts now, with lots of new expensive products litter
 
 Yes, Amazon and AliExpress are taking a huge part of the market, but they are not so fast as you going yourself, not as good as being able to see the product before you buy it, and they come with inner politics that bother lots of businesses. Lots of stores are fed up of Amazon rules and want to sell their own way, with freedom. About AliExpress, there's a powerful push to manufacture locally, not depend on one country to make everything in the world.
 
-In the long term: connect local business databases with the app so all products are listed there.
-
 Monetize with ads and premium positioning, like wallapop.
+
+In the long term:
+- connect local business databases with the app so all products are listed there.
+- Leverage AI to search with natural language, human-like queries and descriptions, images etc.
+- Let user find cool things close by, knowing what they like in depth. Notification when passing by a liked product.
 
 ## 🚀 Features
 - 🔍 Search by part name or spec (e.g. "JST 6-pin", "M8 locking nut")

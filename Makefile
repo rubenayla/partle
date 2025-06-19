@@ -1,14 +1,32 @@
-VENV_DIR=backend/.venv
-PYTHON=python3
+.PHONY: setup install test run shell migrate upgrade clean
 
-.PHONY: setup test run
-
+# Create system + project environment
 setup:
-	$(PYTHON) -m venv --upgrade-deps $(VENV_DIR)
-	$(VENV_DIR)/bin/pip install -e backend pytest
+	./dev_setup.sh
 
+# Just install Python dependencies
+install:
+	cd backend && poetry install
+
+# Run tests
 test:
-	PYTHONPATH=backend $(VENV_DIR)/bin/pytest backend/tests
+	cd backend && poetry run pytest backend/tests
 
+# Run the dev server
 run:
-	$(VENV_DIR)/bin/uvicorn app.main:app --reload --port 8000 --app-dir backend
+	cd backend && poetry run uvicorn app.main:app --reload --port 8000 --app-dir backend
+
+# Drop into poetry shell
+shell:
+	cd backend && poetry shell
+
+# Alembic commands
+migrate:
+	cd backend && poetry run alembic revision --autogenerate -m "auto"
+
+upgrade:
+	cd backend && poetry run alembic upgrade head
+
+# Clean venv and build artifacts
+clean:
+	rm -rf backend/.venv __pycache__ **/__pycache__ .mypy_cache

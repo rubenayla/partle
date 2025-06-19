@@ -1,14 +1,13 @@
-# Node (frontend)
+# === Node (frontend) ===
 frontend/node_modules/
 frontend/dist/
 frontend/.vite/
 frontend/.env
 frontend/.DS_Store
 
-# Python (backend)
+# === Python (backend) ===
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
 *.pyd
 backend/.env
 backend/.venv/
@@ -16,13 +15,32 @@ backend/.mypy_cache/
 backend/.pytest_cache/
 backend/.DS_Store
 
-# OS
+# === Logs ===
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# === OS / Editor junk ===
 .DS_Store
 Thumbs.db
+*.swp
+*.swo
 
-# Editor
+# === IDEs ===
 .vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
 .idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
 
-# Logs
-*.log
+# === Build artifacts ===
+dist/
+dist-ssr/
+*.local
