@@ -37,10 +37,10 @@ export default function Account() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4">
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-4 p-8 bg-white rounded shadow w-80"
+        className="flex flex-col gap-4 bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8"
       >
         <h1 className="text-2xl font-semibold text-center">Partle Account</h1>
 
@@ -64,6 +64,6 @@ export default function Account() {
           Continue
         </button>
       </form>
-    </main>
+    </div>
   );
 }
