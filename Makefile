@@ -27,6 +27,7 @@ install:
 	@python3 -m venv backend/.venv
 	@backend/.venv/bin/pip install -U pip
 	@backend/.venv/bin/pip install poetry
+	@cd backend && ../backend/.venv/bin/poetry lock
 	@cd backend && ../backend/.venv/bin/poetry install
 
 # -------- database & migrations ------------------------------------------

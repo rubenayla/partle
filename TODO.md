@@ -6,7 +6,6 @@
 - Demo user and part
     - http://localhost:8000/docs
 
-- Hosting partle.rubenayla.xyz
 - Backend
 - Add Accounts
     > Required mainly just to upload products. Also rate them, save favourites, skip ads with paid tiers etc.
@@ -32,6 +31,8 @@
 - Consider removing Tailwind CSS. What's it for?
 - seo for chatgpt searches so I can get pro users that will actually buy, being of benefit to the stores. Can charge the stores instead of the user, since use through chatgpt will be free
 - Users report products (illegal etc)
+- Improve unit tests
+- Hosting partle.rubenayla.xyz
 
 ## Not urgent, long term
 - AI thingy to load them to the database just by recording with the phone. It recognizes the products, screenshots them, lists the price, geo location and everything. You can go around stores and record to add thousands of products.

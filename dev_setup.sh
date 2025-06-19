@@ -1,3 +1,4 @@
+# TODO RETHINK THIS. NOW I'M USING the Makefile
 #!/usr/bin/env bash
 # dev_setup.sh — Partle unified setup script
 set -e
