@@ -116,3 +116,6 @@ curl -X POST http://localhost:8000/v1/products/ \
 
 ![](stuff/20250620010811.png)
 
+Version with white bar and shaded background.
+I prefer flat colors, white background and grey search bar, I think.
+![](stuff/20250620015440.png)
