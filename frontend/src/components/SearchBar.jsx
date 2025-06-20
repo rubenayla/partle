@@ -10,16 +10,19 @@ export default function SearchBar({ onSearch = () => {}, isLoggedIn = false }) {
   const [priceOpen, setPriceOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
 
   const priceRef = useRef();
   const sortRef = useRef();
   const accountRef = useRef();
+  const infoRef = useRef();
 
   useEffect(() => {
     const closeAll = (e) => {
       if (priceRef.current && !priceRef.current.contains(e.target)) setPriceOpen(false);
       if (sortRef.current && !sortRef.current.contains(e.target)) setSortOpen(false);
       if (accountRef.current && !accountRef.current.contains(e.target)) setAccountOpen(false);
+      if (infoRef.current && !infoRef.current.contains(e.target)) setInfoOpen(false);
     };
     document.addEventListener('mousedown', closeAll);
     return () => document.removeEventListener('mousedown', closeAll);
@@ -116,7 +119,7 @@ export default function SearchBar({ onSearch = () => {}, isLoggedIn = false }) {
             <button
               type="button"
               onClick={() => setAccountOpen(!accountOpen)}
-              className="bg-transparent text-indigo-600 hover:text-indigo-800 focus:outline-none"
+              className="bg-transparent text-gray-600 hover:text-gray-800 focus:outline-none"
             >
               <User className="h-8 w-8" />
             </button>
@@ -138,9 +141,23 @@ export default function SearchBar({ onSearch = () => {}, isLoggedIn = false }) {
             )}
           </div>
 
-          <a href="/contact" className="text-gray-600 hover:text-gray-800">
-            <Info className="h-6 w-6" />
-          </a>
+          <div ref={infoRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setInfoOpen(!infoOpen)}
+              className="bg-transparent text-gray-600 hover:text-gray-800 focus:outline-none"
+            >
+              <Info className="h-6 w-6" />
+            </button>
+            {infoOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg p-4 z-50">
+                <a href="/contact" className="block px-2 py-1 hover:bg-gray-100 rounded">Contact</a>
+                <a href="/terms" className="block px-2 py-1 hover:bg-gray-100 rounded">Terms</a>
+                <a href="/privacy" className="block px-2 py-1 hover:bg-gray-100 rounded">Privacy</a>
+                <a href="/social" className="block px-2 py-1 hover:bg-gray-100 rounded">Social Networks</a>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </header>
