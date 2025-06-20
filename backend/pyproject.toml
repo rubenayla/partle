@@ -21,6 +21,7 @@ email-validator = "^2.2.0"
 python-multipart = "^0.0.20"
 fido2 = "^2.0.0"
 itsdangerous = "^2.2.0"
+webauthn = "^2.6.0"
 
 
 [tool.poetry.group.dev.dependencies]
