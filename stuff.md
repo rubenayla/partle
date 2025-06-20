@@ -105,9 +105,11 @@ curl -X POST http://localhost:8000/v1/products/ \
 
 # websites for ui inspiration
 - https://www.airbnb.com/
+- https://dribbble.com/search/ui
 - https://www.olx.com.br/
 - https://www.etsy.com/
 - https://www.zillow.com/
+- https://open.spotify.com/
 
 # 2025-06-20
 ![](stuff/20250620003901.png)
