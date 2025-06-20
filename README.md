@@ -137,6 +137,7 @@ make frontend  # starts Vite + React
 - http://localhost:8000/redoc (ReDoc docs)
 - http://localhost:8000/api/v1/parts (API endpoint)
 - http://localhost:8000/api/v1/stores (API endpoint)
+- http://localhost:8000/docs#/Auth/register_auth_register_post
 
 ## 🔮 References
 

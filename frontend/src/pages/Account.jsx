@@ -26,7 +26,7 @@ function credToJSON(cred) {
   return json;
 }
 
-export default function Account() {
+export default function Account({ onClose = () => {} }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -64,8 +64,6 @@ export default function Account() {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    // Attempt to register first. If the email already exists, the API will
-    // return a 400 error which we ignore and then try to log in.
     try {
       await api.post("/auth/register", { email, password });
     } catch (err) {
@@ -76,7 +74,7 @@ export default function Account() {
     }
 
     const body = new URLSearchParams();
-    body.append("username", email); // field MUST be `username`
+    body.append("username", email);
     body.append("password", password);
 
     try {
@@ -91,8 +89,15 @@ export default function Account() {
     }
   }
 
+  function handleBackgroundClick(e) {
+    if (e.target === e.currentTarget) onClose();
+  }
+
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4">
+    <div
+      onClick={handleBackgroundClick}
+      className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50"
+    >
       <form
         onSubmit={usePassword ? handleSubmit : handlePasskey}
         className="flex flex-col gap-4 bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8"

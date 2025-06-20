@@ -1,8 +1,7 @@
-// frontend/src/components/SearchBar.jsx
 import { useState, useRef, useEffect } from 'react';
 import { Search, User, Info } from 'lucide-react';
 
-export default function SearchBar({ onSearch = () => {}, isLoggedIn = false }) {
+export default function SearchBar({ onSearch = () => {}, isLoggedIn = false, onAccountClick = () => {} }) {
   const [query, setQuery] = useState('');
   const [priceMin, setPriceMin] = useState(0);
   const [priceMax, setPriceMax] = useState(500);
@@ -17,6 +16,7 @@ export default function SearchBar({ onSearch = () => {}, isLoggedIn = false }) {
   const accountRef = useRef();
   const infoRef = useRef();
 
+  // ─── Close dropdowns when clicking outside ───────────────────────────
   useEffect(() => {
     const closeAll = (e) => {
       if (priceRef.current && !priceRef.current.contains(e.target)) setPriceOpen(false);
@@ -24,8 +24,8 @@ export default function SearchBar({ onSearch = () => {}, isLoggedIn = false }) {
       if (accountRef.current && !accountRef.current.contains(e.target)) setAccountOpen(false);
       if (infoRef.current && !infoRef.current.contains(e.target)) setInfoOpen(false);
     };
-    document.addEventListener('mousedown', closeAll);
-    return () => document.removeEventListener('mousedown', closeAll);
+    document.addEventListener('mousedown', closeAll, true);
+    return () => document.removeEventListener('mousedown', closeAll, true);
   }, []);
 
   const handleSearch = (e) => {
@@ -118,23 +118,25 @@ export default function SearchBar({ onSearch = () => {}, isLoggedIn = false }) {
           <div ref={accountRef} className="relative">
             <button
               type="button"
-              onClick={() => setAccountOpen(!accountOpen)}
+              onClick={() => {
+                if (isLoggedIn) {
+                  setAccountOpen(!accountOpen);
+                } else {
+                  onAccountClick();
+                }
+              }}
               className="bg-transparent text-gray-600 hover:text-gray-800 focus:outline-none"
             >
               <User className="h-8 w-8" />
             </button>
-            {accountOpen && (
+            {isLoggedIn && accountOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg p-4 z-50">
                 <a href="/account" className="block px-2 py-1 hover:bg-gray-100 rounded">Account</a>
-                {isLoggedIn && (
-                  <>
-                    <a href="/account/theme" className="block px-2 py-1 hover:bg-gray-100 rounded">Theme</a>
-                    <a href="/favorites/stores" className="block px-2 py-1 hover:bg-gray-100 rounded">Favorite Stores</a>
-                    <a href="/favorites/products" className="block px-2 py-1 hover:bg-gray-100 rounded">Favorite Products</a>
-                    <div className="border-t border-gray-200 my-2" />
-                    <button className="w-full text-left px-2 py-1 hover:bg-gray-100 rounded">Log out</button>
-                  </>
-                )}
+                <a href="/account/theme" className="block px-2 py-1 hover:bg-gray-100 rounded">Theme</a>
+                <a href="/favorites/stores" className="block px-2 py-1 hover:bg-gray-100 rounded">Favorite Stores</a>
+                <a href="/favorites/products" className="block px-2 py-1 hover:bg-gray-100 rounded">Favorite Products</a>
+                <div className="border-t border-gray-200 my-2" />
+                <button className="w-full text-left px-2 py-1 hover:bg-gray-100 rounded">Log out</button>
                 <div className="border-t border-gray-200 my-2" />
                 <a href="/premium" className="block px-2 py-1 hover:bg-gray-100 rounded">Premium</a>
               </div>
