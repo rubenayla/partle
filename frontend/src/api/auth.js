@@ -1,5 +1,5 @@
 // src/api/auth.js
-import api from "./client";
+import api from "../api";
 
 export async function login(email, password) {
   const body = new URLSearchParams({ username: email, password });

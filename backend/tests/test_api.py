@@ -48,13 +48,16 @@ def test_get_parts_empty():
 def test_create_store_and_part():
     # register and authenticate user
     reg_payload = {"email": "user@example.com", "password": "secret"}
-    client.post("/auth/register", json=reg_payload)
+    client.post("/v1/auth/register", json=reg_payload)
     login_resp = client.post(
-        "/auth/login",
+        "/v1/auth/login",
         data={"username": reg_payload["email"], "password": reg_payload["password"]},
     )
     token = login_resp.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
+
+    me_resp = client.get("/v1/auth/me", headers=headers)
+    assert me_resp.status_code == 200
 
     # create store
     store_data = {"name": "Test Store", "lat": 0.0, "lon": 0.0, "type": "physical"}
