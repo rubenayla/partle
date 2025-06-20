@@ -59,7 +59,10 @@ def login(
 ):
     user = db.query(User).filter_by(email=form.username).first()
 
-    if not user or not verify_password(form.password, user.password_hash):
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if not verify_password(form.password, user.password_hash):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
     token = create_access_token({"sub": str(user.id)})

@@ -45,6 +45,14 @@ def test_get_parts_empty():
     assert response.json() == []
 
 
+def test_login_unknown_email():
+    resp = client.post(
+        "/v1/auth/login",
+        data={"username": "missing@example.com", "password": "x"},
+    )
+    assert resp.status_code == 404
+
+
 def test_create_store_and_part():
     # register and authenticate user
     reg_payload = {"email": "user@example.com", "password": "secret"}

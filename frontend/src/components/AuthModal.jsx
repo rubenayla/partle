@@ -89,7 +89,12 @@ export default function AuthModal({ onClose = () => {}, onSuccess = () => {} }) 
       onSuccess();
       onClose();
       return;
-    } catch {}
+    } catch (err) {
+      if (err?.response?.status !== 404) {
+        setError("Invalid credentials");
+        return;
+      }
+    }
 
     try {
       await register(email, password);
