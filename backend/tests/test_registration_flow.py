@@ -58,7 +58,6 @@ def test_register_and_login_email_password():
     assert me.json()["email"] == email
 
 
-@pytest.mark.xfail(reason="Logout endpoint not implemented")
 def test_logout_then_login_again():
     email = "bar@example.com"
     password = "bazqux"
