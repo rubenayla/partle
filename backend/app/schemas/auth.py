@@ -14,3 +14,12 @@ class UserRead(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+
+class EmailOnly(BaseModel):
+    email: EmailStr
+
+
+class FidoFinish(BaseModel):
+    email: EmailStr
+    credential: dict

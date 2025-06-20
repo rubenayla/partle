@@ -1,7 +1,7 @@
 # backend/app/db/models.py
 from typing import Optional, TYPE_CHECKING
 from enum import Enum
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, Enum as PgEnum, Numeric, Text
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Enum as PgEnum, Numeric, Text, LargeBinary
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from app.db.base_class import Base
 
@@ -15,8 +15,9 @@ class User(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(String, unique=True, index=True)
-    password_hash: Mapped[str] = mapped_column(String)
+    password_hash: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     stores: Mapped[list["Store"]] = relationship(back_populates="owner")
+    credentials: Mapped[list["Credential"]] = relationship(back_populates="user")
 
 
 class Store(Base):
@@ -56,3 +57,15 @@ class Product(Base):
         ForeignKey("stores.id", ondelete="SET NULL"), nullable=True
     )
     store: Mapped[Optional[Store]] = relationship(back_populates="products")
+
+
+class Credential(Base):
+    __tablename__ = "credentials"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    credential_id: Mapped[bytes] = mapped_column(LargeBinary, unique=True)
+    public_key: Mapped[bytes] = mapped_column(LargeBinary)
+    sign_count: Mapped[int] = mapped_column(Integer, default=0)
+
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    user: Mapped[User] = relationship(back_populates="credentials")
