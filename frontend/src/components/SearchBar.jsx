@@ -11,15 +11,17 @@ export default function SearchBar({
   const [priceMin, setPriceMin] = useState(0)
   const [priceMax, setPriceMax] = useState(500)
   const [sortBy, setSortBy] = useState('relevance')
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'auto')
 
   const [priceOpen, setPriceOpen] = useState(false)
   const [sortOpen, setSortOpen] = useState(false)
   const [accountOpen, setAccountOpen] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)
 
-  const [theme, setTheme] = useState(
-    () => localStorage.getItem('theme') || 'auto'
-  )
+  const priceRef = useRef()
+  const sortRef = useRef()
+  const accountRef = useRef()
+  const infoRef = useRef()
 
   useEffect(() => {
     const root = document.documentElement
@@ -27,11 +29,6 @@ export default function SearchBar({
     else root.classList.remove('dark')
     localStorage.setItem('theme', theme)
   }, [theme])
-
-  const priceRef = useRef()
-  const sortRef = useRef()
-  const accountRef = useRef()
-  const infoRef = useRef()
 
   useEffect(() => {
     const closeAll = (e) => {
@@ -53,12 +50,8 @@ export default function SearchBar({
     <header className="fixed top-0 left-0 right-0 z-20 bg-background border-b border-gray-200 dark:border-gray-700">
       <div className="w-full max-w-screen-2xl mx-auto flex items-center justify-between px-4 py-3">
 
-        {/* Logo */}
-        <a href="/" className="text-2xl font-semibold text-primary">
-          Partle
-        </a>
+        <a href="/" className="text-2xl font-semibold text-primary">Partle</a>
 
-        {/* Search */}
         <form
           onSubmit={handleSearch}
           className="flex flex-1 mx-6 bg-surface rounded-full pl-4 pr-2 h-12 items-center"
@@ -71,7 +64,6 @@ export default function SearchBar({
             className="flex-1 h-full bg-transparent placeholder-text-secondary text-primary focus:outline-none"
           />
 
-          {/* Price Filter */}
           <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-3" />
           <div ref={priceRef} className="relative">
             <button
@@ -103,7 +95,6 @@ export default function SearchBar({
             )}
           </div>
 
-          {/* Sort Filter */}
           <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-3" />
           <div ref={sortRef} className="relative">
             <button
@@ -137,7 +128,6 @@ export default function SearchBar({
             )}
           </div>
 
-          {/* Search Submit */}
           <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-3" />
           <button
             type="submit"
@@ -147,9 +137,7 @@ export default function SearchBar({
           </button>
         </form>
 
-        {/* Right Section */}
         <div className="flex items-center gap-4">
-          {/* Account */}
           <div ref={accountRef} className="relative">
             <button
               type="button"
@@ -165,31 +153,16 @@ export default function SearchBar({
               <div className="absolute right-0 mt-2 w-56 bg-surface rounded-xl shadow-lg p-4 z-50">
                 <a href="/account" className="block px-2 py-1 text-primary hover:bg-background rounded">Account</a>
 
-                {/* Theme */}
                 <div className="mt-2 px-2 py-1">
-                  <div className="text-sm font-semibold text-secondary mb-1">Theme</div>
-                  {['auto', 'light', 'dark'].map((mode) => (
-                    <button
-                      key={mode}
-                      onClick={() => setTheme(mode)}
-                      className={`block w-full bg-transparent text-left px-2 py-1 rounded ${
-                        theme === mode
-                          ? 'font-semibold text-primary'
-                          : 'text-primary hover:bg-background'
-                      }`}
-                    >
-                      {mode.charAt(0).toUpperCase() + mode.slice(1)}
-                    </button>
-                  ))}
+                  <div className="text-sm font-semibold text-secondary mb-2">Theme</div>
+                  <ThemeSwitch value={theme} onChange={(mode) => setTheme(mode)} />
                 </div>
 
                 <div className="border-t border-gray-200 dark:border-gray-600 my-2" />
-
                 <a href="/stores/favourites" className="block px-2 py-1 text-primary hover:bg-background rounded">Favourite Stores</a>
                 <a href="/products/favourites" className="block px-2 py-1 text-primary hover:bg-background rounded">Favourite Products</a>
 
                 <div className="border-t border-gray-200 dark:border-gray-600 my-2" />
-
                 <button
                   className="block w-full bg-transparent text-left px-2 py-1 text-danger hover:bg-background rounded"
                   onClick={() => {
@@ -201,13 +174,11 @@ export default function SearchBar({
                 </button>
 
                 <div className="border-t border-gray-200 dark:border-gray-600 my-2" />
-
                 <a href="/premium" className="block px-2 py-1 text-primary hover:bg-background rounded">Premium</a>
               </div>
             )}
           </div>
 
-          {/* Info */}
           <div ref={infoRef} className="relative">
             <button
               type="button"
@@ -230,3 +201,39 @@ export default function SearchBar({
     </header>
   )
 }
+
+// ─── ThemeSwitch ──────────────────────────────────────────
+function ThemeSwitch({ value, onChange }) {
+  const options = ["light", "auto", "dark"];
+  const index = options.indexOf(value);
+
+  const WIDTH = 180; // px
+  const SEGMENT = WIDTH / 3;
+
+  return (
+    <div style={{ width: `${WIDTH}px` }} className="h-9">
+      <div className="relative flex h-full rounded-full bg-surface shadow-inner border border-gray-300 dark:border-gray-600 overflow-hidden">
+        {/* Knob */}
+        <div
+          className="absolute inset-y-0 left-0 rounded-full bg-white shadow-md transition-transform duration-200 z-0 pointer-events-none"
+          style={{
+            width: `${SEGMENT}px`,
+            transform: `translateX(${index * SEGMENT}px)`
+          }}
+        />
+        {/* Labels */}
+        {options.map((mode) => (
+          <button
+            key={mode}
+            onClick={() => onChange(mode)}
+            style={{ width: `${SEGMENT}px` }}
+            className="relative z-10 h-full flex items-center justify-center text-sm font-medium text-primary focus:outline-none border-none"
+          >
+            {mode.charAt(0).toUpperCase() + mode.slice(1)}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
