@@ -1,3 +1,7 @@
+add recover password
+use fido2
+
+
 - Login flow (1 → 2) – proves JWT from browser works.
 - Store CRUD (3 → 4) – lets you seed real data from the UI.
 - Parts under stores (5 → 6) – completes the core data model.

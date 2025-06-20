@@ -1,119 +1,118 @@
 import { useState } from "react";
 import api from "../api";
+import { login, register, requestReset } from "../api/auth";
+
 
 function logDebug(...args) {
   if (import.meta.env.DEV) console.debug(...args);
 }
 
-function bufToBase64(buf) {
-  return btoa(String.fromCharCode(...new Uint8Array(buf)));
-}
+const bufToBase64 = (buf) =>
+  btoa(String.fromCharCode(...new Uint8Array(buf)));
 
-function credToJSON(cred) {
-  if (!cred) return null;
-  const json = {
-    id: cred.id,
-    type: cred.type,
-    rawId: bufToBase64(cred.rawId),
-    response: {
-      clientDataJSON: bufToBase64(cred.response.clientDataJSON),
-    },
-  };
-  if (cred.response.attestationObject)
-    json.response.attestationObject = bufToBase64(cred.response.attestationObject);
-  if (cred.response.authenticatorData)
-    json.response.authenticatorData = bufToBase64(cred.response.authenticatorData);
-  if (cred.response.signature)
-    json.response.signature = bufToBase64(cred.response.signature);
-  if (cred.response.userHandle)
-    json.response.userHandle = bufToBase64(cred.response.userHandle);
-  return json;
-}
+const credToJSON = (c) =>
+  !c
+    ? null
+    : {
+        id: c.id,
+        type: c.type,
+        rawId: bufToBase64(c.rawId),
+        response: {
+          clientDataJSON: bufToBase64(c.response.clientDataJSON),
+          ...(c.response.attestationObject && {
+            attestationObject: bufToBase64(c.response.attestationObject),
+          }),
+          ...(c.response.authenticatorData && {
+            authenticatorData: bufToBase64(c.response.authenticatorData),
+          }),
+          ...(c.response.signature && {
+            signature: bufToBase64(c.response.signature),
+          }),
+          ...(c.response.userHandle && {
+            userHandle: bufToBase64(c.response.userHandle),
+          }),
+        },
+      };
 
-export default function AuthModal({
-    onClose = () => {},
-    onSuccess = () => {},
-  }) {
+export default function AuthModal({ onClose = () => {}, onSuccess = () => {} }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [usePassword, setUsePassword] = useState(false);
 
-  function handleBackgroundClick(e) {
-    if (e.target === e.currentTarget) onClose();
-  }
+  /** ─── Close when clicking backdrop ─────────────────────────── */
+  const clickBackdrop = (e) => e.target === e.currentTarget && onClose();
 
-  async function handlePasskey(e) {
+  /** ─── Passkey flow (login then register fallback) ──────────── */
+  const handlePasskey = async (e) => {
     e.preventDefault();
     setError("");
     try {
       const { data } = await api.post("/auth/fido/login/begin", { email });
       const cred = await navigator.credentials.get({ publicKey: data });
-      if (!cred) throw new Error("No credential selected");
-
-      const { data: token } = await api.post("/auth/fido/login/complete", {
+      if (!cred) throw new Error("No credential");
+      const { data: tok } = await api.post("/auth/fido/login/complete", {
         email,
         credential: credToJSON(cred),
       });
-      localStorage.setItem("token", token.access_token);
+      localStorage.setItem("token", tok.access_token);
       onSuccess();
-      onClose();
-      return;
+      return onClose();
     } catch (err) {
-      logDebug("Passkey login failed", err);
+      logDebug("passkey login failed, try register", err);
     }
 
     try {
       const { data } = await api.post("/auth/fido/register/begin", { email });
       const cred = await navigator.credentials.create({ publicKey: data });
-      if (!cred) throw new Error("Passkey creation cancelled");
-
-      const { data: token } = await api.post("/auth/fido/register/complete", {
+      if (!cred) throw new Error("Cancelled");
+      const { data: tok } = await api.post("/auth/fido/register/complete", {
         email,
         credential: credToJSON(cred),
       });
-      localStorage.setItem("token", token.access_token);
+      localStorage.setItem("token", tok.access_token);
       onSuccess();
       onClose();
     } catch (err) {
-      logDebug("Passkey registration failed", err);
+      logDebug("passkey register failed", err);
       setError("Passkey failed. Try password instead.");
     }
-  }
+  };
 
-  async function handlePassword(e) {
+  /** ─── Password flow (register if 1st time, then login) ─────── */
+  const handlePassword = async (e) => {
     e.preventDefault();
     setError("");
 
-    try {
-      await api.post("/auth/register", { email, password });
-    } catch (err) {
-      if (!err.response || err.response.status !== 400) {
-        setError("Registration failed");
-        return;
-      }
-    }
-
-    const body = new URLSearchParams();
-    body.append("username", email);
-    body.append("password", password);
+    await register(email, password).catch(() => {});
 
     try {
-      const { data } = await api.post("/auth/login", body, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      });
-
-      localStorage.setItem("token", data.access_token);
+      const { access_token } = await login(email, password);
+      localStorage.setItem("token", access_token);
       onSuccess();
       onClose();
     } catch {
       setError("Invalid credentials");
     }
-  }
+  };
+
+  /** ─── “Forgot password?” handler ───────────────────────────── */
+  const handleForgot = async () => {
+    if (!email.includes("@")) {
+      setError("Enter your e-mail above first");
+      return;
+    }
+    try {
+      await api.post("/auth/request-password-reset", { email });
+      alert("Check your inbox for a reset link.");
+    } catch {
+      alert("Could not send reset e-mail.");
+    }
+  };
 
   return (
     <div
-      onClick={handleBackgroundClick}
+      onClick={clickBackdrop}
       className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50"
     >
       <form
@@ -125,24 +124,35 @@ export default function AuthModal({
         <input
           className="border p-2 rounded"
           placeholder="Email"
+          autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
 
         {usePassword && (
-          <input
-            className="border p-2 rounded"
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <>
+            <input
+              className="border p-2 rounded"
+              type="password"
+              placeholder="Password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button
+              type="button"
+              onClick={handleForgot}
+              className="text-sm text-indigo-600 hover:underline text-left"
+            >
+              Forgot password?
+            </button>
+          </>
         )}
 
         {error && <span className="text-red-500 text-sm">{error}</span>}
 
         <button className="bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700">
-          {usePassword ? "Log in" : "Continue with key"}
+          {usePassword ? "Continue" : "Continue with key"}
         </button>
 
         <button
