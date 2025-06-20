@@ -121,3 +121,13 @@ curl -X POST http://localhost:8000/v1/products/ \
 Version with white bar and shaded background.
 I prefer flat colors, white background and grey search bar, I think.
 ![](stuff/20250620015440.png)
+
+What options do i want in Account button?
+- If the user is not logged in, these options can't be performed, so just show the Account page. Otherwise:
+  - Premium accounts and stuff like that, in the future
+  - Light/Dark/Auto theme linked to account
+  - Favourite stores
+  - Favourite products (Maybe custom lists in the future)
+  - Log out
+
+Oh and I also want a 'i' of info icon with the Contact page and stuff like that.
