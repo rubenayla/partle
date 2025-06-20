@@ -41,6 +41,57 @@ In the long term:
 
 This separation avoids dependency conflicts and is standard practice.
 
+## 🚀 Install (new machine)
+
+```bash
+# 1. Clone repo
+git clone https://github.com/<your-github-org>/partle.git && cd partle
+
+# 2. Install all deps
+make install
+```
+
+Default backend DB URL:
+
+```bash
+postgresql://postgres:partl3p4ss@localhost:5432/partle
+```
+
+To override:
+
+```bash
+make dev DATABASE_URL=postgresql://user:pw@host:port/db
+```
+
+## 🏃‍♂️ Run the app
+
+```bash
+# start both frontend and backend
+make dev
+```
+
+Or run separately:
+
+```bash
+make backend   # starts FastAPI
+make frontend  # starts Vite + React
+```
+
+### Directly
+- Frontend: `npm run dev`
+- Backend: `poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 --log-level debug`
+
+## View the app
+
+- Frontend:
+    - http://localhost:5173/
+- Backend (FastAPI):
+    - http://localhost:8000/docs (API docs)
+    - http://localhost:8000/redoc (ReDoc docs)
+    - http://localhost:8000/api/v1/parts (API endpoint)
+    - http://localhost:8000/api/v1/stores (API endpoint)
+    - http://localhost:8000/docs#/Auth/register_auth_register_post
+
 ## 📆 Project Structure
 
 ```bash
@@ -94,56 +145,6 @@ partle/
 ├── AGENTS.md
 └── TODO.md
 ```
-
-## 🚀 Install (new machine)
-
-```bash
-# 1. Clone repo
-git clone https://github.com/<your-github-org>/partle.git && cd partle
-
-# 2. Install all deps
-make install
-```
-
-Default backend DB URL:
-
-```bash
-postgresql://postgres:partl3p4ss@localhost:5432/partle
-```
-
-To override:
-
-```bash
-make dev DATABASE_URL=postgresql://user:pw@host:port/db
-```
-
-## 🏃‍♂️ Run the app
-
-```bash
-# start both frontend and backend
-make dev
-```
-
-Or run separately:
-
-```bash
-make backend   # starts FastAPI
-make frontend  # starts Vite + React
-```
-
-### Directly
-- Backend: `poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 --log-level debug`
-
-## View the app
-
-- Frontend:
-    - http://localhost:5173/
-- Backend (FastAPI):
-    - http://localhost:8000/docs (API docs)
-    - http://localhost:8000/redoc (ReDoc docs)
-    - http://localhost:8000/api/v1/parts (API endpoint)
-    - http://localhost:8000/api/v1/stores (API endpoint)
-    - http://localhost:8000/docs#/Auth/register_auth_register_post
 
 ## 🔮 References
 

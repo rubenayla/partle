@@ -23,7 +23,8 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen w-screen flex flex-col bg-white text-gray-900">
+    <div className="min-h-screen w-screen flex flex-col bg-background text-primary">
+      
       <SearchBar
         isLoggedIn={isLoggedIn}
         onAccountClick={() => setAccountOpen(true)}
