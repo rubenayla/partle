@@ -1,24 +1,28 @@
 // frontend/src/components/SearchBar.jsx
 import { useState, useRef, useEffect } from 'react';
+import { Search, User, Info } from 'lucide-react';
 
-export default function SearchBar({ onSearch = () => {} }) {
+export default function SearchBar({ onSearch = () => {}, isLoggedIn = false }) {
   const [query, setQuery] = useState('');
   const [priceMin, setPriceMin] = useState(0);
   const [priceMax, setPriceMax] = useState(500);
   const [sortBy, setSortBy] = useState('relevance');
   const [priceOpen, setPriceOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
 
   const priceRef = useRef();
   const sortRef = useRef();
+  const accountRef = useRef();
 
   useEffect(() => {
-    const handler = (e) => {
+    const closeAll = (e) => {
       if (priceRef.current && !priceRef.current.contains(e.target)) setPriceOpen(false);
       if (sortRef.current && !sortRef.current.contains(e.target)) setSortOpen(false);
+      if (accountRef.current && !accountRef.current.contains(e.target)) setAccountOpen(false);
     };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
+    document.addEventListener('mousedown', closeAll);
+    return () => document.removeEventListener('mousedown', closeAll);
   }, []);
 
   const handleSearch = (e) => {
@@ -27,17 +31,14 @@ export default function SearchBar({ onSearch = () => {} }) {
   };
 
   return (
-    <header className="sticky top-0 left-0 right-0 w-screen bg-white border-b border-gray-200 z-20">
-      <div className="flex items-center justify-between w-full px-4 py-3">
-        <a href="/" className="text-2xl font-semibold text-indigo-600">
-          Partle
-        </a>
+    <header className="fixed top-0 left-0 right-0 z-20 bg-white border-b border-gray-200">
+      <div className="w-full max-w-screen-2xl mx-auto flex items-center justify-between px-4 py-3">
+        <a href="/" className="text-2xl font-semibold text-indigo-600">Partle</a>
 
         <form
           onSubmit={handleSearch}
-          className="flex flex-1 mx-6 bg-gray-100 rounded-full px-4 h-12 items-center"
+          className="flex flex-1 mx-6 bg-gray-100 rounded-full pl-4 pr-2 h-12 items-center"
         >
-          {/* search input */}
           <input
             type="search"
             placeholder="What are you looking for?"
@@ -46,55 +47,101 @@ export default function SearchBar({ onSearch = () => {} }) {
             className="flex-1 h-full bg-transparent placeholder-gray-500 text-gray-800 focus:outline-none"
           />
 
-          {/* separators and minimal buttons */}
-          <div className="h-6 border-l border-gray-300 mx-4" />
+          <div className="h-6 border-l border-gray-300 mx-3" />
           <div ref={priceRef} className="relative">
             <button
               type="button"
               onClick={() => setPriceOpen(!priceOpen)}
-              className="h-full px-4 text-sm text-gray-800 bg-transparent focus:outline-none"
+              className="h-full px-3 text-sm text-gray-800 bg-transparent focus:outline-none"
             >
               Price: {priceMin}–{priceMax}
             </button>
             {priceOpen && (
-              <div className="absolute top-14 left-0 w-64 bg-white rounded-xl shadow-lg p-4 z-50">
-                {/* Min/Max inputs */}
+              <div className="absolute top-14 left-0 w-64 bg-white rounded-xl shadow-lg p-4 z-50 space-y-2">
+                <label className="text-sm">Min €</label>
+                <input
+                  type="number"
+                  min={0}
+                  value={priceMin}
+                  onChange={(e) => setPriceMin(Number(e.target.value))}
+                  className="w-full border px-2 py-1 rounded"
+                />
+                <label className="text-sm">Max €</label>
+                <input
+                  type="number"
+                  min={0}
+                  value={priceMax}
+                  onChange={(e) => setPriceMax(Number(e.target.value))}
+                  className="w-full border px-2 py-1 rounded"
+                />
               </div>
             )}
           </div>
 
-          <div className="h-6 border-l border-gray-300 mx-4" />
+          <div className="h-6 border-l border-gray-300 mx-3" />
           <div ref={sortRef} className="relative">
             <button
               type="button"
               onClick={() => setSortOpen(!sortOpen)}
-              className="h-full px-4 text-sm text-gray-800 bg-transparent focus:outline-none"
+              className="h-full px-3 text-sm text-gray-800 bg-transparent focus:outline-none"
             >
               Sort: {sortBy.replace('_', ' ')}
             </button>
             {sortOpen && (
-              <div className="absolute top-14 left-0 w-56 bg-white rounded-xl shadow-lg p-4 z-50">
-                {/* Sort options */}
+              <div className="absolute top-14 left-0 w-44 bg-white rounded-xl shadow-lg p-2 z-50">
+                {['relevance', 'price_asc', 'price_desc', 'distance'].map((opt) => (
+                  <button
+                    key={opt}
+                    onClick={() => { setSortBy(opt); setSortOpen(false); }}
+                    className={`block w-full text-left px-2 py-1 rounded hover:bg-gray-100 ${sortBy===opt ? 'font-semibold text-indigo-600' : ''}`}
+                  >
+                    {opt.replace('_',' ').replace('asc','↑').replace('desc','↓')}
+                  </button>
+                ))}
               </div>
             )}
           </div>
 
-          <div className="h-6 border-l border-gray-300 mx-4" />
+          <div className="h-6 border-l border-gray-300 mx-3" />
           <button
             type="submit"
-            className="h-full px-4 text-indigo-600 bg-transparent focus:outline-none flex items-center justify-center"
+            className="p-2 rounded-full bg-transparent text-indigo-600 hover:text-indigo-800 focus:outline-none flex items-center justify-center"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M12.9 14.32a8 8 0 111.414-1.414l4.387 4.386a1 1 0 01-1.414 1.415l-4.387-4.386zM8 14a6 6 0 100-12 6 6 0 000 12z" />
-            </svg>
+            <Search className="h-5 w-5" />
           </button>
         </form>
 
-        <a href="/login" className="text-gray-800 hover:text-gray-600 flex-shrink-0">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M10 2a4 4 0 100 8 4 4 0 000-8zM2 18a8 8 0 1116 0H2z" clipRule="evenodd" />
-          </svg>
-        </a>
+        <div className="flex items-center gap-4">
+          <div ref={accountRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setAccountOpen(!accountOpen)}
+              className="bg-transparent text-indigo-600 hover:text-indigo-800 focus:outline-none"
+            >
+              <User className="h-8 w-8" />
+            </button>
+            {accountOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg p-4 z-50">
+                <a href="/account" className="block px-2 py-1 hover:bg-gray-100 rounded">Account</a>
+                {isLoggedIn && (
+                  <>
+                    <a href="/account/theme" className="block px-2 py-1 hover:bg-gray-100 rounded">Theme</a>
+                    <a href="/favorites/stores" className="block px-2 py-1 hover:bg-gray-100 rounded">Favorite Stores</a>
+                    <a href="/favorites/products" className="block px-2 py-1 hover:bg-gray-100 rounded">Favorite Products</a>
+                    <div className="border-t border-gray-200 my-2" />
+                    <button className="w-full text-left px-2 py-1 hover:bg-gray-100 rounded">Log out</button>
+                  </>
+                )}
+                <div className="border-t border-gray-200 my-2" />
+                <a href="/premium" className="block px-2 py-1 hover:bg-gray-100 rounded">Premium</a>
+              </div>
+            )}
+          </div>
+
+          <a href="/contact" className="text-gray-600 hover:text-gray-800">
+            <Info className="h-6 w-6" />
+          </a>
+        </div>
       </div>
     </header>
   );

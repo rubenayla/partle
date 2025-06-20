@@ -28,7 +28,7 @@ export default function Products() {
   }
 
   return (
-    <main className="p-4">
+    <main className="w-full max-w-screen-2xl mx-auto px-4">
       <header className="flex justify-between mb-4">
         <h1 className="text-2xl font-semibold">Products</h1>
         <Link to="/stores" className="text-blue-600 hover:underline">

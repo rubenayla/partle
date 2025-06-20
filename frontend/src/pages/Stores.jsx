@@ -25,7 +25,7 @@ export default function Stores() {
   }
 
   return (
-    <main className="p-4">
+    <main className="w-full max-w-screen-2xl mx-auto px-4">
       <header className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-semibold">Stores</h1>
         <button onClick={() => setOpenForm(true)} className="bg-blue-600 text-white px-3 py-1 rounded">
