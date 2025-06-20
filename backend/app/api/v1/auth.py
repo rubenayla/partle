@@ -13,6 +13,7 @@ from app.auth.utils import (
     create_reset_token,
     send_reset_email,
 )
+from app.auth.security import get_current_user
 
 # ----------  FIDO (unchanged)  ------------------------------------------------
 from fido2.server import Fido2Server
@@ -41,12 +42,11 @@ def get_db() -> Session:
 def register(data: schema.RegisterInput, db: Session = Depends(get_db)):
     user = db.query(User).filter_by(email=data.email).first()
 
-    if not user:
-        user = User(email=data.email, password_hash=hash_password(data.password))
-        db.add(user)
-    else:
-        user.password_hash = hash_password(data.password)
+    if user:
+        raise HTTPException(status_code=409, detail="User already exists")
 
+    user = User(email=data.email, password_hash=hash_password(data.password))
+    db.add(user)
     db.commit()
     return {"status": "ok"}
 
@@ -59,7 +59,10 @@ def login(
 ):
     user = db.query(User).filter_by(email=form.username).first()
 
-    if not user or not verify_password(form.password, user.password_hash):
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if not verify_password(form.password, user.password_hash):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
     token = create_access_token({"sub": str(user.id)})
@@ -79,3 +82,9 @@ async def request_password_reset(
         background_tasks.add_task(send_reset_email, user.email, token)
 
     return {"status": "ok"}
+
+
+# ─── Get current user ───────────────────────────────────────────────────────
+@router.get("/me", response_model=schema.UserRead)
+def read_current_user(current_user: User = Depends(get_current_user)):
+    return current_user

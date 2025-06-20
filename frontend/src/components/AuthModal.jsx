@@ -48,10 +48,10 @@ export default function AuthModal({ onClose = () => {}, onSuccess = () => {} }) 
     e.preventDefault();
     setError("");
     try {
-      const { data } = await api.post("/auth/fido/login/begin", { email });
+      const { data } = await api.post("/v1/auth/fido/login/begin", { email });
       const cred = await navigator.credentials.get({ publicKey: data });
       if (!cred) throw new Error("No credential");
-      const { data: tok } = await api.post("/auth/fido/login/complete", {
+      const { data: tok } = await api.post("/v1/auth/fido/login/complete", {
         email,
         credential: credToJSON(cred),
       });
@@ -63,10 +63,10 @@ export default function AuthModal({ onClose = () => {}, onSuccess = () => {} }) 
     }
 
     try {
-      const { data } = await api.post("/auth/fido/register/begin", { email });
+      const { data } = await api.post("/v1/auth/fido/register/begin", { email });
       const cred = await navigator.credentials.create({ publicKey: data });
       if (!cred) throw new Error("Cancelled");
-      const { data: tok } = await api.post("/auth/fido/register/complete", {
+      const { data: tok } = await api.post("/v1/auth/fido/register/complete", {
         email,
         credential: credToJSON(cred),
       });
@@ -79,20 +79,31 @@ export default function AuthModal({ onClose = () => {}, onSuccess = () => {} }) 
     }
   };
 
-  /** ─── Password flow (register if 1st time, then login) ─────── */
+  /** ─── Password flow (login first, register if not found) ───── */
   const handlePassword = async (e) => {
     e.preventDefault();
     setError("");
-
-    await register(email, password).catch(() => {});
-
     try {
       const { access_token } = await login(email, password);
       localStorage.setItem("token", access_token);
       onSuccess();
       onClose();
+      return;
+    } catch (err) {
+      if (err?.response?.status !== 404) {
+        setError("Invalid credentials");
+        return;
+      }
+    }
+
+    try {
+      await register(email, password);
+      const { access_token } = await login(email, password);
+      localStorage.setItem("token", access_token);
+      onSuccess();
+      onClose();
     } catch {
-      setError("Invalid credentials");
+      setError("Existing account – log in instead");
     }
   };
 
@@ -103,7 +114,7 @@ export default function AuthModal({ onClose = () => {}, onSuccess = () => {} }) 
       return;
     }
     try {
-      await api.post("/auth/request-password-reset", { email });
+      await api.post("/v1/auth/request-password-reset", { email });
       alert("Check your inbox for a reset link.");
     } catch {
       alert("Could not send reset e-mail.");
