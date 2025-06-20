@@ -29,7 +29,7 @@ class User(Base):
     password_hash: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     stores: Mapped[list["Store"]] = relationship(back_populates="owner")
     credentials: Mapped[list["Credential"]] = relationship(back_populates="user")
-    products = relationship("Product", back_populates="creator")
+    products: Mapped[list["Product"]] = relationship(back_populates="creator")
 
 
 class Store(Base):
@@ -68,8 +68,10 @@ class Product(Base):
         ForeignKey("stores.id", ondelete="SET NULL"), nullable=True
     )
     store: Mapped[Optional[Store]] = relationship(back_populates="products")
-    creator_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    creator = relationship("User", back_populates="products")
+    creator_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
+    creator: Mapped[Optional[User]] = relationship(back_populates="products")
 
 
 class Credential(Base):
