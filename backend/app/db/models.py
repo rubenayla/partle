@@ -1,9 +1,20 @@
 # backend/app/db/models.py
 from typing import Optional, TYPE_CHECKING
 from enum import Enum
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, Enum as PgEnum, Numeric, Text, LargeBinary
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Float,
+    ForeignKey,
+    Enum as PgEnum,
+    Numeric,
+    Text,
+    LargeBinary,
+)
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from app.db.base_class import Base
+
 
 class StoreType(str, Enum):
     PHYSICAL = "physical"
@@ -18,6 +29,7 @@ class User(Base):
     password_hash: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     stores: Mapped[list["Store"]] = relationship(back_populates="owner")
     credentials: Mapped[list["Credential"]] = relationship(back_populates="user")
+    products = relationship("Product", back_populates="creator")
 
 
 class Store(Base):
@@ -26,8 +38,7 @@ class Store(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String)
     type: Mapped[StoreType] = mapped_column(
-        PgEnum(StoreType, name="store_type"),
-        default=StoreType.PHYSICAL
+        PgEnum(StoreType, name="store_type"), default=StoreType.PHYSICAL
     )
     lat: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     lon: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
@@ -57,6 +68,8 @@ class Product(Base):
         ForeignKey("stores.id", ondelete="SET NULL"), nullable=True
     )
     store: Mapped[Optional[Store]] = relationship(back_populates="products")
+    creator_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    creator = relationship("User", back_populates="products")
 
 
 class Credential(Base):

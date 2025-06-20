@@ -28,16 +28,15 @@ In the long term:
 
 ## 📦 Tech Stack
 
-* **frontend/** uses Node.js, Vite + React + Tailwind CSS, and Leaflet (OpenStreetMap) for map view
-
-  * Manages dependencies with npm. No Python virtual environment is needed.
-* **backend/**
-
-  * Uses `pyenv` to manage Python versions
-  * Poetry for Python dependency management, optionally combined with `uv` for fast installation
-  * FastAPI as backend server
-  * PostgreSQL with SQLAlchemy ORM and Alembic for migrations
-  * Running `make setup` creates `backend/.venv` and installs dependencies
+- **frontend/** uses Node.js, Vite + React + Tailwind CSS, and Leaflet (OpenStreetMap) for map view
+ - Manages dependencies with npm. No Python virtual environment is needed.
+- **backend/**
+  - Uses `pyenv` to manage Python versions
+  - Poetry for Python dependency management, optionally combined with `uv` for fast installation
+  - FastAPI as backend server
+  - PostgreSQL with SQLAlchemy ORM and Alembic for migrations
+  - Running `make setup` creates `backend/.venv` and installs dependencies
+  - Fido2
 
 This separation avoids dependency conflicts and is standard practice.
 

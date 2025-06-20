@@ -1,11 +1,10 @@
-- implement fido2
 
 - Store CRUD (3 → 4) – lets you seed real data from the UI.
 - Parts under stores (5 → 6) – completes the core data model.
 
 - add recover password email, need vercel or something
 - account ui look like menu over home page, with background darkened
-- Backend
+- Each user has a popularity rating, the average (or something like that) of the reliability ratings of the products added. The algorithm will have to be tuned to account for distinct ratings for product uploads, so a user that spams rating someone to promote the user loses itself popularity, to negative numbers, and a significantly number of unpopular users supporting you maybe should make you lose it too. But then again, that could be used as a weapon against a user. This has to be considered to be as simple as possible.
 - add modification date to db and system
 - Add API so clients can add products (and stores?)
 - Add UI to add stores
@@ -13,6 +12,7 @@
 - Think of better name. People don't understand what it is, how to write etc.
 - Tune the reliability rating of the info uploaded. It should go -1 to 1. Start at 0, depending on other people ratings get modified.
 - Try Vercel to have it live
+- implement freaking fido2
 - Get data
     - Scraping?
         - Google Maps
