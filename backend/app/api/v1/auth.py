@@ -86,3 +86,10 @@ def delete_account(current_user: User = Depends(get_current_user), db: Session =
     db.query(Product).filter_by(creator_id=current_user.id).update({Product.creator_id: None})
     db.query(User).filter_by(id=current_user.id).delete()
     db.commit()
+
+
+# ─── Logout ───────────────────────────────────────────────────────────────────
+@router.post("/logout", status_code=204)
+def logout(current_user: User = Depends(get_current_user)):
+    """Placeholder endpoint for logging out JWT-based sessions."""
+    return None
