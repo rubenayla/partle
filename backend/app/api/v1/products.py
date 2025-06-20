@@ -43,12 +43,21 @@ def list_products_by_store(store_id: int, db: Session = Depends(get_db)):
     return db.query(Product).filter(Product.store_id == store_id).all()
 
 
+# TODO HOW TO UPDATE PRODUCT
 @router.post("/", response_model=schema.ProductOut, status_code=201)
 def create_product(
     payload: schema.ProductIn,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    existing = (
+        db.query(Product)
+        .filter_by(name=payload.name, store_id=payload.store_id)
+        .first()
+    )
+    if existing:
+        raise HTTPException(409, "Product already exists")
+
     product = Product(**payload.model_dump())
     db.add(product)
     db.commit()

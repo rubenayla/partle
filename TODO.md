@@ -1,19 +1,11 @@
-add recover password
-use fido2
+- implement fido2
 
-
-- Login flow (1 → 2) – proves JWT from browser works.
 - Store CRUD (3 → 4) – lets you seed real data from the UI.
 - Parts under stores (5 → 6) – completes the core data model.
-- Map toggle (7) – visual polish that sells the idea.
 
+- add recover password email, need vercel or something
 - account ui look like menu over home page, with background darkened
 - Backend
-- Add Accounts
-    > Required mainly just to upload products. Also rate them, save favourites, skip ads with paid tiers etc.
-    - Default sign-in uses passkeys (WebAuthn/FIDO2)
-    - Fallback to email + password
-    - Single email field: existing emails sign in, new ones create an account
 - add modification date to db and system
 - Add API so clients can add products (and stores?)
 - Add UI to add stores
@@ -34,6 +26,7 @@ use fido2
 - seo for chatgpt searches so I can get pro users that will actually buy, being of benefit to the stores. Can charge the stores instead of the user, since use through chatgpt will be free
 - Users report products (illegal etc)
 - Improve unit tests
+- Map toggle (7) – visual polish that sells the idea.
 - Hosting partle.rubenayla.xyz
 
 ## Not urgent, long term
