@@ -124,7 +124,7 @@ def fido_register_begin(payload: schema.EmailOnly, db: Session = Depends(get_db)
         credentials=existing or None,
     )
     reg_state[payload.email] = state
-    return options
+    return dict(options)
 
 
 @router.post("/fido/register/complete", response_model=schema.Token)
@@ -172,7 +172,7 @@ def fido_login_begin(payload: schema.EmailOnly, db: Session = Depends(get_db)):
     ]
     options, state = fido_server.authenticate_begin(allowed)
     auth_state[payload.email] = state
-    return options
+    return dict(options)
 
 
 @router.post("/fido/login/complete", response_model=schema.Token)
