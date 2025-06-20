@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app.db.session import SessionLocal
-from app.db.models import User, Credential  # noqa: F401 (Credential used elsewhere)
+from app.db.models import User, Product
 from app.schemas import auth as schema
 from app.auth.utils import (
     hash_password,
@@ -14,16 +14,6 @@ from app.auth.utils import (
     send_reset_email,
 )
 from app.auth.security import get_current_user
-
-# ----------  FIDO (unchanged)  ------------------------------------------------
-from fido2.server import Fido2Server
-from fido2.webauthn import PublicKeyCredentialRpEntity
-
-fido_server = Fido2Server(PublicKeyCredentialRpEntity(name="Partle", id="localhost"))
-reg_state: dict[str, any] = {}
-auth_state: dict[str, any] = {}
-
-# ------------------------------------------------------------------------------
 
 router = APIRouter()
 
@@ -88,3 +78,11 @@ async def request_password_reset(
 @router.get("/me", response_model=schema.UserRead)
 def read_current_user(current_user: User = Depends(get_current_user)):
     return current_user
+
+
+@router.delete("/account", status_code=204)
+def delete_account(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Delete the current user's account."""
+    db.query(Product).filter_by(creator_id=current_user.id).update({Product.creator_id: None})
+    db.query(User).filter_by(id=current_user.id).delete()
+    db.commit()

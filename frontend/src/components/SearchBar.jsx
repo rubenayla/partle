@@ -1,6 +1,7 @@
 // frontend/src/components/SearchBar.jsx
 import { useState, useRef, useEffect } from 'react'
 import { Search, User, Info } from 'lucide-react'
+import { deleteAccount } from '../api/auth'
 
 export default function SearchBar({
   onSearch = () => {},
@@ -171,6 +172,22 @@ export default function SearchBar({
                   }}
                 >
                   Log out
+                </button>
+                <button
+                  className="mt-1 block w-full bg-transparent text-left px-2 py-1 text-danger hover:bg-background rounded"
+                  onClick={async () => {
+                    if (confirm('Delete account?')) {
+                      try {
+                        await deleteAccount()
+                        localStorage.removeItem('token')
+                        window.location.reload()
+                      } catch (e) {
+                        alert('Could not delete account')
+                      }
+                    }
+                  }}
+                >
+                  Delete account
                 </button>
 
                 <div className="border-t border-gray-200 dark:border-gray-600 my-2" />

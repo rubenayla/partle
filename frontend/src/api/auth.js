@@ -21,3 +21,7 @@ export async function requestReset(email) {
 export async function currentUser() {
   return api.get("/v1/auth/me").then((r) => r.data);
 }
+
+export async function deleteAccount() {
+  return api.delete("/v1/auth/account");
+}
