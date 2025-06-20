@@ -1,7 +1,12 @@
+// frontend/src/components/SearchBar.jsx
 import { useState, useRef, useEffect } from 'react';
 import { Search, User, Info } from 'lucide-react';
 
-export default function SearchBar({ onSearch = () => {}, isLoggedIn = false, onAccountClick = () => {} }) {
+export default function SearchBar({
+  onSearch = () => {},
+  isLoggedIn = false,
+  onAccountClick = () => {},
+}) {
   const [query, setQuery] = useState('');
   const [priceMin, setPriceMin] = useState(0);
   const [priceMax, setPriceMax] = useState(500);
@@ -16,13 +21,21 @@ export default function SearchBar({ onSearch = () => {}, isLoggedIn = false, onA
   const accountRef = useRef();
   const infoRef = useRef();
 
-  // ─── Close dropdowns when clicking outside ───────────────────────────
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const closeAll = (e) => {
-      if (priceRef.current && !priceRef.current.contains(e.target)) setPriceOpen(false);
-      if (sortRef.current && !sortRef.current.contains(e.target)) setSortOpen(false);
-      if (accountRef.current && !accountRef.current.contains(e.target)) setAccountOpen(false);
-      if (infoRef.current && !infoRef.current.contains(e.target)) setInfoOpen(false);
+      if (priceRef.current && !priceRef.current.contains(e.target)) {
+        setPriceOpen(false);
+      }
+      if (sortRef.current && !sortRef.current.contains(e.target)) {
+        setSortOpen(false);
+      }
+      if (accountRef.current && !accountRef.current.contains(e.target)) {
+        setAccountOpen(false);
+      }
+      if (infoRef.current && !infoRef.current.contains(e.target)) {
+        setInfoOpen(false);
+      }
     };
     document.addEventListener('mousedown', closeAll, true);
     return () => document.removeEventListener('mousedown', closeAll, true);
@@ -36,8 +49,12 @@ export default function SearchBar({ onSearch = () => {}, isLoggedIn = false, onA
   return (
     <header className="fixed top-0 left-0 right-0 z-20 bg-white border-b border-gray-200">
       <div className="w-full max-w-screen-2xl mx-auto flex items-center justify-between px-4 py-3">
-        <a href="/" className="text-2xl font-semibold text-indigo-600">Partle</a>
+        {/* Logo */}
+        <a href="/" className="text-2xl font-semibold text-indigo-600">
+          Partle
+        </a>
 
+        {/* Search form */}
         <form
           onSubmit={handleSearch}
           className="flex flex-1 mx-6 bg-gray-100 rounded-full pl-4 pr-2 h-12 items-center"
@@ -51,6 +68,8 @@ export default function SearchBar({ onSearch = () => {}, isLoggedIn = false, onA
           />
 
           <div className="h-6 border-l border-gray-300 mx-3" />
+
+          {/* Price filter */}
           <div ref={priceRef} className="relative">
             <button
               type="button"
@@ -82,6 +101,8 @@ export default function SearchBar({ onSearch = () => {}, isLoggedIn = false, onA
           </div>
 
           <div className="h-6 border-l border-gray-300 mx-3" />
+
+          {/* Sort filter */}
           <div ref={sortRef} className="relative">
             <button
               type="button"
@@ -92,20 +113,33 @@ export default function SearchBar({ onSearch = () => {}, isLoggedIn = false, onA
             </button>
             {sortOpen && (
               <div className="absolute top-14 left-0 w-44 bg-white rounded-xl shadow-lg p-2 z-50">
-                {['relevance', 'price_asc', 'price_desc', 'distance'].map((opt) => (
-                  <button
-                    key={opt}
-                    onClick={() => { setSortBy(opt); setSortOpen(false); }}
-                    className={`block w-full text-left px-2 py-1 rounded hover:bg-gray-100 ${sortBy===opt ? 'font-semibold text-indigo-600' : ''}`}
-                  >
-                    {opt.replace('_',' ').replace('asc','↑').replace('desc','↓')}
-                  </button>
-                ))}
+                {['relevance', 'price_asc', 'price_desc', 'distance'].map(
+                  (opt) => (
+                    <button
+                      key={opt}
+                      onClick={() => {
+                        setSortBy(opt);
+                        setSortOpen(false);
+                      }}
+                      className={`block w-full text-left px-2 py-1 rounded hover:bg-gray-100 ${
+                        sortBy === opt
+                          ? 'font-semibold text-indigo-600'
+                          : 'text-gray-800'
+                      }`}
+                    >
+                      {opt
+                        .replace('_', ' ')
+                        .replace('asc', '↑')
+                        .replace('desc', '↓')}
+                    </button>
+                  )
+                )}
               </div>
             )}
           </div>
 
           <div className="h-6 border-l border-gray-300 mx-3" />
+
           <button
             type="submit"
             className="p-2 rounded-full bg-transparent text-indigo-600 hover:text-indigo-800 focus:outline-none flex items-center justify-center"
@@ -114,7 +148,9 @@ export default function SearchBar({ onSearch = () => {}, isLoggedIn = false, onA
           </button>
         </form>
 
+        {/* Right-side icons */}
         <div className="flex items-center gap-4">
+          {/* Account */}
           <div ref={accountRef} className="relative">
             <button
               type="button"
@@ -131,18 +167,56 @@ export default function SearchBar({ onSearch = () => {}, isLoggedIn = false, onA
             </button>
             {isLoggedIn && accountOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg p-4 z-50">
-                <a href="/account" className="block px-2 py-1 hover:bg-gray-100 rounded">Account</a>
-                <a href="/account/theme" className="block px-2 py-1 hover:bg-gray-100 rounded">Theme</a>
-                <a href="/favorites/stores" className="block px-2 py-1 hover:bg-gray-100 rounded">Favorite Stores</a>
-                <a href="/favorites/products" className="block px-2 py-1 hover:bg-gray-100 rounded">Favorite Products</a>
+                <a
+                  href="/account"
+                  className="block px-2 py-1 text-gray-800 hover:bg-gray-100 rounded"
+                >
+                  Account
+                </a>
+                <a
+                  href="/account/theme"
+                  className="block px-2 py-1 text-gray-800 hover:bg-gray-100 rounded"
+                >
+                  Theme
+                </a>
+                <a
+                  href="/favorites/stores"
+                  className="block px-2 py-1 text-gray-800 hover:bg-gray-100 rounded"
+                >
+                  Favorite Stores
+                </a>
+                <a
+                  href="/favorites/products"
+                  className="block px-2 py-1 text-gray-800 hover:bg-gray-100 rounded"
+                >
+                  Favorite Products
+                </a>
+
                 <div className="border-t border-gray-200 my-2" />
-                <button className="w-full text-left px-2 py-1 hover:bg-gray-100 rounded">Log out</button>
+
+                <button
+                  className="block w-full text-left px-2 py-1 text-red-600 bg-transparent hover:bg-gray-100 rounded"
+                  onClick={() => {
+                    localStorage.removeItem("token");
+                    window.location.reload();
+                  }}
+                >
+                  Log out
+                </button>
+
                 <div className="border-t border-gray-200 my-2" />
-                <a href="/premium" className="block px-2 py-1 hover:bg-gray-100 rounded">Premium</a>
+
+                <a
+                  href="/premium"
+                  className="block px-2 py-1 text-gray-800 hover:bg-gray-100 rounded"
+                >
+                  Premium
+                </a>
               </div>
             )}
           </div>
 
+          {/* Info */}
           <div ref={infoRef} className="relative">
             <button
               type="button"
@@ -153,10 +227,30 @@ export default function SearchBar({ onSearch = () => {}, isLoggedIn = false, onA
             </button>
             {infoOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg p-4 z-50">
-                <a href="/contact" className="block px-2 py-1 hover:bg-gray-100 rounded">Contact</a>
-                <a href="/terms" className="block px-2 py-1 hover:bg-gray-100 rounded">Terms</a>
-                <a href="/privacy" className="block px-2 py-1 hover:bg-gray-100 rounded">Privacy</a>
-                <a href="/social" className="block px-2 py-1 hover:bg-gray-100 rounded">Social Networks</a>
+                <a
+                  href="/contact"
+                  className="block px-2 py-1 text-gray-800 hover:bg-gray-100 rounded"
+                >
+                  Contact
+                </a>
+                <a
+                  href="/terms"
+                  className="block px-2 py-1 text-gray-800 hover:bg-gray-100 rounded"
+                >
+                  Terms
+                </a>
+                <a
+                  href="/privacy"
+                  className="block px-2 py-1 text-gray-800 hover:bg-gray-100 rounded"
+                >
+                  Privacy
+                </a>
+                <a
+                  href="/social"
+                  className="block px-2 py-1 text-gray-800 hover:bg-gray-100 rounded"
+                >
+                  Social Networks
+                </a>
               </div>
             )}
           </div>
