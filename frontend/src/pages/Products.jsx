@@ -11,6 +11,7 @@ export default function Products() {
     spec: "",
     price: 0,
     url: "",
+    description: "",
   });
 
   useEffect(() => {
@@ -24,7 +25,7 @@ export default function Products() {
     const { data } = await api.post("/v1/products", { ...form, store_id: id });
     setProducts((prev) => [...prev, data]);
     setOpen(false);
-    setForm({ name: "", spec: "", price: 0, url: "" });
+    setForm({ name: "", spec: "", price: 0, url: "", description: "" });
   }
 
   return (
@@ -47,7 +48,13 @@ export default function Products() {
       <ul className="space-y-2">
         {products.map((p) => (
           <li key={p.id} className="border p-3 rounded">
-            <strong>{p.name}</strong> — {p.spec ?? "–"} — €{p.price ?? "?"}
+            <Link
+              to={`/products/${p.id}`}
+              className="text-blue-600 hover:underline"
+            >
+              <strong>{p.name}</strong>
+            </Link>{" "}
+            — {p.spec ?? "–"} — €{p.price ?? "?"}
           </li>
         ))}
       </ul>
@@ -89,6 +96,13 @@ export default function Products() {
               onChange={change}
               placeholder="URL (optional)"
               className="input"
+            />
+            <textarea
+              name="description"
+              value={form.description}
+              onChange={change}
+              placeholder="Description"
+              className="input h-24"
             />
 
             <div className="flex gap-2 justify-end">

@@ -5,6 +5,7 @@ import Home from "./pages/Home"; // new home page
 import Stores from "./pages/Stores";
 import Products from "./pages/Products";
 import AddProduct from "./pages/AddProduct";
+import ProductDetail from "./pages/ProductDetail";
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/stores" element={<Stores />} />
         <Route path="/stores/:id/products" element={<Products />} />
+        <Route path="/products/:id" element={<ProductDetail />} />
 
         {/* only adding/editing products requires login */}
         <Route element={<RequireAuth />}>
