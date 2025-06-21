@@ -1,10 +1,10 @@
 // frontend/src/App.tsx
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import RequireAuth from "./components/RequireAuth"; // only for actions like adding
-import Home from "./pages/Home"; // new home page
-import Stores from "./pages/Stores";
-import Products from "./pages/Products";
-import AddProduct from "./pages/AddProduct";
+import RequireAuth from "./components/RequireAuth.tsx"; // only for actions like adding
+import Home from "./pages/Home.tsx"; // new home page
+import Stores from "./pages/Stores.tsx";
+import Products from "./pages/Products.tsx";
+import AddProduct from "./pages/AddProduct.tsx";
 
 export default function App() {
   return (
