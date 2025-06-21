@@ -102,8 +102,8 @@ partle/
 │       ├── components/                # Reusable UI components
 │       ├── pages/                     # Views (Home, Stores, Products, etc.)
 │       ├── data/                      # Temp: mock JSON data
-│       ├── App.jsx                    # Main routing
-│       ├── main.jsx                   # React root
+│       ├── App.tsx                    # Main routing
+│       ├── main.tsx                   # React root
 │       └── index.css                  # Tailwind entrypoint
 │   ├── index.html
 │   ├── package.json

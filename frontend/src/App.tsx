@@ -1,4 +1,4 @@
-// frontend/src/App.jsx
+// frontend/src/App.tsx
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import RequireAuth from "./components/RequireAuth"; // only for actions like adding
 import Home from "./pages/Home"; // new home page
