@@ -24,8 +24,7 @@ A product should belong to a store, and a store can be controlled by several use
 
 To let a product data be managed automatically, the store will be able to connect the database with stock amounts prices etc, to the app via an API.
 
-Users can rate the reliability of almost all data shown about products and stores. Similar to community notes in x, giving unreliable rating will make you lose reliability rating as a user. Somehow the UI could reflect this reliability rating and include it in the search algorithm, or let it be replaced by an unofficial product if the rating difference is big enough (should include rating number too)
-
+Users can rate the reliability of almost all data shown about products and stores. Similar to community notes in x, giving unreliable rating will make you lose reliability rating as a user yourself. Somehow the UI could reflect this reliability rating and include it in the search algorithm, or let it be replaced by an unofficial product if the rating difference is big enough (should include rating number too). Consider users spamming products, what effect do they have.
 
 ## 🚀 Features
 

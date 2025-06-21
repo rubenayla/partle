@@ -1,18 +1,10 @@
-
+- Move Add product and store etc to a new menu that appears as + button at the left of the account icon
+- Start using Vercel
+- add recover password email, need vercel or something
 - Store CRUD (3 → 4) – lets you seed real data from the UI.
 - Parts under stores (5 → 6) – completes the core data model.
-
-- add recover password email, need vercel or something
-- account ui look like menu over home page, with background darkened
-- Each user has a popularity rating, the average (or something like that) of the reliability ratings of the products added. The algorithm will have to be tuned to account for distinct ratings for product uploads, so a user that spams rating someone to promote the user loses itself popularity, to negative numbers, and a significantly number of unpopular users supporting you maybe should make you lose it too. But then again, that could be used as a weapon against a user. This has to be considered to be as simple as possible.
-- add modification date to db and system
-- Add API so clients can add products (and stores?)
-- Add UI to add stores
-- Add UI to add products
-- Think of better name. People don't understand what it is, how to write etc.
 - Tune the reliability rating of the info uploaded. It should go -1 to 1. Start at 0, depending on other people ratings get modified.
 - Users should be able to add products from other stores. Last updated time should be stored as parameter for every product. And who did that last update is relevant too.
-- Try Vercel to have it live
 - Get data
     - Scraping?
         - Google Maps
@@ -29,6 +21,7 @@
 - Hosting partle.rubenayla.xyz
 
 ## Not urgent, long term
+- Think of better name. People don't understand what it is, how to write etc.
 - implement freaking fido2. I think the best way is using SimpleWebAuthn. I already have Node.js for the frontend, so no extra dependencies. Should probably use the same PostgreSQL database i have, let Node return user_id and email, FastAPI issues the token.
 - AI thingy to load them to the database just by recording with the phone. It recognizes the products, screenshots them, lists the price, geo location and everything. You can go around stores and record to add thousands of products.
 - What if i put the search terms at the left, the search bar at the top of the left section, and on startup the website already includes products as suggestions? The left search terms stay there, and the scroll only includes the products. The right is blank or left for ads etc.
