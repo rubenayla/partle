@@ -15,7 +15,7 @@ app.include_router(external.router, prefix="/v1/external", tags=["External"])
 # CORS (frontend port)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["https://partle.vercel.app", "http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
