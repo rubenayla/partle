@@ -35,8 +35,11 @@ export default function SearchBar({
 
     apply()
     localStorage.setItem('theme', theme)
-    media.addEventListener('change', apply)
-    return () => media.removeEventListener('change', apply)
+
+    if (theme === 'auto') {
+      media.addEventListener('change', apply)
+      return () => media.removeEventListener('change', apply)
+    }
   }, [theme])
 
   useEffect(() => {

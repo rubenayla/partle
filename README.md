@@ -37,10 +37,11 @@ Users can rate the reliability of almost all data shown about products and store
 
 ### Theme modes
 The theme selector in the account menu lets you choose *Light*, *Dark* or
-*Auto*. When set to *Auto* the app checks your browser's
-`prefers-color-scheme` setting and applies the matching theme
-automatically. The choice is stored in `localStorage` so it persists across
-visits, and it updates immediately if your system preference changes.
+*Auto*. The Auto option follows your browser's `prefers-color-scheme`
+setting. A tiny script in `index.html` applies the preferred theme on page
+load to avoid flicker, and when Auto is enabled the app listens for changes
+to your system preference so the theme switches instantly. The choice is
+stored in `localStorage` so it persists across visits.
 
 ## 📦 Tech Stack
 
