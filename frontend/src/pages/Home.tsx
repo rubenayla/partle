@@ -1,4 +1,4 @@
-// frontend/src/pages/Home.jsx
+// frontend/src/pages/Home.tsx
 import { useState, useEffect } from "react";
 import SearchBar from "../components/SearchBar";
 import ListView   from "./ListView";

@@ -1,4 +1,4 @@
-// frontend/src/pages/ListView.jsx
+// frontend/src/pages/ListView.tsx
 
 /**
  * Simple list view to unblock the UI.

@@ -1,4 +1,4 @@
-// frontend/src/components/SearchBar.jsx
+// frontend/src/components/SearchBar.tsx
 import { useState, useRef, useEffect } from 'react'
 import { Search, User, Info } from 'lucide-react'
 import { deleteAccount } from '../api/auth'
