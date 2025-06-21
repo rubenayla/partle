@@ -1,6 +1,7 @@
 # backend/app/schemas/product.py
 from decimal import Decimal
 from typing import Optional
+from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, HttpUrl
 
@@ -27,3 +28,5 @@ class ProductUpdate(ProductIn):
 class ProductOut(ProductIn):
     """What the API returns."""
     id: int
+    updated_at: datetime
+    updated_by_id: Optional[int] = None

@@ -1,6 +1,7 @@
 # backend/app/db/models.py
 from typing import Optional, TYPE_CHECKING
 from enum import Enum
+from datetime import datetime
 from sqlalchemy import (
     Column,
     Integer,
@@ -11,6 +12,8 @@ from sqlalchemy import (
     Numeric,
     Text,
     LargeBinary,
+    DateTime,
+    func,
 )
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from app.db.base_class import Base
@@ -29,7 +32,12 @@ class User(Base):
     password_hash: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     stores: Mapped[list["Store"]] = relationship(back_populates="owner")
     credentials: Mapped[list["Credential"]] = relationship(back_populates="user")
-    products: Mapped[list["Product"]] = relationship(back_populates="creator")
+    products: Mapped[list["Product"]] = relationship(
+        back_populates="creator", foreign_keys="Product.creator_id"
+    )
+    updated_products: Mapped[list["Product"]] = relationship(
+        back_populates="updated_by", foreign_keys="Product.updated_by_id"
+    )
 
 
 class Store(Base):
@@ -71,7 +79,19 @@ class Product(Base):
     creator_id: Mapped[Optional[int]] = mapped_column(
         ForeignKey("users.id", ondelete="SET NULL"), nullable=True
     )
-    creator: Mapped[Optional[User]] = relationship(back_populates="products")
+    creator: Mapped[Optional[User]] = relationship(
+        back_populates="products", foreign_keys=[creator_id]
+    )
+
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )
+    updated_by_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
+    updated_by: Mapped[Optional[User]] = relationship(
+        back_populates="updated_products", foreign_keys=[updated_by_id]
+    )
 
 
 class Credential(Base):
