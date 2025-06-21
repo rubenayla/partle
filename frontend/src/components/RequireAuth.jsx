@@ -1,7 +1,7 @@
 // frontend/src/components/RequireAuth.jsx
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import api from "../api/index.js";
+import api from "../api/index.ts";
 
 export default function RequireAuth() {
   const [allowed, setAllowed] = useState(null);

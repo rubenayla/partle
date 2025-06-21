@@ -1,6 +1,6 @@
 // frontend/src/components/AuthModal.tsx
 import { useState, MouseEvent, FormEvent } from 'react';
-import api from '../api/index.js';
+import api from '../api/index.ts';
 import { login, register } from '../api/auth';
 
 interface Props {
