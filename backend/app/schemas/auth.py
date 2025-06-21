@@ -24,9 +24,9 @@ class EmailOnly(BaseModel):
     email: EmailStr
 
 
-class FidoFinish(BaseModel):
-    email: EmailStr
-    credential: dict
+# class FidoFinish(BaseModel):
+#     email: EmailStr
+#     credential: dict
 
 
 class RegisterInput(BaseModel):

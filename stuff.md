@@ -377,3 +377,16 @@ First uses of Vercel
 
 ![](stuff/20250621203343.png)
 
+# 2025-06-21--22-23
+Using Vercel for frontend and Railway for backend. I'm on Railway free plan.
+
+
+Thinking about Pieter Levels setup, he'd probably move backend to GCE (Google Compute Engine) VM, gpt says i'd need either docker-compose or tmux to keep FastAPI + PostgreSQL running. Big big apps use Kubernetes but he doesn't use it. Stick to simple.
+
+Serve frontend with GCS (Google Cloud Storage) bucket or cloudflare pages.
+
+For the data, Postgres on the same VM as backend + daily pg_dump to the GCS bucket.
+
+Github Actions cool to run script on push code, like run tests and deploy backend to GCE via ssh.
+
+
