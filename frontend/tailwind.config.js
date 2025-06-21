@@ -3,7 +3,7 @@ module.exports = {
   darkMode: 'class',          // html.dark enables dark palette
   content: [
     './index.html',
-    './src/**/*.{js,jsx,ts,tsx}',
+    './src/**/*.{js,jsx,ts,tsx,css}',
   ],
   theme: {
     extend: {
