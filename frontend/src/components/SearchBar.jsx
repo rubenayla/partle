@@ -1,6 +1,6 @@
 // frontend/src/components/SearchBar.jsx
 import { useState, useRef, useEffect } from 'react'
-import { Search, User, Info } from 'lucide-react'
+import { Search, User, Info, Plus } from 'lucide-react'
 import { deleteAccount } from '../api/auth'
 
 export default function SearchBar({
@@ -18,11 +18,13 @@ export default function SearchBar({
   const [sortOpen, setSortOpen] = useState(false)
   const [accountOpen, setAccountOpen] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)
+  const [createOpen, setCreateOpen] = useState(false)
 
   const priceRef = useRef()
   const sortRef = useRef()
   const accountRef = useRef()
   const infoRef = useRef()
+  const createRef = useRef()
 
   useEffect(() => {
     const root = document.documentElement
@@ -37,6 +39,7 @@ export default function SearchBar({
       if (!sortRef.current?.contains(e.target)) setSortOpen(false)
       if (!accountRef.current?.contains(e.target)) setAccountOpen(false)
       if (!infoRef.current?.contains(e.target)) setInfoOpen(false)
+      if (!createRef.current?.contains(e.target)) setCreateOpen(false)
     }
     document.addEventListener('mousedown', closeAll)
     return () => document.removeEventListener('mousedown', closeAll)
@@ -139,6 +142,25 @@ export default function SearchBar({
         </form>
 
         <div className="flex items-center gap-4">
+          <div ref={createRef} className="relative">
+            <button
+              type="button"
+              onClick={() =>
+                isLoggedIn ? setCreateOpen(!createOpen) : onAccountClick()
+              }
+              className="bg-transparent text-primary hover:text-primary focus:outline-none"
+            >
+              <Plus className="h-6 w-6" />
+            </button>
+
+            {isLoggedIn && createOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-surface rounded-xl shadow-lg p-4 z-50">
+                <a href="/products/new" className="block px-2 py-1 text-primary hover:bg-background rounded">Add product</a>
+                <a href="/stores/new" className="block px-2 py-1 text-primary hover:bg-background rounded">Add store</a>
+              </div>
+            )}
+          </div>
+
           <div ref={accountRef} className="relative">
             <button
               type="button"
@@ -152,9 +174,7 @@ export default function SearchBar({
 
             {isLoggedIn && accountOpen && (
               <div className="absolute right-0 mt-2 w-56 bg-surface rounded-xl shadow-lg p-4 z-50">
-                <a href="/products/new" className="block px-2 py-1 text-primary hover:bg-background rounded">Add product</a>
                 <a href="/products/favourites" className="block px-2 py-1 text-primary hover:bg-background rounded">Favourite Products</a>
-                <a href="/stores/new" className="block px-2 py-1 text-primary hover:bg-background rounded">Add store</a>
                 <a href="/stores/favourites" className="block px-2 py-1 text-primary hover:bg-background rounded">Favourite Stores</a>
                 <a href="/account" className="block px-2 py-1 text-primary hover:bg-background rounded">Account</a>
 
