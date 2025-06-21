@@ -1,6 +1,7 @@
 // frontend/src/components/SearchBar.jsx
 import { useState, useRef, useEffect } from 'react'
 import { Search, User, Info } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { deleteAccount } from '../api/auth'
 
 export default function SearchBar({
@@ -24,6 +25,8 @@ export default function SearchBar({
   const accountRef = useRef()
   const infoRef = useRef()
 
+  const navigate = useNavigate()
+
   useEffect(() => {
     const root = document.documentElement
     if (theme === 'dark') root.classList.add('dark')
@@ -41,6 +44,16 @@ export default function SearchBar({
     document.addEventListener('mousedown', closeAll)
     return () => document.removeEventListener('mousedown', closeAll)
   }, [])
+
+  useEffect(() => {
+    const handle = (e) => {
+      if (e.key.toLowerCase() === 'n' && isLoggedIn) {
+        navigate('/products/new')
+      }
+    }
+    window.addEventListener('keydown', handle)
+    return () => window.removeEventListener('keydown', handle)
+  }, [navigate, isLoggedIn])
 
   const handleSearch = (e) => {
     e.preventDefault()
@@ -152,7 +165,13 @@ export default function SearchBar({
 
             {isLoggedIn && accountOpen && (
               <div className="absolute right-0 mt-2 w-56 bg-surface rounded-xl shadow-lg p-4 z-50">
-                <a href="/products/new" className="block px-2 py-1 text-primary hover:bg-background rounded">Add product</a>
+                <a
+                  href="/products/new"
+                  title="Add product (N)"
+                  className="block px-2 py-1 text-primary hover:bg-background rounded"
+                >
+                  Add product
+                </a>
                 <a href="/products/favourites" className="block px-2 py-1 text-primary hover:bg-background rounded">Favourite Products</a>
                 <a href="/stores/new" className="block px-2 py-1 text-primary hover:bg-background rounded">Add store</a>
                 <a href="/stores/favourites" className="block px-2 py-1 text-primary hover:bg-background rounded">Favourite Stores</a>
