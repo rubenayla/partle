@@ -19,6 +19,14 @@ In the long term:
 * Leverage AI to search with natural language, human-like queries and descriptions, images etc.
 * Let user find cool things close by, knowing what they like in depth. Notification when passing by a liked product.
 
+## Design ideas
+A product should belong to a store, and a store can be controlled by several users. All users that belong to a store can add remove or modify products linked to that store oficially. Usera can also add products to other stores, but the products will be unofficial, will have a different tag. If a store owner accepts it, it will become official.
+
+To let a product data be managed automatically, the store will be able to connect the database with stock amounts prices etc, to the app via an API.
+
+Users can rate the reliability of almost all data shown about products and stores. Similar to community notes in x, giving unreliable rating will make you lose reliability rating as a user. Somehow the UI could reflect this reliability rating and include it in the search algorithm, or let it be replaced by an unofficial product if the rating difference is big enough (should include rating number too)
+
+
 ## 🚀 Features
 
 * 🔍 Search by part name or spec (e.g. "JST 6-pin", "M8 locking nut")
@@ -29,14 +37,15 @@ In the long term:
 ## 📦 Tech Stack
 
 - **frontend/** uses Node.js, Vite + React + Tailwind CSS, and Leaflet (OpenStreetMap) for map view
- - Manages dependencies with npm. No Python virtual environment is needed.
+    - Manages dependencies with npm. No Python virtual environment is needed.
+    - I prefer TypeScript for type safety
 - **backend/**
-  - Uses `pyenv` to manage Python versions
-  - Poetry for Python dependency management, optionally combined with `uv` for fast installation
-  - FastAPI as backend server
-  - PostgreSQL with SQLAlchemy ORM and Alembic for migrations
-  - Running `make setup` creates `backend/.venv` and installs dependencies
-  - Fido2
+    - Uses `pyenv` to manage Python versions
+    - Poetry for Python dependency management, optionally combined with `uv` for fast installation
+    - FastAPI as backend server
+    - PostgreSQL with SQLAlchemy ORM and Alembic for migrations
+    - Running `make setup` creates `backend/.venv` and installs dependencies
+    - Fido2
 
 This separation avoids dependency conflicts and is standard practice.
 
