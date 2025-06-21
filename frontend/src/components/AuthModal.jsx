@@ -58,7 +58,7 @@ export default function AuthModal({ onClose = () => {}, onSuccess = () => {} }) 
         onSubmit={handleSubmit}
         className="flex flex-col gap-4 bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8"
       >
-        <h1 className="text-2xl font-semibold text-center">Partle Account</h1>
+        <h1 className="text-2xl font-semibold text-center">Partle Account (Register/Login)</h1>
 
         <input
           className="border p-2 rounded"
