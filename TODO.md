@@ -11,6 +11,7 @@
         - Amazon
         - Wallapop?
     - Ask gpt sources
+- Make theme mode auto actually work based on the browser theme
 - Mobile version (bar at the bottom with easy interface. Go ahead to new standards)
 - The product of each store must have a unique name. If you don't agree with the data, several versions will appear, with capability to up/down vote them. It just like several products squished together in the same frontend card.
 - Mechanism to store searches performed by users so we can know what products are more demanded
