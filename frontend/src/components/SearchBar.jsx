@@ -1,5 +1,6 @@
 // frontend/src/components/SearchBar.jsx
 import { useState, useRef, useEffect } from 'react'
+import { useTheme } from '../ThemeContext'
 import { Search, User, Info, Plus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { deleteAccount } from '../api/auth'
@@ -13,7 +14,7 @@ export default function SearchBar({
   const [priceMin, setPriceMin] = useState(0)
   const [priceMax, setPriceMax] = useState(500)
   const [sortBy, setSortBy] = useState('relevance')
-  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'auto')
+  const { theme, setTheme } = useTheme()
 
   const [priceOpen, setPriceOpen] = useState(false)
   const [sortOpen, setSortOpen] = useState(false)
@@ -29,27 +30,6 @@ export default function SearchBar({
   const navigate = useNavigate()
   const createRef = useRef()
 
-  useEffect(() => {
-    const root = document.documentElement
-
-    const applyTheme = (mode) => {
-      if (mode === 'dark') root.classList.add('dark')
-      else root.classList.remove('dark')
-    }
-
-    let media
-    if (theme === 'auto') {
-      media = window.matchMedia('(prefers-color-scheme: dark)')
-      applyTheme(media.matches ? 'dark' : 'light')
-      const handler = (e) => applyTheme(e.matches ? 'dark' : 'light')
-      media.addEventListener('change', handler)
-      return () => media.removeEventListener('change', handler)
-    } else {
-      applyTheme(theme)
-    }
-
-    localStorage.setItem('theme', theme)
-  }, [theme])
 
   useEffect(() => {
     const closeAll = (e) => {
