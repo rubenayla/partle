@@ -399,3 +399,53 @@ Github Actions cool to run script on push code, like run tests and deploy backen
   - Added `https://partle.vercel.app` to `allow_origins` in backend `main.py`
 - 🛠️ Resolved TypeScript error (`import.meta.env`) by adding `vite-env.d.ts`
 - 🚀 Redeployed frontend (Vercel) and backend (Railway) to apply fixes
+
+##
+```bash
+(.venv) rubenayla@y540:~/repos/partle/backend$ sudo -u postgres psql
+psql (16.9 (Ubuntu 16.9-0ubuntu0.24.04.1))
+Type "help" for help.
+
+postgres=# \l
+                                                       List of databases
+   Name    |  Owner   | Encoding | Locale Provider |   Collate   |    Ctype    | ICU Locale | ICU Rules |   Access privileges   
+-----------+----------+----------+-----------------+-------------+-------------+------------+-----------+-----------------------
+ partle    | postgres | UTF8     | libc            | en_US.UTF-8 | en_US.UTF-8 |            |           | 
+ postgres  | postgres | UTF8     | libc            | en_US.UTF-8 | en_US.UTF-8 |            |           | 
+ template0 | postgres | UTF8     | libc            | en_US.UTF-8 | en_US.UTF-8 |            |           | =c/postgres          +
+           |          |          |                 |             |             |            |           | postgres=CTc/postgres
+ template1 | postgres | UTF8     | libc            | en_US.UTF-8 | en_US.UTF-8 |            |           | =c/postgres          +
+           |          |          |                 |             |             |            |           | postgres=CTc/postgres
+(4 rows)
+
+postgres=# \c partle
+You are now connected to database "partle" as user "postgres".
+partle=# \dt
+              List of relations
+ Schema |      Name       | Type  |  Owner   
+--------+-----------------+-------+----------
+ public | alembic_version | table | postgres
+ public | credentials     | table | postgres
+ public | products        | table | postgres
+ public | stores          | table | postgres
+ public | users           | table | postgres
+(5 rows)
+
+partle=# SELECT * FROM users;
+ id |             email             |                        password_hash                         
+----+-------------------------------+--------------------------------------------------------------
+  1 | demo@partle.dev               | $2b$12$jyztUAFohj8XD80DbjAhTerTlXm5lUs4b14RRJC9BB/YP6F06lGY.
+  2 | caca@gmail.com                | $2b$12$xd4ZNPpi9MD0llPKg8fyGe/O0sT8PfpDBhR.CAIr2rssJhl6KHlo6
+  4 | test@gmail.com                | $2b$12$/Qlxv5PG7LHGlcUNqJ3tRO16eZWiYs6iW6y7fSTo4xb72dYSLUd2y
+  3 | ruben.jimenezmejias@gmail.com | $2b$12$76W5x5gGrpoouN49Yd3b4.TEINDXSLw3ArXoGMGoUJNYFwUL416Cm
+  5 | pato@gmail.com                | $2b$12$2UEdjAwZtziJ.uoM//5J2etuBUcAy54Ex2Xn26AVWXAn9MB2LkhSO
+  6 | patopato@gmail.com            | 
+  7 | patoo@gmail.com               | 
+  8 | test@example.com              | $2b$12$f2hzfDYbtn9frK6KywelcOTNIp9YwXo4jU0rYvHwENL391Ufy/KFG
+  9 | a@gmail.com                   | 
+ 10 | b@gmail.com                   | $2b$12$VHjYY7l2nxIcMuXMQ5nD6.FfCnkUQoAbLBATXlIjZlCDMTWHTh0Pm
+(10 rows)
+
+partle=# 
+```
+

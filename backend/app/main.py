@@ -1,7 +1,13 @@
 # backend/app/main.py
-from app.api.v1 import auth, external, parts, products, stores
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+
+from app.api.v1 import auth, external, parts, products, stores
+
+# Load local .env if present (useful for local development)
+load_dotenv()
 
 app = FastAPI(title="Partle API")
 
