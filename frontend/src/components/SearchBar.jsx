@@ -288,19 +288,23 @@ function ThemeSwitch({ value, onChange }) {
       <div className="relative flex h-full rounded-full bg-surface shadow-inner border border-gray-300 dark:border-gray-600 overflow-hidden">
         {/* Knob */}
         <div
-          className="absolute inset-y-0 left-0 rounded-full bg-white shadow-md transition-transform duration-200 z-0 pointer-events-none"
+          className="absolute inset-y-0 left-0 rounded-full transition-transform duration-200 z-0 pointer-events-none"
           style={{
             width: `${SEGMENT}px`,
-            transform: `translateX(${index * SEGMENT}px)`
+            transform: `translateX(${index * SEGMENT}px)`,
+            backgroundColor: "var(--color-accent)",
+            color: "white"
           }}
         />
         {/* Labels */}
-        {options.map((mode) => (
+        {options.map((mode, i) => (
           <button
             key={mode}
             onClick={() => onChange(mode)}
             style={{ width: `${SEGMENT}px` }}
-            className="relative z-10 h-full flex items-center justify-center text-sm font-medium text-foreground focus:outline-none border-none"
+            className={`relative z-10 h-full flex items-center justify-center text-sm font-medium
+              ${index === i ? "text-white" : "text-foreground"}
+              focus:outline-none border-none`}
           >
             {mode.charAt(0).toUpperCase() + mode.slice(1)}
           </button>
@@ -309,4 +313,5 @@ function ThemeSwitch({ value, onChange }) {
     </div>
   );
 }
+
 
