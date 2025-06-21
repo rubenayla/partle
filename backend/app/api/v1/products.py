@@ -58,7 +58,11 @@ def create_product(
     if existing:
         raise HTTPException(409, "Product already exists")
 
-    product = Product(**payload.model_dump())
+    product = Product(
+        **payload.model_dump(),
+        creator_id=current_user.id,
+        updated_by_id=current_user.id,
+    )
     db.add(product)
     db.commit()
     db.refresh(product)
@@ -86,6 +90,7 @@ def update_product(
 
     for field, value in payload.model_dump(exclude_unset=True).items():
         setattr(product, field, value)
+    product.updated_by_id = current_user.id
 
     db.commit()
     db.refresh(product)
