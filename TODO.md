@@ -1,4 +1,4 @@
-- Start using Vercel
+- The text on hover showing shortcuts and whatnot should appear immediately, not after a delay.
 - add recover password email, need vercel or something
 - Store CRUD (3 → 4) – lets you seed real data from the UI.
 - Parts under stores (5 → 6) – completes the core data model.

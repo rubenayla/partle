@@ -371,3 +371,9 @@ def fido_register_finish(
 
     return {"access_token": create_access_token({"sub": str(user.id)})}
 ```
+
+# 2025-06-21
+First uses of Vercel
+
+![](stuff/20250621203343.png)
+

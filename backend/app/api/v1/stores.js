@@ -1,5 +1,5 @@
-// src/api/stores.js
-import api from "./client";
+// backend/src/api/v1/stores.js
+import api from "./client"; // TODO UPDATE
 
 export const listStores = () => api.get("/v1/stores/").then((r) => r.data);
 

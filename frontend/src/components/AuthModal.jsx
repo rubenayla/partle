@@ -1,5 +1,6 @@
+// frontend/src/components/AuthModal.jsx
 import { useState } from "react";
-import api from "../api";
+import api from "../api/index.js";
 import { login, register } from "../api/auth";
 
 export default function AuthModal({ onClose = () => {}, onSuccess = () => {} }) {

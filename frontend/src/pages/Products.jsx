@@ -1,7 +1,7 @@
 // frontend/src/pages/Products.jsx
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import api from "../api";
+import api from "../api/index.js";
 
 export default function Products() {
   const { id } = useParams(); // store id

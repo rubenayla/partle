@@ -68,7 +68,13 @@ export default function SearchBar({
       <div className="w-full max-w-screen-2xl mx-auto flex items-center justify-between px-4 py-3">
 
         <a href="/" className="text-2xl font-semibold text-foreground">Partle</a>
-
+        <a
+          href="/"
+          title="Go home (H)"
+          className="text-2xl font-semibold text-foreground"
+        >
+          Partle
+        </a>
         <form
           onSubmit={handleSearch}
           className="flex flex-1 mx-6 bg-surface rounded-full pl-4 pr-2 h-12 items-center"
@@ -167,7 +173,11 @@ export default function SearchBar({
 
               {createOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-surface rounded-xl shadow-lg p-4 z-50">
-                  <a href="/products/new" className="block px-2 py-1 text-foreground hover:bg-background rounded">Add product</a>
+                  <a
+                    href="/products/new"
+                    title="Add product (N)"
+                    className="block px-2 py-1 text-foreground hover:bg-background rounded"
+                  >Add product</a>
                   <a href="/stores/new" className="block px-2 py-1 text-foreground hover:bg-background rounded">Add store</a>
                 </div>
               )}
@@ -187,13 +197,6 @@ export default function SearchBar({
 
             {isLoggedIn && accountOpen && (
               <div className="absolute right-0 mt-2 w-56 bg-surface rounded-xl shadow-lg p-4 z-50">
-                <a
-                  href="/products/new"
-                  title="Add product (N)"
-                  className="block px-2 py-1 text-foreground hover:bg-background rounded"
-                >
-                  Add product
-                </a>
                 <a href="/products/favourites" className="block px-2 py-1 text-foreground hover:bg-background rounded">Favourite Products</a>
                 <a href="/stores/favourites" className="block px-2 py-1 text-foreground hover:bg-background rounded">Favourite Stores</a>
                 <a href="/account" className="block px-2 py-1 text-foreground hover:bg-background rounded">Account</a>
