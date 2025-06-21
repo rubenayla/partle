@@ -142,24 +142,24 @@ export default function SearchBar({
         </form>
 
         <div className="flex items-center gap-4">
-          <div ref={createRef} className="relative">
-            <button
-              type="button"
-              onClick={() =>
-                isLoggedIn ? setCreateOpen(!createOpen) : onAccountClick()
-              }
-              className="bg-transparent text-primary hover:text-primary focus:outline-none"
-            >
-              <Plus className="h-6 w-6" />
-            </button>
+          {isLoggedIn && (
+            <div ref={createRef} className="relative">
+              <button
+                type="button"
+                onClick={() => setCreateOpen(!createOpen)}
+                className="bg-transparent text-primary hover:text-primary focus:outline-none"
+              >
+                <Plus className="h-6 w-6" />
+              </button>
 
-            {isLoggedIn && createOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-surface rounded-xl shadow-lg p-4 z-50">
-                <a href="/products/new" className="block px-2 py-1 text-primary hover:bg-background rounded">Add product</a>
-                <a href="/stores/new" className="block px-2 py-1 text-primary hover:bg-background rounded">Add store</a>
-              </div>
-            )}
-          </div>
+              {createOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-surface rounded-xl shadow-lg p-4 z-50">
+                  <a href="/products/new" className="block px-2 py-1 text-primary hover:bg-background rounded">Add product</a>
+                  <a href="/stores/new" className="block px-2 py-1 text-primary hover:bg-background rounded">Add store</a>
+                </div>
+              )}
+            </div>
+          )}
 
           <div ref={accountRef} className="relative">
             <button
