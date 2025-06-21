@@ -1,4 +1,4 @@
-// frontend/src/api/index.js
+// frontend/src/api/index.ts
 import axios from "axios";
 
 if (!import.meta.env.VITE_API_BASE) {
