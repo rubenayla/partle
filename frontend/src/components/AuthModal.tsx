@@ -1,16 +1,22 @@
-// frontend/src/components/AuthModal.jsx
-import { useState } from "react";
-import api from "../api/index.js";
-import { login, register } from "../api/auth";
+// frontend/src/components/AuthModal.tsx
+import { useState, MouseEvent, FormEvent } from 'react';
+import api from '../api/index.js';
+import { login, register } from '../api/auth';
 
-export default function AuthModal({ onClose = () => {}, onSuccess = () => {} }) {
+interface Props {
+  onClose?: () => void;
+  onSuccess?: () => void;
+}
+export default function AuthModal({ onClose = () => {}, onSuccess = () => {} }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const clickBackdrop = (e) => e.target === e.currentTarget && onClose();
+  const clickBackdrop = (e: MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) onClose();
+  };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
     try {
@@ -57,12 +63,12 @@ export default function AuthModal({ onClose = () => {}, onSuccess = () => {} }) 
     >
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-4 bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8"
+        className="flex flex-col gap-4 bg-surface text-foreground rounded-3xl shadow-2xl w-full max-w-sm p-8"
       >
         <h1 className="text-2xl font-semibold text-center">Partle Account (Register/Login)</h1>
 
         <input
-          className="border p-2 rounded"
+          className="border border-gray-300 dark:border-gray-600 p-2 rounded bg-background"
           placeholder="Email"
           autoComplete="email"
           value={email}
@@ -70,7 +76,7 @@ export default function AuthModal({ onClose = () => {}, onSuccess = () => {} }) 
         />
 
         <input
-          className="border p-2 rounded"
+          className="border border-gray-300 dark:border-gray-600 p-2 rounded bg-background"
           type="password"
           placeholder="Password"
           autoComplete="current-password"
@@ -80,14 +86,14 @@ export default function AuthModal({ onClose = () => {}, onSuccess = () => {} }) 
         <button
           type="button"
           onClick={handleForgot}
-          className="text-sm text-indigo-600 hover:underline text-left"
+          className="text-sm text-link hover:underline text-left"
         >
           Forgot password?
         </button>
 
-        {error && <span className="text-red-500 text-sm">{error}</span>}
+        {error && <span className="text-danger text-sm">{error}</span>}
 
-        <button className="bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700">
+        <button className="bg-accent text-background py-2 rounded hover:bg-accent-hover">
           Continue
         </button>
       </form>
