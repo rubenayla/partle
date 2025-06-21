@@ -390,3 +390,12 @@ For the data, Postgres on the same VM as backend + daily pg_dump to the GCS buck
 Github Actions cool to run script on push code, like run tests and deploy backend to GCE via ssh.
 
 
+## ✅ Auth & Deployment Fixes (Jun 21–22)
+
+- 🔐 Switched AuthModal to **password-only** login (removed FIDO/passkey logic)
+- 🌐 Replaced dead `fly.dev` backend URL with Railway deployment:
+  - `VITE_API_BASE = https://partle-production.up.railway.app`
+- 🛡️ Fixed **CORS policy**:
+  - Added `https://partle.vercel.app` to `allow_origins` in backend `main.py`
+- 🛠️ Resolved TypeScript error (`import.meta.env`) by adding `vite-env.d.ts`
+- 🚀 Redeployed frontend (Vercel) and backend (Railway) to apply fixes
