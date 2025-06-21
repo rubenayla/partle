@@ -33,6 +33,14 @@ Users can rate the reliability of almost all data shown about products and store
 * 📍 View available stock in nearby stores
 * 🟘 Toggle between list and map view
 * ⚡ Quick sign-in with passkeys (fallback to email + password)
+* 🌓 Light/Dark/Auto theme toggle
+
+### Theme modes
+The theme selector in the account menu lets you choose *Light*, *Dark* or
+*Auto*. When set to *Auto* the app checks your browser's
+`prefers-color-scheme` setting and applies the matching theme
+automatically. The choice is stored in `localStorage` so it persists across
+visits, and it updates immediately if your system preference changes.
 
 ## 📦 Tech Stack
 

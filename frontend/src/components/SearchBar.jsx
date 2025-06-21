@@ -26,9 +26,17 @@ export default function SearchBar({
 
   useEffect(() => {
     const root = document.documentElement
-    if (theme === 'dark') root.classList.add('dark')
-    else root.classList.remove('dark')
+    const media = window.matchMedia('(prefers-color-scheme: dark)')
+
+    const apply = () => {
+      const useDark = theme === 'dark' || (theme === 'auto' && media.matches)
+      root.classList.toggle('dark', useDark)
+    }
+
+    apply()
     localStorage.setItem('theme', theme)
+    media.addEventListener('change', apply)
+    return () => media.removeEventListener('change', apply)
   }, [theme])
 
   useEffect(() => {
