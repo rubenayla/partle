@@ -1,4 +1,5 @@
 // frontend/src/pages/ListView.jsx
+import { Link } from "react-router-dom";
 
 /**
  * Simple list view to unblock the UI.
@@ -16,7 +17,11 @@ export default function ListView({ products }) {
     <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
       {items.map((p) => (
         <li key={p.id} className="border rounded p-4 shadow-sm">
-          <h3 className="font-semibold mb-1">{p.name}</h3>
+          <h3 className="font-semibold mb-1">
+            <Link to={`/products/${p.id}`} className="hover:underline text-blue-600">
+              {p.name}
+            </Link>
+          </h3>
           <p className="text-sm text-gray-600">€{p.price} — {p.store}</p>
         </li>
       ))}
