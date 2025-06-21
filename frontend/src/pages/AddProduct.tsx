@@ -1,8 +1,7 @@
 import { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import SearchBar from '../components/SearchBar';
-import AuthModal from '../components/AuthModal';
+import Layout from '../components/Layout';
 import api from '../api';
 
 interface Store { id: number; name: string; }
@@ -27,8 +26,6 @@ export default function AddProduct() {
     store_id: '',
   });
   const [saving, setSaving] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(!!localStorage.getItem('token'));
-  const [accountOpen, setAccountOpen] = useState(false);
 
   useEffect(() => {
     api.get('/v1/stores/').then(res => setStores(res.data));
@@ -42,10 +39,6 @@ export default function AddProduct() {
     return () => window.removeEventListener('keydown', handle);
   }, [navigate]);
 
-  useEffect(() => {
-    const id = setInterval(() => setIsLoggedIn(!!localStorage.getItem('token')), 1000);
-    return () => clearInterval(id);
-  }, []);
 
   const change = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -65,15 +58,9 @@ export default function AddProduct() {
   };
 
   return (
-    <div className="min-h-screen w-screen flex flex-col bg-background text-primary">
-      <SearchBar isLoggedIn={isLoggedIn} onAccountClick={() => setAccountOpen(true)} />
-      {accountOpen && (
-        <AuthModal onClose={() => setAccountOpen(false)} onSuccess={() => setIsLoggedIn(true)} />
-      )}
-
-      <main className="flex-1 pt-24">
-        <div className="w-full max-w-screen-2xl mx-auto px-4">
-          <header className="flex items-center gap-2 mb-4">
+    <Layout>
+      <div className="w-full max-w-screen-2xl mx-auto px-4">
+        <header className="flex items-center gap-2 mb-4">
             <button
               type="button"
               onClick={() => navigate('/')}
@@ -136,7 +123,6 @@ export default function AddProduct() {
             </button>
           </form>
         </div>
-      </main>
-    </div>
+      </Layout>
   );
 }

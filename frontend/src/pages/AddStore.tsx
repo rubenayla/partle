@@ -1,8 +1,7 @@
 import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import SearchBar from '../components/SearchBar';
-import AuthModal from '../components/AuthModal';
+import Layout from '../components/Layout';
 import api from '../api';
 
 interface FormState {
@@ -16,8 +15,6 @@ export default function AddStore() {
   const navigate = useNavigate();
   const [form, setForm] = useState<FormState>({ name: '', address: '', lat: 0, lon: 0 });
   const [saving, setSaving] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(!!localStorage.getItem('token'));
-  const [accountOpen, setAccountOpen] = useState(false);
 
   useEffect(() => {
     const handle = (e: KeyboardEvent) => {
@@ -27,10 +24,6 @@ export default function AddStore() {
     return () => window.removeEventListener('keydown', handle);
   }, [navigate]);
 
-  useEffect(() => {
-    const id = setInterval(() => setIsLoggedIn(!!localStorage.getItem('token')), 1000);
-    return () => clearInterval(id);
-  }, []);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -50,13 +43,8 @@ export default function AddStore() {
   };
 
   return (
-    <div className="min-h-screen w-screen flex flex-col bg-background text-primary">
-      <SearchBar isLoggedIn={isLoggedIn} onAccountClick={() => setAccountOpen(true)} />
-      {accountOpen && (
-        <AuthModal onClose={() => setAccountOpen(false)} onSuccess={() => setIsLoggedIn(true)} />
-      )}
-      <main className="flex-1 pt-24">
-        <div className="w-full max-w-screen-2xl mx-auto px-4">
+    <Layout>
+      <div className="w-full max-w-screen-2xl mx-auto px-4">
           <header className="flex items-center gap-2 mb-4">
             <button
               type="button"
@@ -106,7 +94,6 @@ export default function AddStore() {
             </button>
           </form>
         </div>
-      </main>
-    </div>
+      </Layout>
   );
 }
