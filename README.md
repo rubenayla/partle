@@ -51,10 +51,13 @@ This separation avoids dependency conflicts and is standard practice.
 ## 🚀 Install (new machine)
 
 ```bash
-# 1. Clone repo
+# Clone repo
 git clone https://github.com/<your-github-org>/partle.git && cd partle
 
-# 2. Install all deps
+# Set up environment variable for frontend to reach backend
+echo "VITE_API_BASE=http://localhost:8000" > frontend/.env
+
+# Install all deps
 make install
 ```
 
@@ -89,7 +92,24 @@ make frontend  # starts Vite + React
 - Backend: `poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 --log-level debug`
 
 ## View the app
+### Deployed
+## 🌍 Deployed Setup
 
+The app is deployed across two services:
+
+- **Frontend** (React): hosted on **[Vercel](https://vercel.com/)**  
+  Live URL: [https://partle.vercel.app](https://partle.vercel.app)
+
+- **Backend** (FastAPI): hosted on **[Railway](https://railway.app/)**  
+  Public API base: VITE_API_BASE=https://partle-production.up.railway.app
+
+Frontend uses `import.meta.env.VITE_API_BASE` to locate the backend. This value must be:
+
+- Defined in `frontend/.env` locally for dev (`VITE_API_BASE=http://localhost:8000`)
+- Set in **Vercel project settings** as an environment variable (`VITE_API_BASE=https://...`)
+
+
+### Locally
 - Frontend:
     - http://localhost:5173/
 - Backend (FastAPI):

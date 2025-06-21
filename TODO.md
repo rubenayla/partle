@@ -1,9 +1,15 @@
-- The text on hover showing shortcuts and whatnot should appear immediately, not after a delay.
+
+
 - add recover password email, need vercel or something
+- consider types of stores, and start adding them
+- UI
+    - The text on hover showing shortcuts and whatnot should appear immediately, not after a delay. 
 - Store CRUD (3 → 4) – lets you seed real data from the UI.
 - Parts under stores (5 → 6) – completes the core data model.
 - Tune the reliability rating of the info uploaded. It should go -1 to 1. Start at 0, depending on other people ratings get modified.
 - Users should be able to add products from other stores. Last updated time should be stored as parameter for every product. And who did that last update is relevant too.
+- Add tags table, for products
+    - like my favourites ones, just a tag for those, to play
 - Get data
     - Scraping?
         - Google Maps
