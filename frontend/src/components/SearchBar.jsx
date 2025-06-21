@@ -152,16 +152,16 @@ export default function SearchBar({
 
             {isLoggedIn && accountOpen && (
               <div className="absolute right-0 mt-2 w-56 bg-surface rounded-xl shadow-lg p-4 z-50">
+                <a href="/products/new" className="block px-2 py-1 text-primary hover:bg-background rounded">Add product</a>
+                <a href="/products/favourites" className="block px-2 py-1 text-primary hover:bg-background rounded">Favourite Products</a>
+                <a href="/stores/new" className="block px-2 py-1 text-primary hover:bg-background rounded">Add store</a>
+                <a href="/stores/favourites" className="block px-2 py-1 text-primary hover:bg-background rounded">Favourite Stores</a>
                 <a href="/account" className="block px-2 py-1 text-primary hover:bg-background rounded">Account</a>
 
                 <div className="mt-2 px-2 py-1">
                   <div className="text-sm font-semibold text-secondary mb-2">Theme</div>
                   <ThemeSwitch value={theme} onChange={(mode) => setTheme(mode)} />
                 </div>
-
-                <div className="border-t border-gray-200 dark:border-gray-600 my-2" />
-                <a href="/stores/favourites" className="block px-2 py-1 text-primary hover:bg-background rounded">Favourite Stores</a>
-                <a href="/products/favourites" className="block px-2 py-1 text-primary hover:bg-background rounded">Favourite Products</a>
 
                 <div className="border-t border-gray-200 dark:border-gray-600 my-2" />
                 <button
