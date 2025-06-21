@@ -1,6 +1,6 @@
 // tailwind.config.js
 module.exports = {
-  darkMode: 'class', // Toggle dark mode via <html class="dark">
+  darkMode: 'class',          // html.dark enables dark palette
   content: [
     './index.html',
     './src/**/*.{js,jsx,ts,tsx}',
@@ -8,14 +8,29 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background:       'var(--color-background)',
-        surface:          'var(--color-surface)',
-        primary:          'var(--color-primary)',
-        danger:           'var(--color-danger)',
-        'text-primary':   'var(--color-text-primary)',
-        'text-secondary': 'var(--color-text-secondary)',
+        /* Layers */
+        background:        'var(--color-background)',
+        surface:           'var(--color-surface)',
+        'surface-hover':   'var(--color-surface-hover)',
+
+        /* Text */
+        foreground:        'var(--color-text-primary)',   // text-foreground
+        muted:             'var(--color-text-secondary)', // text-muted
+        disabled:          'var(--color-text-disabled)',  // text-disabled
+
+        /* Accent & actions */
+        accent:            'var(--color-primary)',        // bg-accent, text-accent
+        'accent-hover':    'var(--color-primary-hover)',
+
+        /* Links */
+        link:              'var(--color-link)',           // text-link
+        'link-hover':      'var(--color-link-hover)',
+
+        /* Other */
+        focus:             'var(--color-focus)',
+        danger:            'var(--color-danger)',
       },
     },
   },
   plugins: [],
-}
+};

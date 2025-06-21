@@ -1,4 +1,3 @@
-- ✅ Move Add product and store etc to a new menu that appears as + button at the left of the account icon
 - Start using Vercel
 - add recover password email, need vercel or something
 - Store CRUD (3 → 4) – lets you seed real data from the UI.

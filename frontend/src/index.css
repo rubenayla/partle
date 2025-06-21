@@ -4,30 +4,60 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── Semantic Color Tokens ─────────────────────────────────────────────── */
+/* ─── Design tokens — light theme ─────────────────────────────── */
 :root {
+  /* Layers */
   --color-background:        #ffffff;
   --color-surface:           #f3f4f6;
+  --color-surface-hover:     #e5e7eb;
 
-  --color-text-primary:      #1f2937;
-  --color-text-secondary:    #4b5563;
+  /* Text */
+  --color-text-primary:      #1f2937;   /* foreground */
+  --color-text-secondary:    #4b5563;   /* muted */
+  --color-text-disabled:     #9ca3af;   /* disabled */
 
-  --color-primary:           #6366f1;
+  /* Actions & branding */
+  --color-primary:           #6366f1;   /* button / active icon */
   --color-primary-hover:     #535bf2;
-  --color-danger:            #dc2626;
+  --color-accent:            #6366f1;   /* logo / brand */
+
+  /* Links */
+  --color-link:              #2563eb;
+  --color-link-hover:        #1d4ed8;
+
+  /* Misc */
+  --color-focus:             #2563eb;   /* focus ring */
+  --color-danger:            #dc2626;   /* errors */
 }
 
+/* ─── Design tokens — dark theme ──────────────────────────────── */
 .dark {
-  --color-background:        #1f2937;
-  --color-surface:           #374151;
+  /* Layers */
+  --color-background:        #202020;   /* ≈ ChatGPT 212121 */
+  --color-surface:           #2a2a2e;
+  --color-surface-hover:     #333336;
 
-  --color-text-primary:      #f9fafb;
-  --color-text-secondary:    #9ca3af;
+  /* Text */
+  --color-text-primary:      #e0e0e0;   /* foreground */
+  --color-text-secondary:    #9ca3af;   /* muted */
+  --color-text-disabled:     #6b7280;   /* disabled */
 
-  --color-primary:           #9ca3af; /* gray-400 */
-  --color-primary-hover:     #d1d5db; /* gray-300 */
-  --color-danger:            #f87171;
+  /* Actions & branding */
+  --color-primary:           #e0e0e0;   /* button / active icon (neutral) */
+  --color-primary-hover:     #ffffff;
+  --color-accent:            #8ab4f8;   /* logo / brand */
+
+  /* Links */
+  --color-link:              #8ab4f8;
+  --color-link-hover:        #aecbfa;
+
+  /* Misc */
+  --color-focus:             #8ab4f8;   /* focus ring */
+  --color-danger:            #f87171;   /* errors */
 }
+
+
+
 
 /* ─── Base Styles ───────────────────────────────────────────────────────── */
 body {

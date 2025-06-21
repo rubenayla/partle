@@ -23,7 +23,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen w-screen flex flex-col bg-background text-primary">
+    <div className="min-h-screen w-screen flex flex-col bg-background text-foreground">
       
       <SearchBar
         isLoggedIn={isLoggedIn}

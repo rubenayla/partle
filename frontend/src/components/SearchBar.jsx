@@ -67,7 +67,7 @@ export default function SearchBar({
     <header className="fixed top-0 left-0 right-0 z-20 bg-background border-b border-gray-200 dark:border-gray-700">
       <div className="w-full max-w-screen-2xl mx-auto flex items-center justify-between px-4 py-3">
 
-        <a href="/" className="text-2xl font-semibold text-primary">Partle</a>
+        <a href="/" className="text-2xl font-semibold text-foreground">Partle</a>
 
         <form
           onSubmit={handleSearch}
@@ -78,7 +78,7 @@ export default function SearchBar({
             placeholder="What are you looking for?"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="flex-1 h-full bg-transparent placeholder-text-secondary text-primary focus:outline-none"
+            className="flex-1 h-full bg-transparent placeholder-text-secondary text-foreground focus:outline-none"
           />
 
           <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-3" />
@@ -86,7 +86,7 @@ export default function SearchBar({
             <button
               type="button"
               onClick={() => setPriceOpen(!priceOpen)}
-              className="h-full px-3 text-sm text-primary bg-transparent focus:outline-none"
+              className="h-full px-3 text-sm text-foreground bg-transparent focus:outline-none"
             >
               Price: {priceMin}–{priceMax}
             </button>
@@ -98,7 +98,7 @@ export default function SearchBar({
                   min={0}
                   value={priceMin}
                   onChange={(e) => setPriceMin(Number(e.target.value))}
-                  className="w-full border px-2 py-1 rounded bg-background text-primary"
+                  className="w-full border px-2 py-1 rounded bg-background text-foreground"
                 />
                 <label className="text-sm text-secondary">Max €</label>
                 <input
@@ -106,7 +106,7 @@ export default function SearchBar({
                   min={0}
                   value={priceMax}
                   onChange={(e) => setPriceMax(Number(e.target.value))}
-                  className="w-full border px-2 py-1 rounded bg-background text-primary"
+                  className="w-full border px-2 py-1 rounded bg-background text-foreground"
                 />
               </div>
             )}
@@ -117,7 +117,7 @@ export default function SearchBar({
             <button
               type="button"
               onClick={() => setSortOpen(!sortOpen)}
-              className="h-full px-3 text-sm text-primary bg-transparent focus:outline-none"
+              className="h-full px-3 text-sm text-foreground bg-transparent focus:outline-none"
             >
               Sort: {sortBy.replace('_', ' ')}
             </button>
@@ -133,8 +133,8 @@ export default function SearchBar({
                       }}
                       className={`block w-full text-left px-2 py-1 rounded hover:bg-background ${
                         sortBy === opt
-                          ? 'font-semibold text-primary'
-                          : 'text-primary'
+                          ? 'font-semibold text-foreground'
+                          : 'text-foreground'
                       }`}
                     >
                       {opt.replace('_', ' ').replace('asc', '↑').replace('desc', '↓')}
@@ -148,7 +148,7 @@ export default function SearchBar({
           <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-3" />
           <button
             type="submit"
-            className="p-2 rounded-full bg-transparent text-primary hover:text-white hover:bg-primary focus:outline-none"
+            className="p-2 rounded-full bg-transparent text-foreground hover:text-white hover:bg-primary focus:outline-none"
           >
             <Search className="h-5 w-5" />
           </button>
@@ -160,15 +160,15 @@ export default function SearchBar({
               <button
                 type="button"
                 onClick={() => setCreateOpen(!createOpen)}
-                className="bg-transparent text-primary hover:text-primary focus:outline-none"
+                className="bg-transparent text-foreground hover:text-foreground focus:outline-none"
               >
                 <Plus className="h-6 w-6" />
               </button>
 
               {createOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-surface rounded-xl shadow-lg p-4 z-50">
-                  <a href="/products/new" className="block px-2 py-1 text-primary hover:bg-background rounded">Add product</a>
-                  <a href="/stores/new" className="block px-2 py-1 text-primary hover:bg-background rounded">Add store</a>
+                  <a href="/products/new" className="block px-2 py-1 text-foreground hover:bg-background rounded">Add product</a>
+                  <a href="/stores/new" className="block px-2 py-1 text-foreground hover:bg-background rounded">Add store</a>
                 </div>
               )}
             </div>
@@ -180,7 +180,7 @@ export default function SearchBar({
               onClick={() =>
                 isLoggedIn ? setAccountOpen(!accountOpen) : onAccountClick()
               }
-              className="bg-transparent text-primary hover:text-primary focus:outline-none"
+              className="bg-transparent text-foreground hover:text-foreground focus:outline-none"
             >
               <User className="h-8 w-8" />
             </button>
@@ -190,13 +190,13 @@ export default function SearchBar({
                 <a
                   href="/products/new"
                   title="Add product (N)"
-                  className="block px-2 py-1 text-primary hover:bg-background rounded"
+                  className="block px-2 py-1 text-foreground hover:bg-background rounded"
                 >
                   Add product
                 </a>
-                <a href="/products/favourites" className="block px-2 py-1 text-primary hover:bg-background rounded">Favourite Products</a>
-                <a href="/stores/favourites" className="block px-2 py-1 text-primary hover:bg-background rounded">Favourite Stores</a>
-                <a href="/account" className="block px-2 py-1 text-primary hover:bg-background rounded">Account</a>
+                <a href="/products/favourites" className="block px-2 py-1 text-foreground hover:bg-background rounded">Favourite Products</a>
+                <a href="/stores/favourites" className="block px-2 py-1 text-foreground hover:bg-background rounded">Favourite Stores</a>
+                <a href="/account" className="block px-2 py-1 text-foreground hover:bg-background rounded">Account</a>
 
                 <div className="mt-2 px-2 py-1">
                   <div className="text-sm font-semibold text-secondary mb-2">Theme</div>
@@ -231,7 +231,7 @@ export default function SearchBar({
                 </button>
 
                 <div className="border-t border-gray-200 dark:border-gray-600 my-2" />
-                <a href="/premium" className="block px-2 py-1 text-primary hover:bg-background rounded">Premium</a>
+                <a href="/premium" className="block px-2 py-1 text-foreground hover:bg-background rounded">Premium</a>
               </div>
             )}
           </div>
@@ -240,16 +240,16 @@ export default function SearchBar({
             <button
               type="button"
               onClick={() => setInfoOpen(!infoOpen)}
-              className="bg-transparent text-primary hover:text-primary focus:outline-none"
+              className="bg-transparent text-foreground hover:text-foreground focus:outline-none"
             >
               <Info className="h-6 w-6" />
             </button>
             {infoOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-surface rounded-xl shadow-lg p-4 z-50">
-                <a href="/contact" className="block px-2 py-1 text-primary hover:bg-background rounded">Contact</a>
-                <a href="/terms" className="block px-2 py-1 text-primary hover:bg-background rounded">Terms</a>
-                <a href="/privacy" className="block px-2 py-1 text-primary hover:bg-background rounded">Privacy</a>
-                <a href="/social" className="block px-2 py-1 text-primary hover:bg-background rounded">Social Networks</a>
+                <a href="/contact" className="block px-2 py-1 text-foreground hover:bg-background rounded">Contact</a>
+                <a href="/terms" className="block px-2 py-1 text-foreground hover:bg-background rounded">Terms</a>
+                <a href="/privacy" className="block px-2 py-1 text-foreground hover:bg-background rounded">Privacy</a>
+                <a href="/social" className="block px-2 py-1 text-foreground hover:bg-background rounded">Social Networks</a>
               </div>
             )}
           </div>
@@ -284,7 +284,7 @@ function ThemeSwitch({ value, onChange }) {
             key={mode}
             onClick={() => onChange(mode)}
             style={{ width: `${SEGMENT}px` }}
-            className="relative z-10 h-full flex items-center justify-center text-sm font-medium text-primary focus:outline-none border-none"
+            className="relative z-10 h-full flex items-center justify-center text-sm font-medium text-foreground focus:outline-none border-none"
           >
             {mode.charAt(0).toUpperCase() + mode.slice(1)}
           </button>
