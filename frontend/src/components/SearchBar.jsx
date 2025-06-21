@@ -1,6 +1,6 @@
 // frontend/src/components/SearchBar.jsx
 import { useState, useRef, useEffect } from 'react'
-import { Search, User, Info, Plus } from 'lucide-react'
+import { Search, User, Info, Plus, Sun, Moon, Laptop } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { deleteAccount } from '../api/auth'
 
@@ -260,37 +260,42 @@ export default function SearchBar({
 }
 
 // ─── ThemeSwitch ──────────────────────────────────────────
-function ThemeSwitch({ value, onChange }) {
-  const options = ["light", "auto", "dark"];
-  const index = options.indexOf(value);
 
-  const WIDTH = 180; // px
-  const SEGMENT = WIDTH / 3;
+function ThemeSwitch({ value, onChange }) {
+  const options = [
+    { mode: 'light', icon: <Sun className="h-4 w-4" /> },
+    { mode: 'auto', icon: <Laptop className="h-4 w-4" /> },
+    { mode: 'dark', icon: <Moon className="h-4 w-4" /> },
+  ]
+  const index = options.findIndex((o) => o.mode === value)
+
+  const WIDTH = 120 // px
+  const SEGMENT = WIDTH / options.length
 
   return (
-    <div style={{ width: `${WIDTH}px` }} className="h-9">
-      <div className="relative flex h-full rounded-full bg-surface shadow-inner border border-gray-300 dark:border-gray-600 overflow-hidden">
+    <div style={{ width: `${WIDTH}px` }} className="h-8">
+      <div className="relative flex h-full rounded-md bg-surface shadow-inner border border-gray-300 dark:border-gray-600 overflow-hidden">
         {/* Knob */}
         <div
-          className="absolute inset-y-0 left-0 rounded-full bg-white shadow-md transition-transform duration-200 z-0 pointer-events-none"
+          className="absolute inset-y-0 left-0 m-1 rounded-md bg-white shadow transition-transform duration-200 z-0 pointer-events-none"
           style={{
-            width: `${SEGMENT}px`,
+            width: `${SEGMENT - 8}px`,
             transform: `translateX(${index * SEGMENT}px)`
           }}
         />
         {/* Labels */}
-        {options.map((mode) => (
+        {options.map((opt) => (
           <button
-            key={mode}
-            onClick={() => onChange(mode)}
+            key={opt.mode}
+            onClick={() => onChange(opt.mode)}
             style={{ width: `${SEGMENT}px` }}
-            className="relative z-10 h-full flex items-center justify-center text-sm font-medium text-foreground focus:outline-none border-none"
+            className="relative z-10 h-full flex items-center justify-center text-foreground focus:outline-none border-none"
           >
-            {mode.charAt(0).toUpperCase() + mode.slice(1)}
+            {opt.icon}
           </button>
         ))}
       </div>
     </div>
-  );
+  )
 }
 
