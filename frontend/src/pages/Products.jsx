@@ -42,7 +42,7 @@ export default function Products() {
         onClick={() => setOpen(true)}
         className="bg-blue-600 text-white px-3 py-1 rounded mb-4"
       >
-        + Add product
+        + Add product (N)
       </button>
 
       {products.length === 0 && <p>No products yet.</p>}
