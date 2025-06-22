@@ -3,6 +3,7 @@
 # ───────────────────────────────
 # Tabs are required at the start of every recipe line.
 
+PYTHON       := python3.12
 BACKEND_DIR  := backend
 FRONTEND_DIR := frontend           # adjust if the React folder is elsewhere
 PY           := poetry run
@@ -24,7 +25,7 @@ install:
 	@if ! command -v python3 >/dev/null; then \
 		echo "Python 3 is required but not found."; exit 1; \
 	fi
-	@python3 -m venv backend/.venv
+	@$(PYTHON) -m venv backend/.venv
 	@backend/.venv/bin/pip install -U pip
 	@backend/.venv/bin/pip install poetry
 	@cd backend && ../backend/.venv/bin/poetry lock

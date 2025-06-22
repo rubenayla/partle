@@ -50,74 +50,109 @@ This separation avoids dependency conflicts and is standard practice.
 
 ## 🚀 Install (new machine)
 
+### (Recommended) Install Python with pyenv
+
+If you don't have Python 3.12+ available, or want to avoid system Python conflicts, use [pyenv](https://github.com/pyenv/pyenv):
+
 ```bash
-# Clone repo
-git clone https://github.com/<your-github-org>/partle.git && cd partle
-
-# Set up environment variable for frontend to reach backend
-echo "VITE_API_BASE=http://localhost:8000" > frontend/.env
-
-# Install all deps
-make install
+# Install pyenv (Debian/Ubuntu example)
+curl https://pyenv.run | bash
+# Add pyenv to PATH (follow instructions after install)
+export PATH="$HOME/.pyenv/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+# Install Python 3.12
+pyenv install 3.12.3
+# Set it as the local Python for this repo
+cd ~/repos/partle
+pyenv local 3.12.3
 ```
 
-Default backend DB URL:
+---
 
-```bash
+1. **Clone the repo:**
+
+   ```bash
+   git clone https://github.com/<your-github-org>/partle.git && cd partle
+   ```
+2. **(Alternative) Install Python 3.12+ via system package manager:**
+
+   ```bash
+   sudo apt install python3.12 python3.12-venv python3.12-dev
+   ```
+3. **Set up environment variable for frontend to reach backend:**
+
+   ```bash
+   echo "VITE_API_BASE=http://localhost:8000" > frontend/.env
+   ```
+4. **Install all backend/frontend dependencies:**
+
+   ```bash
+   make install
+   ```
+
+   *Sets up venv, Poetry, npm packages, etc.*
+
+> **Requires Python 3.12 or newer.**
+> If missing, see install tips above or in [#Development](#development).
+
+**Default backend DB URL:**
+
+```
 postgresql://postgres:partl3p4ss@localhost:5432/partle
 ```
 
-To override:
+*To override (e.g. use a custom DB):*
 
-```bash
+```
 make dev DATABASE_URL=postgresql://user:pw@host:port/db
 ```
 
+---
+
 ## 🏃‍♂️ Run the app
 
-```bash
-# start both frontend and backend
-make dev
-```
+* **Start both frontend and backend (dev mode):**
 
-Or run separately:
+  make dev
 
-```bash
-make backend   # starts FastAPI
-make frontend  # starts Vite + React
-```
+* **Or run separately:**
 
-### Directly
-- Frontend: `npm run dev`
-- Backend: `poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 --log-level debug`
+  make backend    # starts FastAPI backend on :8000
+  make frontend   # starts Vite/React frontend on :5173
 
-## View the app
-### Deployed
+* **Directly:**
+
+  * Frontend: npm run dev --prefix frontend
+  * Backend:  poetry run uvicorn app.main\:app --reload --host 0.0.0.0 --port 8000 --log-level debug
+
+---
+
 ## 🌍 Deployed Setup
 
-The app is deployed across two services:
+* **Frontend (React):** hosted on [Vercel](https://vercel.com/)
+  Live: [https://partle.vercel.app](https://partle.vercel.app)
+* **Backend (FastAPI):** hosted on [Railway](https://railway.app/)
+  Public API base: [https://partle-production.up.railway.app](https://partle-production.up.railway.app)
 
-- **Frontend** (React): hosted on **[Vercel](https://vercel.com/)**  
-  Live URL: [https://partle.vercel.app](https://partle.vercel.app)
+Frontend uses `import.meta.env.VITE_API_BASE` to locate the backend.
+This must be:
 
-- **Backend** (FastAPI): hosted on **[Railway](https://railway.app/)**  
-  Public API base: VITE_API_BASE=https://partle-production.up.railway.app
+* Set in `frontend/.env` locally for dev (`VITE_API_BASE=http://localhost:8000`)
+* Set in Vercel project settings for prod (`VITE_API_BASE=https://...`)
 
-Frontend uses `import.meta.env.VITE_API_BASE` to locate the backend. This value must be:
+---
 
-- Defined in `frontend/.env` locally for dev (`VITE_API_BASE=http://localhost:8000`)
-- Set in **Vercel project settings** as an environment variable (`VITE_API_BASE=https://...`)
+### Local URLs
 
+* **Frontend:** [http://localhost:5173/](http://localhost:5173/)
+* **Backend:**
 
-### Locally
-- Frontend:
-    - http://localhost:5173/
-- Backend (FastAPI):
-    - http://localhost:8000/docs (API docs)
-    - http://localhost:8000/redoc (ReDoc docs)
-    - http://localhost:8000/api/v1/parts (API endpoint)
-    - http://localhost:8000/api/v1/stores (API endpoint)
-    - http://localhost:8000/docs#/Auth/register_auth_register_post
+  * [http://localhost:8000/docs](http://localhost:8000/docs)    (API docs)
+  * [http://localhost:8000/redoc](http://localhost:8000/redoc)   (ReDoc docs)
+  * [http://localhost:8000/v1/parts](http://localhost:8000/v1/parts)  (API endpoint)
+  * [http://localhost:8000/v1/stores](http://localhost:8000/v1/stores) (API endpoint)
+  * [http://localhost:8000/docs#/Auth/register\_auth\_register\_post](http://localhost:8000/docs#/Auth/register_auth_register_post)
 
 ## 📆 Project Structure
 

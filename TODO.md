@@ -1,5 +1,5 @@
 
-
+- deploy backend to GCE: e2-micro VM
 - add recover password email, need vercel or something
 - consider types of stores, and start adding them
 - UI

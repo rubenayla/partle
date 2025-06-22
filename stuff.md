@@ -448,4 +448,11 @@ partle=# SELECT * FROM users;
 
 partle=# 
 ```
+## shitty railway errors
+![](stuff/20250622015320.png)
+
+
+learned my lesson. Use a GCE directly.
+e2-micro VM should be cheap.
+BUT, remember, i have a laptop 24/7, I'm gonna use that.
 
