@@ -50,7 +50,7 @@ This separation avoids dependency conflicts and is standard practice.
 
 ## 🚀 Install (new machine)
 
-### (Recommended) Install Python with pyenv
+### Install Python (better with pyenv) in the root folder, partle/, for both the frontend and backend.
 
 If you don't have Python 3.12+ available, or want to avoid system Python conflicts, use [pyenv](https://github.com/pyenv/pyenv):
 

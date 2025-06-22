@@ -1,5 +1,5 @@
+I'm installing python in debian Laptop to host the website there. If problems, go with GCE: e2-micro VM
 
-- deploy backend to GCE: e2-micro VM
 - add recover password email, need vercel or something
 - consider types of stores, and start adding them
 - UI
