@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Search, User, Info, Plus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { deleteAccount } from '../api/auth'
+import Tooltip from './Tooltip'
 
 export default function SearchBar({
   onSearch = () => {},
@@ -81,13 +82,14 @@ export default function SearchBar({
   return (
     <header className="fixed top-0 left-0 right-0 z-20 bg-background border-b border-gray-200 dark:border-gray-700">
       <div className="w-full max-w-screen-2xl mx-auto flex items-center justify-between px-4 py-3">
-        <a
-          href="/"
-          title="Go home (H)"
-          className="text-2xl font-semibold text-foreground"
-        >
-          Partle
-        </a>
+        <Tooltip text="Go home (H)">
+          <a
+            href="/"
+            className="text-2xl font-semibold text-foreground"
+          >
+            Partle
+          </a>
+        </Tooltip>
         <form
           onSubmit={handleSearch}
           className="flex flex-1 mx-6 bg-surface rounded-full pl-4 pr-2 h-12 items-center"
@@ -186,11 +188,12 @@ export default function SearchBar({
 
               {createOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-surface rounded-xl shadow-lg p-4 z-50">
-                  <a
-                    href="/products/new"
-                    title="Add product (N)"
-                    className="block px-2 py-1 text-foreground hover:bg-background rounded"
-                  >Add product</a>
+                  <Tooltip text="Add product (N)">
+                    <a
+                      href="/products/new"
+                      className="block px-2 py-1 text-foreground hover:bg-background rounded"
+                    >Add product</a>
+                  </Tooltip>
                   <a href="/stores/new" className="block px-2 py-1 text-foreground hover:bg-background rounded">Add store</a>
                 </div>
               )}
