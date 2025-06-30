@@ -4,23 +4,12 @@ from collections.abc import Generator
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.db.models import Product, User
-from app.db.session import SessionLocal
+from app.db.models import Product, User, Tag
 from app.schemas import product as schema
 from app.auth.security import get_current_user
+from app.api.deps import get_db
 
 router = APIRouter()
-
-
-# ───────────────────────────────────────────
-# Shared dependency
-# ───────────────────────────────────────────
-def get_db() -> Generator[Session, None, None]:
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 # ───────────────────────────────────────────
@@ -108,3 +97,23 @@ def delete_product(
         raise HTTPException(404, "Product not found")
     db.delete(product)
     db.commit()
+
+
+@router.post("/{product_id}/tags/{tag_id}", response_model=schema.ProductOut, status_code=201)
+def add_tag_to_product(
+    product_id: int,
+    tag_id: int,
+    db: Session = Depends(get_db),
+):
+    product = db.get(Product, product_id)
+    if not product:
+        raise HTTPException(404, "Product not found")
+
+    tag = db.query(Tag).filter(Tag.id == tag_id).first()
+    if not tag:
+        raise HTTPException(status_code=404, detail="Tag not found")
+
+    product.tags.append(tag)
+    db.commit()
+    db.refresh(product)
+    return product

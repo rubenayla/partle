@@ -14,9 +14,49 @@ from sqlalchemy import (
     LargeBinary,
     DateTime,
     func,
+    Table,
 )
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from app.db.base_class import Base
+
+
+# Association Tables
+product_tags = Table(
+    "product_tags",
+    Base.metadata,
+    Column("product_id", Integer, ForeignKey("products.id"), primary_key=True),
+    Column("tag_id", Integer, ForeignKey("tags.id"), primary_key=True),
+)
+
+store_tags = Table(
+    "store_tags",
+    Base.metadata,
+    Column("store_id", Integer, ForeignKey("stores.id"), primary_key=True),
+    Column("tag_id", Integer, ForeignKey("tags.id"), primary_key=True),
+)
+
+user_tags = Table(
+    "user_tags",
+    Base.metadata,
+    Column("user_id", Integer, ForeignKey("users.id"), primary_key=True),
+    Column("tag_id", Integer, ForeignKey("tags.id"), primary_key=True),
+)
+
+
+class Tag(Base):
+    __tablename__ = "tags"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
+
+    products: Mapped[list["Product"]] = relationship(
+        secondary=product_tags, back_populates="tags"
+    )
+    stores: Mapped[list["Store"]] = relationship(
+        secondary=store_tags, back_populates="tags"
+    )
+    users: Mapped[list["User"]] = relationship(
+        secondary=user_tags, back_populates="tags"
+    )
 
 
 class StoreType(str, Enum):
@@ -38,6 +78,9 @@ class User(Base):
     updated_products: Mapped[list["Product"]] = relationship(
         back_populates="updated_by", foreign_keys="Product.updated_by_id"
     )
+    tags: Mapped[list["Tag"]] = relationship(
+        secondary=user_tags, back_populates="users"
+    )
 
 
 class Store(Base):
@@ -58,6 +101,9 @@ class Store(Base):
     )
     owner: Mapped[Optional[User]] = relationship(back_populates="stores")
     products: Mapped[list["Product"]] = relationship(back_populates="store")
+    tags: Mapped[list["Tag"]] = relationship(
+        secondary=store_tags, back_populates="stores"
+    )
 
 
 class Product(Base):
@@ -91,6 +137,9 @@ class Product(Base):
     )
     updated_by: Mapped[Optional[User]] = relationship(
         back_populates="updated_products", foreign_keys=[updated_by_id]
+    )
+    tags: Mapped[list["Tag"]] = relationship(
+        secondary=product_tags, back_populates="products"
     )
 
 

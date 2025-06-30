@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional, Literal
+from app.schemas.tag import Tag
 
 
 class StoreBase(BaseModel):
@@ -17,6 +18,7 @@ class StoreCreate(StoreBase):
 
 class StoreRead(StoreBase):
     id: int
+    tags: list[Tag] = []
 
     class Config:
         from_attributes = True

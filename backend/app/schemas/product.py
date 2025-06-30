@@ -25,8 +25,13 @@ class ProductUpdate(ProductIn):
     name: Optional[str] = None
 
 
+from app.schemas.tag import Tag
+
+
 class ProductOut(ProductIn):
     """What the API returns."""
     id: int
     updated_at: datetime
     updated_by_id: Optional[int] = None
+    tags: list[Tag] = []
+
