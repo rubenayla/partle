@@ -1,12 +1,5 @@
-- UI
-    - The text on hover showing shortcuts and whatnot should appear immediately, not after a delay. 
-
-
-------
-
-- Ok, now i'd like to implement the feature to recover my password. The typical button "Forgot your password?" or "Recover yourpassword with an email" something like that.   
-- Add tags table according to README.md
-    - Then, add mock data to the database with a corresponding tag. use api that mocks data? or let gpt fill it
+- mock data
+- Ok, now i'd like to implement the feature to recover my password. The typical button "Forgot your password?" or "Recover your password with an email" something like that.
 - add recover password email, need vercel or something
 - consider types of stores, and start adding them
 - Store CRUD (3 → 4) – lets you seed real data from the UI.
