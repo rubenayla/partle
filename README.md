@@ -177,6 +177,63 @@ make dev DATABASE_URL=postgresql://user:pw@host:port/db
 
 ---
 
+## 💾 Database Setup
+
+This project uses PostgreSQL as its primary database. For a simpler, file-based setup, you can use SQLite.
+
+### PostgreSQL (Recommended)
+
+1.  **Install PostgreSQL:**
+
+    If you haven't already, install PostgreSQL on your system. On Debian/Ubuntu, you can use:
+
+    ```bash
+    sudo apt update
+    sudo apt install postgresql postgresql-contrib
+    ```
+
+2.  **Create the database and user:**
+
+    You'll need to create a database and a user for the application. You can do this by running the following commands in your terminal:
+
+    ```bash
+    sudo -u postgres psql -c "CREATE USER partle WITH PASSWORD 'partl3p4ss'"
+    sudo -u postgres psql -c "CREATE DATABASE partle OWNER partle"
+    ```
+
+    You can replace `partle` and `partl3p4ss` with your desired database name, username, and password.
+
+3.  **Set the `DATABASE_URL` environment variable:**
+
+    The application uses the `DATABASE_URL` environment variable to connect to the database. The default is `postgresql://postgres:partl3p4ss@localhost:5432/partle`. If you used different credentials, you'll need to set this variable.
+
+    You can set it in a `.env` file in the `backend` directory, or by exporting it in your terminal:
+
+    ```bash
+    export DATABASE_URL="postgresql://user:pw@host:port/db"
+    ```
+
+4.  **Run the database migrations:**
+
+    Once the database is created and the `DATABASE_URL` is set, you can run the database migrations:
+
+    ```bash
+    cd backend
+    poetry run alembic upgrade head
+    ```
+
+### SQLite (for simple local development)
+
+If you prefer to use SQLite, you can set the `DATABASE_URL` to point to a local file:
+
+```bash
+export DATABASE_URL="sqlite:///partle.db"
+```
+
+The database file will be created in the `backend` directory. You'll still need to run the migrations as described above.
+
+---
+
 ## 🌍 Deployed Setup
 
 * **Frontend (React):** hosted on [Vercel](https://vercel.com/)

@@ -83,9 +83,13 @@ Dependencies are installed via Poetry in the previous step. You can also run
 
 ## Create the database tables
 
+To create the database tables, run the Alembic migrations from the `backend` directory:
+
 ```bash
-python -m app.db.base
+poetry run alembic upgrade head
 ```
+
+For more detailed instructions on setting up the database, please see the main [README.md](../../README.md#database-setup).
 
 ## ▶️ Run the development server
 
