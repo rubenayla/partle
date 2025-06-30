@@ -36,14 +36,7 @@ pytest = "^8.4.1"
 ruff = "^0.4" # Added ruff
 pytest-dotenv = "^0.5.2"
 
-[tool.pytest.ini_options]
-minversion = "8.0"
-addopts = "-ra -q"
-testpaths = ["tests"]
-pythonpath = ["app", "tests"]
-env_files = [
-    ".env.test"
-]
+
 
 [tool.ruff]
 line-length = 120

@@ -1,14 +1,35 @@
-... running tests with gemini, frontend with npm install and backend too
-... setting up debian laptop with backend
-
-- Add tags table according to README.md
-    - Then, add mock data to the database with a corresponding tag. use api that mocks data? or let gpt fill it
-I'm installing python in debian Laptop to host the website there. If problems, go with GCE: e2-micro VM
-
-- add recover password email, need vercel or something
-- consider types of stores, and start adding them
 - UI
     - The text on hover showing shortcuts and whatnot should appear immediately, not after a delay. 
+
+  Today's Progress:
+
+
+   * I created a new, reusable Tooltip.tsx component that displays a tooltip
+     instantly on hover, without any delay.
+   * I added the necessary CSS styles for this new component to the main stylesheet
+     (index.css).
+   * I integrated the new Tooltip component into the SearchBar.jsx file, replacing
+     the default browser tooltips for the "Go home" link and the "Add product"
+     link.
+
+  Plan for Tomorrow:
+
+
+   1. Start the frontend development server to visually verify that the new tooltips
+      are working correctly and that no new issues have been introduced.
+   2. Review the rest of the application to find any other instances of tooltips
+      that should be updated to use the new, faster component for a consistent user
+      experience.
+   3. Once all tooltips are updated and verified, I will confirm with you that the
+      task is complete.
+------
+
+- fix pytest output error in partle folder
+- Ok, now i'd like to implement the feature to recover my password. The typical button "Forgot your password?" or "Recover yourpassword with an email" something like that.   
+- Add tags table according to README.md
+    - Then, add mock data to the database with a corresponding tag. use api that mocks data? or let gpt fill it
+- add recover password email, need vercel or something
+- consider types of stores, and start adding them
 - Store CRUD (3 → 4) – lets you seed real data from the UI.
 - Parts under stores (5 → 6) – completes the core data model.
 - Tune the reliability rating of the info uploaded. It should go -1 to 1. Start at 0, depending on other people ratings get modified.
@@ -33,7 +54,7 @@ I'm installing python in debian Laptop to host the website there. If problems, g
 
 ## Not urgent, long term
 - Think of better name. People don't understand what it is, how to write etc.
-- implement freaking fido2. I think the best way is using SimpleWebAuthn. I already have Node.js for the frontend, so no extra dependencies. Should probably use the same PostgreSQL database i have, let Node return user_id and email, FastAPI issues the token.
+- - Ask gemini to try to implement FIDO2. I think the best way is using SimpleWebAuthn. I already have Node.js for the frontend, so no extra dependencies. Should probably use the same PostgreSQL database i have, let Node return user_id and email, FastAPI issues the token.
 - AI thingy to load them to the database just by recording with the phone. It recognizes the products, screenshots them, lists the price, geo location and everything. You can go around stores and record to add thousands of products.
 - What if i put the search terms at the left, the search bar at the top of the left section, and on startup the website already includes products as suggestions? The left search terms stay there, and the scroll only includes the products. The right is blank or left for ads etc.
 - Make map take the whole screen while keeping list with 4xl
