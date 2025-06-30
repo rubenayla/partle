@@ -51,7 +51,7 @@ def upgrade() -> None:
     op.alter_column('products', 'creator_id',
                existing_type=sa.INTEGER(),
                nullable=True)
-    op.drop_constraint(op.f('fk_products_creator_id_users'), 'products', type_='foreignkey')
+    # op.drop_constraint(op.f('fk_products_creator_id_users'), 'products', type_='foreignkey') # Commented out due to non-existent constraint
     op.create_foreign_key(None, 'products', 'users', ['creator_id'], ['id'], ondelete='SET NULL')
     # ### end Alembic commands ###
 

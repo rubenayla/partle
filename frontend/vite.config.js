@@ -8,6 +8,13 @@ export default defineConfig({
     outDir: 'dist',
   },
   server: {
-    historyApiFallback: true  // (safe, local only)
+    historyApiFallback: true,  // (safe, local only)
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
   },
 });

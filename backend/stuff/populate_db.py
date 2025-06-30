@@ -1,25 +1,25 @@
 
 import asyncio
-import httpx
 from sqlalchemy.future import select
-from app.db.session import get_session
+import httpx
+from app.db.session import SessionLocal
 from app.db.models import Product, Tag
 
-async def populate_db():
+def populate_db():
     """Populate the database with mock data."""
-    async with httpx.AsyncClient() as client:
-        response = await client.get("https://dummyjson.com/products")
+    with httpx.Client() as client:
+        response = client.get("https://dummyjson.com/products")
         data = response.json()
         products = data["products"]
 
-    async with get_session() as session:
-        tag = await session.execute(select(Tag).filter_by(name="mock-data"))
-        tag = tag.scalar_one_or_none()
+    session = SessionLocal()
+    try:
+        tag = session.execute(select(Tag).filter_by(name="mock-data")).scalar_one_or_none()
         if not tag:
             tag = Tag(name="mock-data")
             session.add(tag)
-            await session.commit()
-            await session.refresh(tag)
+            session.commit()
+            session.refresh(tag)
 
         for product_data in products:
             product = Product(
@@ -30,11 +30,13 @@ async def populate_db():
             )
             session.add(product)
 
-        await session.commit()
+        session.commit()
+    finally:
+        session.close()
 
 def main():
     """Script entrypoint."""
-    asyncio.run(populate_db())
+    populate_db()
 
 if __name__ == "__main__":
     main()
