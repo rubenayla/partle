@@ -16,6 +16,7 @@ backend/.venv/
 backend/.mypy_cache/
 backend/.pytest_cache/
 backend/.DS_Store
+backend/partle.db
 
 # === Logs ===
 *.log
