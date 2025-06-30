@@ -1,5 +1,5 @@
-- mock data
-- Ok, now i'd like to implement the feature to recover my password. The typical button "Forgot your password?" or "Recover your password with an email" something like that.
+- like to implement the feature to recover my password. The typical button "Forgot your password?" or "Recover your password with an email" something like that.
+- The search box has an x button to clear text, but it's blue. I want to fix the color.
 - add recover password email, need vercel or something
 - consider types of stores, and start adding them
 - Store CRUD (3 → 4) – lets you seed real data from the UI.

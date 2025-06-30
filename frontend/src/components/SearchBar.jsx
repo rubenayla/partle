@@ -1,9 +1,10 @@
 // frontend/src/components/SearchBar.jsx
-import { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Search, User, Info, Plus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { deleteAccount } from '../api/auth'
 import Tooltip from './Tooltip'
+import TagFilter from './TagFilter'
 
 export default function SearchBar({
   onSearch = () => {},
@@ -13,6 +14,7 @@ export default function SearchBar({
   const [query, setQuery] = useState('')
   const [priceMin, setPriceMin] = useState(0)
   const [priceMax, setPriceMax] = useState(500)
+  const [selectedTags, setSelectedTags] = useState([])
   const [sortBy, setSortBy] = useState('relevance')
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'auto')
 
@@ -21,11 +23,13 @@ export default function SearchBar({
   const [accountOpen, setAccountOpen] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)
   const [createOpen, setCreateOpen] = useState(false)
+  const [filterOpen, setFilterOpen] = useState(false)
 
   const priceRef = useRef()
   const sortRef = useRef()
   const accountRef = useRef()
   const infoRef = useRef()
+  const filterRef = useRef()
 
   const navigate = useNavigate()
   const createRef = useRef()
@@ -59,6 +63,7 @@ export default function SearchBar({
       if (!accountRef.current?.contains(e.target)) setAccountOpen(false)
       if (!infoRef.current?.contains(e.target)) setInfoOpen(false)
       if (!createRef.current?.contains(e.target)) setCreateOpen(false)
+      if (!filterRef.current?.contains(e.target)) setFilterOpen(false)
     }
     document.addEventListener('mousedown', closeAll)
     return () => document.removeEventListener('mousedown', closeAll)
@@ -74,9 +79,9 @@ export default function SearchBar({
     return () => window.removeEventListener('keydown', handle)
   }, [navigate, isLoggedIn])
 
-  const handleSearch = (e) => {
-    e.preventDefault()
-    onSearch({ query, priceMin, priceMax, sortBy })
+  const handleSearch = (event) => {
+    event.preventDefault()
+    onSearch({ query, priceMin, priceMax, sortBy, selectedTags })
   }
 
   return (
@@ -101,6 +106,26 @@ export default function SearchBar({
             onChange={(e) => setQuery(e.target.value)}
             className="flex-1 h-full bg-transparent placeholder-text-secondary text-foreground focus:outline-none"
           />
+
+          <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-3" />
+          {/* New Filter Section */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setFilterOpen(!filterOpen)} // Assuming a new state for filterOpen
+              className="h-full px-3 text-sm text-foreground bg-transparent focus:outline-none"
+            >
+              Filters
+            </button>
+            {filterOpen && (
+              <div ref={filterRef} className="absolute top-14 left-0 w-64 bg-surface rounded-xl shadow-lg p-4 z-50 space-y-2">
+                <TagFilter
+                  selectedTags={selectedTags}
+                  onTagChange={setSelectedTags}
+                />
+              </div>
+            )}
+          </div>
 
           <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-3" />
           <div ref={priceRef} className="relative">
@@ -304,7 +329,7 @@ function ThemeSwitch({ value, onChange }) {
           <button
             key={mode}
             onClick={() => onChange(mode)}
-            style={{ width: `${SEGENT}px` }}
+            style={{ width: `${SEGMENT}px` }}
             className={`relative z-10 h-full flex items-center justify-center text-sm font-medium
               ${index === i ? "text-white" : "text-foreground"}
               focus:outline-none border-none`}
@@ -316,5 +341,3 @@ function ThemeSwitch({ value, onChange }) {
     </div>
   );
 }
-
-
