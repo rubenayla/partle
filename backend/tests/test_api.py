@@ -141,3 +141,40 @@ def test_create_and_link_tags():
     product_json = product_resp.json()
     assert len(product_json["tags"]) == 1
     assert product_json["tags"][0]["name"] == "Test Tag"
+
+
+def test_create_and_link_tag_to_store():
+    # register and authenticate user
+    reg_payload = {"email": "user3@example.com", "password": "secret"}
+    client.post("/v1/auth/register", json=reg_payload)
+    login_resp = client.post(
+        "/v1/auth/login",
+        data={"username": reg_payload["email"], "password": reg_payload["password"]},
+    )
+    token = login_resp.json()["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # create store
+    store_data = {"name": "Test Store 3", "lat": 0.0, "lon": 0.0, "type": "physical"}
+    store_resp = client.post("/v1/stores/", json=store_data, headers=headers)
+    assert store_resp.status_code == 201
+    store_id = store_resp.json()["id"]
+
+    # create tag
+    tag_data = {"name": "Test Tag 2"}
+    tag_resp = client.post("/v1/tags/", json=tag_data, headers=headers)
+    assert tag_resp.status_code == 201
+    tag_id = tag_resp.json()["id"]
+
+    # link tag to store
+    link_resp = client.post(
+        f"/v1/stores/{store_id}/tags/{tag_id}", headers=headers
+    )
+    assert link_resp.status_code == 201
+
+    # get store and verify tag
+    store_resp = client.get(f"/v1/stores/{store_id}", headers=headers)
+    assert store_resp.status_code == 200
+    store_json = store_resp.json()
+    assert len(store_json["tags"]) == 1
+    assert store_json["tags"][0]["name"] == "Test Tag 2"
