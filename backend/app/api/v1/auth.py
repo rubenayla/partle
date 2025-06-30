@@ -53,7 +53,7 @@ def login(
         raise HTTPException(status_code=404, detail="User not found")
 
     if not verify_password(form.password, user.password_hash):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        raise HTTPException(status_code=401, detail="Incorrect email or password")
 
     token = create_access_token({"sub": str(user.id)})
     return {"access_token": token, "token_type": "bearer"}

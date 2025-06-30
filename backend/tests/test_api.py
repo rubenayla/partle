@@ -55,6 +55,20 @@ def test_login_unknown_email():
     assert resp.status_code == 404
 
 
+def test_login_incorrect_password():
+    # register user
+    reg_payload = {"email": "user6@example.com", "password": "secret"}
+    client.post("/v1/auth/register", json=reg_payload)
+
+    # attempt login with incorrect password
+    resp = client.post(
+        "/v1/auth/login",
+        data={"username": "user6@example.com", "password": "wrong-password"},
+    )
+    assert resp.status_code == 401
+    assert "Incorrect email or password" in resp.json()["detail"]
+
+
 def test_create_store_and_part():
     # register and authenticate user
     reg_payload = {"email": "user@example.com", "password": "secret"}
