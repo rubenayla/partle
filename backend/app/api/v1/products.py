@@ -1,7 +1,7 @@
 # backend/app/api/v1/products.py
 from collections.abc import Generator
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.db.models import Product, User, Tag
@@ -18,15 +18,11 @@ router = APIRouter()
 @router.get("/", response_model=list[schema.ProductOut])
 def list_products(
     store_id: int | None = None,
-    tags: str = Query(""),
     db: Session = Depends(get_db),
 ):
     q = db.query(Product)
     if store_id is not None:
         q = q.filter(Product.store_id == store_id)
-    if tags:
-        tag_ids = [int(tag_id) for tag_id in tags.split(',') if tag_id]
-        q = q.filter(Product.tags.any(Tag.id.in_(tag_ids)))
     return q.all()
 
 

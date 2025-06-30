@@ -1,5 +1,5 @@
 // frontend/src/pages/Home.jsx
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import SearchBar from "../components/SearchBar";
 import ListView   from "./ListView";
@@ -15,27 +15,18 @@ export default function Home() {
   const [accountOpen, setAccountOpen] = useState(false);
 
   const [products, setProducts] = useState([]);
-  const [filters, setFilters] = useState({ query: '', priceMin: 0, priceMax: 500, sortBy: 'relevance', selectedTags: [] });
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const params = {
-          q: filters.query,
-          min_price: filters.priceMin,
-          max_price: filters.priceMax,
-          sort_by: filters.sortBy,
-          tags: filters.selectedTags.join(','), // Pass tags as a comma-separated string
-        };
-        const response = await axios.get("/api/v1/products", { params });
-        console.log("API Response Data:", response.data);
+        const response = await axios.get("/api/v1/products");
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
     };
     fetchProducts();
-  }, [filters]);
+  }, []);
 
   /* keep isLoggedIn fresh (other tab → logout, etc.) */
   useEffect(() => {
@@ -52,7 +43,6 @@ export default function Home() {
       <SearchBar
         isLoggedIn={isLoggedIn}
         onAccountClick={() => setAccountOpen(true)}
-        onSearch={(newFilters) => setFilters(newFilters)}
       />
 
       {accountOpen && (

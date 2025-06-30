@@ -161,10 +161,3 @@ button:focus-visible {
   z-index: 10;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
-
-/* Fix for search input clear button color */
-input[type="search"]::-webkit-search-cancel-button {
-  background-color: transparent !important;
-  color: var(--color-text-primary) !important;
-  fill: var(--color-text-primary) !important; /* For SVG icons */
-}
