@@ -148,10 +148,10 @@ button:focus-visible {
 
 .tooltip {
   position: absolute;
-  bottom: 100%;
+  top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  margin-bottom: 8px;
+  margin-top: 8px;
   padding: 8px 12px;
   background-color: var(--color-surface);
   color: var(--color-text-primary);
