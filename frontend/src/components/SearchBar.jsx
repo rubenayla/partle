@@ -304,7 +304,7 @@ function ThemeSwitch({ value, onChange }) {
           <button
             key={mode}
             onClick={() => onChange(mode)}
-            style={{ width: `${SEGMENT}px` }}
+            style={{ width: `${SEGENT}px` }}
             className={`relative z-10 h-full flex items-center justify-center text-sm font-medium
               ${index === i ? "text-white" : "text-foreground"}
               focus:outline-none border-none`}
