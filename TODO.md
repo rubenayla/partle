@@ -1,30 +1,9 @@
 - UI
     - The text on hover showing shortcuts and whatnot should appear immediately, not after a delay. 
 
-  Today's Progress:
 
-
-   * I created a new, reusable Tooltip.tsx component that displays a tooltip
-     instantly on hover, without any delay.
-   * I added the necessary CSS styles for this new component to the main stylesheet
-     (index.css).
-   * I integrated the new Tooltip component into the SearchBar.jsx file, replacing
-     the default browser tooltips for the "Go home" link and the "Add product"
-     link.
-
-  Plan for Tomorrow:
-
-
-   1. Start the frontend development server to visually verify that the new tooltips
-      are working correctly and that no new issues have been introduced.
-   2. Review the rest of the application to find any other instances of tooltips
-      that should be updated to use the new, faster component for a consistent user
-      experience.
-   3. Once all tooltips are updated and verified, I will confirm with you that the
-      task is complete.
 ------
 
-- fix pytest output error in partle folder
 - Ok, now i'd like to implement the feature to recover my password. The typical button "Forgot your password?" or "Recover yourpassword with an email" something like that.   
 - Add tags table according to README.md
     - Then, add mock data to the database with a corresponding tag. use api that mocks data? or let gpt fill it
