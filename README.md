@@ -140,7 +140,12 @@ echo "VITE_API_BASE=http://localhost:8000" > frontend/.env
 make install
 ```
 
-*Sets up venv, Poetry, npm packages, etc.*
+   *Sets up venv, Poetry, npm packages, etc.*
+
+   **Note on Frontend Dependencies:** Due to potential peer dependency conflicts with React 19 and some libraries (e.g., `@testing-library/react`, `react-leaflet`), `npm install` might require the `--force` flag to resolve. While generally not recommended for production, this can be used in development to proceed with installation:
+   ```bash
+   npm install --force
+   ```
 
 > **Requires Python 3.12 or newer.**
 > If missing, see install tips above or in [#Development](#development).
