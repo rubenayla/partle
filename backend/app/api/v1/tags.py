@@ -4,6 +4,8 @@ from sqlalchemy.orm import Session
 from app.schemas.tag import Tag, TagCreate
 from app.db import models
 from app.api.deps import get_db
+from app.auth.security import get_current_user
+from app.db.models import User
 
 router = APIRouter()
 
@@ -13,6 +15,7 @@ def create_tag(
     *,
     db: Session = Depends(get_db),
     tag_in: TagCreate,
+    current_user: User = Depends(get_current_user),
 ) -> models.Tag:
     """
     Create new tag.
@@ -42,24 +45,3 @@ def read_tags(
     tags = db.query(models.Tag).offset(skip).limit(limit).all()
     return tags
 
-
-@router.post("/{tag_id}/stores/{store_id}", response_model=Tag)
-def add_tag_to_store(
-    *,
-    db: Session = Depends(get_db),
-    tag_id: int,
-    store_id: int,
-) -> models.Tag:
-    """
-    Add a tag to a store.
-    """
-    tag = db.query(models.Tag).filter(models.Tag.id == tag_id).first()
-    if not tag:
-        raise HTTPException(status_code=404, detail="Tag not found")
-    store = db.query(models.Store).filter(models.Store.id == store_id).first()
-    if not store:
-        raise HTTPException(status_code=404, detail="Store not found")
-    store.tags.append(tag)
-    db.commit()
-    db.refresh(tag)
-    return tag

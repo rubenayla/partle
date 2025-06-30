@@ -14,24 +14,11 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.auth.security import get_current_user
-from app.db.models import Store, User
-from app.db.session import SessionLocal
+from app.db.models import Store, User, Tag
 from app.schemas import store as schema
+from app.api.deps import get_db
 
 router = APIRouter(tags=["Stores"])
-
-# ─────────────────────────────────────────────
-# Dependencies
-# ─────────────────────────────────────────────
-
-def get_db() -> Generator[Session, None, None]:
-    """Provide a scoped SQLAlchemy session per‑request."""
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 
 # ─────────────────────────────────────────────
 # Routes
@@ -81,3 +68,25 @@ def delete_store(store_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Store not found")
     db.delete(store)
     db.commit()
+
+
+@router.post("/{store_id}/tags/{tag_id}", response_model=schema.StoreRead, status_code=201)
+def add_tag_to_store(
+    store_id: int,
+    tag_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Add a tag to a store."""
+    store = db.get(Store, store_id)
+    if not store:
+        raise HTTPException(404, "Store not found")
+
+    tag = db.query(Tag).filter(Tag.id == tag_id).first()
+    if not tag:
+        raise HTTPException(status_code=404, detail="Tag not found")
+
+    store.tags.append(tag)
+    db.commit()
+    db.refresh(store)
+    return store
