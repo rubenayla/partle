@@ -40,7 +40,7 @@ Users can rate the reliability of almost all data shown about products and store
     - I prefer TypeScript for type safety
 - **backend/**
     - Uses `pyenv` to manage Python versions
-    - Poetry for Python dependency management, optionally combined with `uv` for fast installation
+    - Poetry for Python dependency management
     - FastAPI as backend server
     - PostgreSQL with SQLAlchemy ORM and Alembic for migrations
     - Running `make setup` creates `backend/.venv` and installs dependencies
@@ -50,7 +50,63 @@ This separation avoids dependency conflicts and is standard practice.
 
 ## 🚀 Install (new machine)
 
-### Install Python (better with pyenv) in the root folder, partle/, for both the frontend and backend.
+### 1. Set up SSH Key for GitHub
+
+To clone the repository using SSH, you'll need to add an SSH key to your GitHub account.
+
+First, check for existing SSH keys:
+
+```bash
+ls -al ~/.ssh
+```
+
+If you see `id_ed25519.pub` or `id_rsa.pub`, you already have a key and can skip to the next step.
+
+If not, create a new SSH key:
+
+```bash
+# Create a new SSH key
+ssh-keygen -t ed25519 -C "your_email@example.com, or something to identify the key"
+
+# Start the ssh-agent in the background
+eval "$(ssh-agent -s)"
+
+# Add your SSH private key to the ssh-agent
+ssh-add ~/.ssh/id_ed25519
+
+# Copy the SSH public key to your clipboard
+cat ~/.ssh/id_ed25519.pub
+```
+
+Next, add the copied public key to your GitHub account. Follow the instructions here:
+[https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)
+
+Finally, verify your connection:
+```bash
+ssh -T git@github.com
+```
+
+### 2. Clone the repo
+
+```bash
+git clone git@github.com:rubenayla/partle.git && cd partle
+```
+
+### 3. Quick Setup (Recommended)
+
+For a quick and automated setup, run the `dev_setup.sh` script:
+
+```bash
+./dev_setup.sh
+```
+
+This script will install system dependencies, Node.js via nvm, set up the frontend, and configure the Python backend with pyenv and Poetry.
+
+### 4. Manual Setup (Alternative)
+
+If you prefer a step-by-step manual installation, follow these instructions:
+
+#### 4.1. Set up Python 3.12+
 
 If you don't have Python 3.12+ available, or want to avoid system Python conflicts, use [pyenv](https://github.com/pyenv/pyenv):
 
@@ -61,37 +117,30 @@ curl https://pyenv.run | bash
 export PATH="$HOME/.pyenv/bin:$PATH"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
-# Install Python 3.12
+# Install Python 3.12 and set it as the local version
 pyenv install 3.12.3
-# Set it as the local Python for this repo
-cd ~/repos/partle
 pyenv local 3.12.3
 ```
 
----
+**(Alternative) Install Python 3.12+ via system package manager:**
 
-1. **Clone the repo:**
+```bash
+sudo apt install python3.12 python3.12-venv python3.12-dev
+```
 
-   ```bash
-   git clone https://github.com/<your-github-org>/partle.git && cd partle
-   ```
-2. **(Alternative) Install Python 3.12+ via system package manager:**
+#### 4.2. Set up environment variable for frontend to reach backend
 
-   ```bash
-   sudo apt install python3.12 python3.12-venv python3.12-dev
-   ```
-3. **Set up environment variable for frontend to reach backend:**
+```bash
+echo "VITE_API_BASE=http://localhost:8000" > frontend/.env
+```
 
-   ```bash
-   echo "VITE_API_BASE=http://localhost:8000" > frontend/.env
-   ```
-4. **Install all backend/frontend dependencies:**
+#### 4.3. Install all backend/frontend dependencies
 
-   ```bash
-   make install
-   ```
+```bash
+make install
+```
 
-   *Sets up venv, Poetry, npm packages, etc.*
+*Sets up venv, Poetry, npm packages, etc.*
 
 > **Requires Python 3.12 or newer.**
 > If missing, see install tips above or in [#Development](#development).
@@ -153,6 +202,18 @@ This must be:
   * [http://localhost:8000/v1/parts](http://localhost:8000/v1/parts)  (API endpoint)
   * [http://localhost:8000/v1/stores](http://localhost:8000/v1/stores) (API endpoint)
   * [http://localhost:8000/docs#/Auth/register\_auth\_register\_post](http://localhost:8000/docs#/Auth/register_auth_register_post)
+
+## DB Structure
+tags
+- id (PK)
+- name (unique)
+
+tag_links
+- tag_id (FK)
+- entity_type (Enum: 'product', 'store')
+- entity_id (int)
+- UNIQUE (tag_id, entity_type, entity_id)
+
 
 ## 📆 Project Structure
 
