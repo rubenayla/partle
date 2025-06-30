@@ -48,13 +48,21 @@ export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
 
-PY_VERSION="3.12.3"
+PY_VERSION=$(grep -E '^(python|requires-python)' backend/pyproject.toml | head -1 | sed -E 's/.*= *["']?([0-9]+\.[0-9]+).*$/\1/')
+
+if [ -z "$PY_VERSION" ]; then
+    echo "Error: Could not determine Python version from backend/pyproject.toml"
+    exit 1
+fi
+
 if ! pyenv versions --bare | grep -q "$PY_VERSION"; then
+    echo "Installing Python $PY_VERSION..."
     pyenv install "$PY_VERSION"
 fi
 
 cd backend
 echo "$PY_VERSION" > .python-version
+
 
 # ---- Poetry environment ----
 if ! command -v poetry >/dev/null 2>&1; then

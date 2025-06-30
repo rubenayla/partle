@@ -1,3 +1,6 @@
+... running tests with gemini, frontend with npm install and backend too
+... setting up debian laptop with backend
+
 - Add tags table according to README.md
     - Then, add mock data to the database with a corresponding tag. use api that mocks data? or let gpt fill it
 I'm installing python in debian Laptop to host the website there. If problems, go with GCE: e2-micro VM
