@@ -1,5 +1,7 @@
+- vercel put .env as in the example so the recovery via email works
 - open port on router so vercel can access debian database, and setup environment variables
     - can vercel be configured from terminal?
+- Fix view of product, to keep the searchbar (header?) at all times.
 - Ok, now i'd like to implement the feature to recover my password. The typical button "Forgot your password?" or "Recover your password with an email" something like that.
 - add recover password email, need vercel or something
 - consider types of stores, and start adding them
@@ -24,8 +26,10 @@
 - Improve unit tests
 - Map toggle (7) – visual polish that sells the idea.
 - Hosting partle.rubenayla.xyz
+- Add some color
 
 ## Not urgent, long term
+- limit max item count per row to 3?
 - Think of better name. People don't understand what it is, how to write etc.
 - - Ask gemini to try to implement FIDO2. I think the best way is using SimpleWebAuthn. I already have Node.js for the frontend, so no extra dependencies. Should probably use the same PostgreSQL database i have, let Node return user_id and email, FastAPI issues the token.
 - AI thingy to load them to the database just by recording with the phone. It recognizes the products, screenshots them, lists the price, geo location and everything. You can go around stores and record to add thousands of products.

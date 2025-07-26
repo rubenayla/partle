@@ -1,10 +1,11 @@
+import os
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
 from jose import jwt
 from itsdangerous import URLSafeTimedSerializer
 
 # ─── Auth basics ──────────────────────────────────────────────────────────
-SECRET_KEY = "super-secret"  # TODO move to env / settings
+SECRET_KEY = os.environ.get("SECRET_KEY", "super-secret")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -50,27 +51,18 @@ def verify_reset_token(token: str, max_age: int = 3600) -> str | None:
         return None
 
 
+import smtplib
+from email.message import EmailMessage
+
+
 def send_reset_email(to_email: str, token: str) -> None:
-    """
-    Dev helper: prints reset link to console.  Replace with real mailer.
-    """
     link = f"https://partle.com/reset?token={token}"
-    print(f"\n[RESET] To: {to_email}\n      → {link}\n")
+    msg = EmailMessage()
+    msg["Subject"] = "Reset your Partle password"
+    msg["From"] = os.environ.get("SMTP_USERNAME")
+    msg["To"] = to_email
+    msg.set_content(f"Click here to reset your password:\n{link}")
 
-
-# TODO VERCEL OR CLOUDFLARE FOR THIS
-# import smtplib
-# from email.message import EmailMessage
-
-# def send_reset_email(to_email: str, token: str) -> None:
-#     link = f"https://partle.com/reset?token={token}"
-#     msg = EmailMessage()
-#     msg["Subject"] = "Reset your Partle password"
-#     msg["From"] = "no-reply@partle.com"
-#     msg["To"] = to_email
-#     msg.set_content(f"Click here to reset your password:\n{link}")
-
-#     # You need a real SMTP service here
-#     with smtplib.SMTP_SSL("smtp.mailprovider.com", 465) as smtp:
-#         smtp.login("your-user", "your-pass")
-#         smtp.send_message(msg)
+    with smtplib.SMTP_SSL(os.environ.get("SMTP_HOST"), os.environ.get("SMTP_PORT")) as smtp:
+        smtp.login(os.environ.get("SMTP_USERNAME"), os.environ.get("SMTP_PASSWORD"))
+        smtp.send_message(msg)

@@ -456,3 +456,16 @@ learned my lesson. Use a GCE directly.
 e2-micro VM should be cheap.
 BUT, remember, i have a laptop 24/7, I'm gonna use that.
 
+# 2025-07-27
+For now i'll use my laptop as the backend server, the page will go down everytime i turn it off since i'm still in development
+
+# format and scraping
+## Leroy Merlin
+uses productos in the link so it's easy to distinguish. Maybe the spider crawler and that's it
+https://www.leroymerlin.es/productos/perfil-forma-cuadrada-de-acero-en-bruto-standers-alt-25-x-an-25mm-x-l-1-m-87825775.html
+BLOCKED, BOT DETECTION. HARD
+
+## bricodepot
+https://www.bricodepot.es/carpa-plegable-verde-2-6-x-3-x-3-m-8421415191695
+
+https://www.elcorteingles.es/electrodomesticos/A42712840-lavadora-haier-8-kg-1400-rpm-vapor-i-pro-series-3-hw80-b14939-ib/?stype=search_redirect&parentCategoryId=999.54508013&color=Blanco

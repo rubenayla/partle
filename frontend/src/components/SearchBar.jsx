@@ -7,9 +7,9 @@ import Tooltip from './Tooltip'
 import TagFilter from './TagFilter'
 
 export default function SearchBar({
-  onSearch = () => {},
+  onSearch = () => { },
   isLoggedIn = false,
-  onAccountClick = () => {},
+  onAccountClick = () => { },
 }) {
   const [query, setQuery] = useState('')
   const [priceMin, setPriceMin] = useState(0)
@@ -46,7 +46,7 @@ export default function SearchBar({
     if (theme === 'auto') {
       media = window.matchMedia('(prefers-color-scheme: dark)')
       applyTheme(media.matches ? 'dark' : 'light')
-      const handler = (_e) => applyTheme(_e.matches ? 'dark' : 'light')
+      const handler = (e) => applyTheme(e.matches ? 'dark' : 'light')
       media.addEventListener('change', handler)
       return () => media.removeEventListener('change', handler)
     } else {
@@ -57,12 +57,12 @@ export default function SearchBar({
   }, [theme])
 
   useEffect(() => {
-    const closeAll = (_e) => {
-      if (!priceRef.current?.contains(_e.target)) setPriceOpen(false)
-      if (!sortRef.current?.contains(_e.target)) setSortOpen(false)
-      if (!accountRef.current?.contains(_e.target)) setAccountOpen(false)
-      if (!infoRef.current?.contains(_e.target)) setInfoOpen(false)
-      if (!createRef.current?.contains(_e.target)) setCreateOpen(false)
+    const closeAll = (e) => {
+      if (!priceRef.current?.contains(e.target)) setPriceOpen(false)
+      if (!sortRef.current?.contains(e.target)) setSortOpen(false)
+      if (!accountRef.current?.contains(e.target)) setAccountOpen(false)
+      if (!infoRef.current?.contains(e.target)) setInfoOpen(false)
+      if (!createRef.current?.contains(e.target)) setCreateOpen(false)
       if (!filterRef.current?.contains(_e.target)) setFilterOpen(false)
     }
     document.addEventListener('mousedown', closeAll)
@@ -70,8 +70,8 @@ export default function SearchBar({
   }, [])
 
   useEffect(() => {
-    const handle = (_e) => {
-      if (_e.key.toLowerCase() === 'n' && isLoggedIn) {
+    const handle = (e) => {
+      if (e.key.toLowerCase() === 'n' && isLoggedIn) {
         navigate('/products/new')
       }
     }
@@ -103,7 +103,7 @@ export default function SearchBar({
             type="search"
             placeholder="What are you looking for?"
             value={query}
-            onChange={(_e) => setQuery(_e.target.value)}
+            onChange={(e) => setQuery(e.target.value)}
             className="flex-1 h-full bg-transparent placeholder-text-secondary text-foreground focus:outline-none"
           />
 
@@ -177,11 +177,10 @@ export default function SearchBar({
                         setSortBy(opt)
                         setSortOpen(false)
                       }}
-                      className={`block w-full text-left px-2 py-1 rounded hover:bg-background ${
-                        sortBy === opt
+                      className={`block w-full text-left px-2 py-1 rounded hover:bg-background ${sortBy === opt
                           ? 'font-semibold text-foreground'
                           : 'text-foreground'
-                      }`}
+                        }`}
                     >
                       {opt.replace('_', ' ').replace('asc', '↑').replace('desc', '↓')}
                     </button>

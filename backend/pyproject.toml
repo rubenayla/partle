@@ -30,6 +30,8 @@ python-multipart = "^0.0.20"
 fido2 = "^2.0.0"
 itsdangerous = "^2.2.0"
 bcrypt = "<4.1.0"
+scrapy = "^2.13.3"
+scrapy-playwright = "^0.0.43"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.1"
