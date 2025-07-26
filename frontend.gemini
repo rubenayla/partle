@@ -1,0 +1,46 @@
+## Frontend Development
+
+### How to start the frontend locally
+
+To start the frontend development server, navigate to the `frontend/` directory and run:
+
+```bash
+npm install
+npm run dev
+```
+
+This will typically start the application on `http://localhost:5173` (or another port if 5173 is in use).
+
+### Vercel Deployment
+
+To deploy the frontend to Vercel, navigate to the `frontend/` directory and run:
+
+```bash
+npm run deploy
+```
+
+This script will execute the `vercel` command. Follow the prompts to link your project and deploy.
+
+### Troubleshooting: npm WARN Unknown env config "http-proxy"
+
+This warning often indicates an unrecognized configuration setting in your global npm configuration or environment variables. It's usually harmless but can be resolved by checking and removing any `http-proxy` or `https-proxy` settings in:
+
+*   Your global `.npmrc` file (e.g., `~/.npmrc` on Linux/macOS).
+*   Your npm configuration (`npm config list` or `npm config get http-proxy`).
+*   Your system's environment variables (`echo $HTTP_PROXY` or `echo $HTTPS_PROXY`).
+
+You can remove npm config settings using `npm config delete http-proxy`.
+
+### Troubleshooting: Port Conflicts
+
+If the development server starts on a port other than 5173 (e.g., 5175), it means port 5173 is already in use. You can find and terminate the process using that port (on Linux/macOS) with:
+
+1.  **Find the process ID (PID):**
+    ```bash
+    sudo lsof -i :5173
+    ```
+2.  **Kill the process:**
+    ```bash
+    kill -9 <PID>
+    ```
+    (Replace `<PID>` with the actual process ID found in the previous step.)

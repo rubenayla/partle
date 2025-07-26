@@ -1,12 +1,10 @@
 import { render, screen } from '@testing-library/react'
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { describe, it, expect, afterEach, vi } from 'vitest'
 import App from './App'
 
-describe('App', () => {
-  beforeEach(() => {
-    global.fetch = vi.fn().mockResolvedValue({ ok: true }) as any
-  })
+vi.mock('axios'); // Mock the axios module
 
+describe('App', () => {
   afterEach(() => {
     vi.restoreAllMocks()
   })

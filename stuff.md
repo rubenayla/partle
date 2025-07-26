@@ -469,3 +469,29 @@ BLOCKED, BOT DETECTION. HARD
 https://www.bricodepot.es/carpa-plegable-verde-2-6-x-3-x-3-m-8421415191695
 
 https://www.elcorteingles.es/electrodomesticos/A42712840-lavadora-haier-8-kg-1400-rpm-vapor-i-pro-series-3-hw80-b14939-ib/?stype=search_redirect&parentCategoryId=999.54508013&color=Blanco
+
+# 2025-07-27 Installation issues from codex
+Backend issues
+
+Running migrations without DATABASE_URL aborts immediately with ⛔ DATABASE_URL not set; aborting migrations.
+
+Using SQLite (DATABASE_URL=sqlite:///partle.db) fails because Alembic attempts ALTER TABLE … DROP NOT NULL, which SQLite does not support, causing sqlite3.OperationalError: near "ALTER": syntax error
+
+After installing and starting PostgreSQL, migrations succeed and the server starts correctly (Uvicorn log shows startup)
+
+Running backend tests via poetry run pytest results in one failure: tests/test_auth_utils.py::test_send_reset_email raises SMTPServerDisconnected: please run connect() first because the test tries to send an email without a configured SMTP server
+
+Frontend issues
+
+npm install completes but shows npm WARN Unknown env config "http-proxy".
+
+Starting the dev server shows port conflicts and the same Unknown env config warning before falling back to port 5175
+
+Running npm test passes, but jsdom logs network errors because Axios tries to fetch /api/v1/products while the backend is unreachable during tests
+
+Testing
+
+Backend tests: poetry run pytest -q → 1 failed, 22 passed
+
+Frontend tests: npm test → tests pass but output shows cancellation after network errors
+
