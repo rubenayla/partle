@@ -3,7 +3,7 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.v1 import auth, external, parts, products, stores, tags
+from app.api.v1 import auth, external, health, parts, products, stores, tags
 
 # Load local .env if present (useful for local development)
 if os.getenv("RAILWAY_ENVIRONMENT") is None:
@@ -29,6 +29,7 @@ app.include_router(auth.router, prefix="/v1/auth", tags=["Auth"])
 app.include_router(products.router, prefix="/v1/products", tags=["Products"])
 app.include_router(external.router, prefix="/v1/external", tags=["External"])
 app.include_router(tags.router, prefix="/v1/tags", tags=["Tags"])
+app.include_router(health.router, prefix="/v1")
 
 
 @app.get("/")
