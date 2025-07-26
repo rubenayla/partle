@@ -7,10 +7,28 @@ import Products from "./pages/Products";
 import AddProduct from "./pages/AddProduct";
 import AddStore from "./pages/AddStore";
 import ProductDetail from "./pages/ProductDetail";
+import { useBackendStatus } from './hooks/useBackendStatus'
 
 import Layout from "./components/Layout";
 
 export default function App() {
+  const status = useBackendStatus()
+
+  if (status === 'checking') {
+    return <div className='p-8 text-center'>Checking backend status...</div>
+  }
+
+  if (status === 'offline') {
+    return (
+      <div className='flex h-screen items-center justify-center bg-gray-100'>
+        <div className='text-center'>
+          <h1 className='text-2xl font-bold'>⚠️ Backend offline</h1>
+          <p className='mt-2 text-gray-600'>We're doing maintenance or sleeping. Please try again later.</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <BrowserRouter>
       <Layout>
@@ -34,3 +52,4 @@ export default function App() {
     </BrowserRouter>
   );
 }
+
