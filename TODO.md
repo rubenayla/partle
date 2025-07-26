@@ -1,4 +1,5 @@
-- mock data
+- open port on router so vercel can access debian database, and setup environment variables
+    - can vercel be configured from terminal?
 - Ok, now i'd like to implement the feature to recover my password. The typical button "Forgot your password?" or "Recover your password with an email" something like that.
 - add recover password email, need vercel or something
 - consider types of stores, and start adding them
