@@ -292,7 +292,7 @@ export default function SearchBar({
                 <a href="/contact" className="block px-2 py-1 text-foreground hover:bg-background rounded">Contact</a>
                 <a href="/terms" className="block px-2 py-1 text-foreground hover:bg-background rounded">Terms</a>
                 <a href="/privacy" className="block px-2 py-1 text-foreground hover:bg-background rounded">Privacy</a>
-                <a href="/social" className="block px-2 py-1 text-foreground hover:bg-background rounded">Social Networks</a>
+                
               </div>
             )}
           </div>

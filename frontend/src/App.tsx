@@ -7,6 +7,9 @@ import Products from "./pages/Products";
 import AddProduct from "./pages/AddProduct";
 import AddStore from "./pages/AddStore";
 import ProductDetail from "./pages/ProductDetail";
+import Contact from "./pages/Contact"; // Import the new Contact page
+import Terms from "./pages/Terms"; // Import the new Terms page
+import Privacy from "./pages/Privacy"; // Import the new Privacy page
 import { useBackendStatus } from './hooks/useBackendStatus'
 
 import Layout from "./components/Layout";
@@ -38,6 +41,9 @@ export default function App() {
           <Route path="/stores" element={<Stores />} />
           <Route path="/stores/:id/products" element={<Products />} />
           <Route path="/products/:id" element={<ProductDetail />} />
+          <Route path="/contact" element={<Contact />} /> {/* Add the new route for Contact page */}
+          <Route path="/terms" element={<Terms />} /> {/* Add the new route for Terms page */}
+          <Route path="/privacy" element={<Privacy />} /> {/* Add the new route for Privacy page */}
 
           {/* actions that require login */}
           <Route element={<RequireAuth />}>

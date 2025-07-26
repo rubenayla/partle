@@ -1,6 +1,5 @@
-- vercel put .env as in the example so the recovery via email works
-- open port on router so vercel can access debian database, and setup environment variables
-    - can vercel be configured from terminal?
+- recovery via email works
+    - vercel put .env as in the example?
 - Fix view of product, to keep the searchbar (header?) at all times.
 - Ok, now i'd like to implement the feature to recover my password. The typical button "Forgot your password?" or "Recover your password with an email" something like that.
 - add recover password email, need vercel or something

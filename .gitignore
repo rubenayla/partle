@@ -1,6 +1,10 @@
 .env
 *.gitignore*
 
+# === Gemini ===
+frontend.gemini
+backend.gemini
+
 # === Node (frontend) ===
 frontend/node_modules/
 frontend/dist/
