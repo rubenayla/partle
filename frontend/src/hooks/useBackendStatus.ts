@@ -5,7 +5,7 @@ export function useBackendStatus(): 'online' | 'offline' | 'checking' {
 
     useEffect(() => {
         const controller = new AbortController()
-        fetch(`${import.meta.env.VITE_API_BASE}/health`, { signal: controller.signal })
+        fetch(`${import.meta.env.VITE_API_BASE}/v1/health/`, { signal: controller.signal })
             .then(res => {
                 if (!res.ok) throw new Error('Not OK')
                 setStatus('online')

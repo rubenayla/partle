@@ -44,3 +44,4 @@ To get the project running locally:
 
 *   **Commit Messages:** Start with a verb in the infinitive or imperative mood, with the first letter capitalized and the rest lowercase (e.g., "Fix: Resolve authentication bug", "Add: Implement new feature").
 *   **Test-Driven Development (TDD):** Prefer a TDD approach. When solving problems or adding features, aim to write tests that capture the issue or new functionality, and ensure they pass.
+*   Use trailing slashes in all API routes and fetch calls to avoid 307 redirects in FastAPI. Example: fetch(`${import.meta.env.VITE_API_BASE}/v1/health/`)
