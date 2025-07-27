@@ -96,7 +96,7 @@ export default function SearchBar({
 
       // Second chord: Execute shortcuts when in shortcut mode
       if (shortcutMode) {
-        e.preventDefault()
+        e.preventDefault() // Always prevent default when in shortcut mode
         
         switch (e.key.toLowerCase()) {
           case 'p':
