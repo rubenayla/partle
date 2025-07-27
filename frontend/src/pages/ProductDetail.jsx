@@ -24,9 +24,7 @@ export default function ProductDetail() {
     <main className="w-full max-w-screen-2xl mx-auto px-4">
       <header className="flex justify-between mb-4">
         <h1 className="text-2xl font-semibold">{product.name}</h1>
-        <Link to="/" className="text-blue-600 hover:underline">
-          ← Home
-        </Link>
+        
       </header>
 
       {product.description && <p className="mb-3">{product.description}</p>}
