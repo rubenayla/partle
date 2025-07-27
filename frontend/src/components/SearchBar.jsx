@@ -69,15 +69,7 @@ export default function SearchBar({
     return () => document.removeEventListener('mousedown', closeAll)
   }, [])
 
-  useEffect(() => {
-    const handle = (e) => {
-      if (e.key.toLowerCase() === 'n' && isLoggedIn) {
-        navigate('/products/new')
-      }
-    }
-    window.addEventListener('keydown', handle)
-    return () => window.removeEventListener('keydown', handle)
-  }, [navigate, isLoggedIn])
+  
 
   const handleSearch = (event) => {
     event.preventDefault()
@@ -105,6 +97,7 @@ export default function SearchBar({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="flex-1 h-full bg-transparent placeholder-text-secondary text-foreground focus:outline-none"
+            autoFocus
           />
 
           <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-3" />
