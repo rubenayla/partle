@@ -17,6 +17,8 @@ export default function SearchBar({
   const [selectedTags, setSelectedTags] = useState([])
   const [sortBy, setSortBy] = useState('relevance')
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'auto')
+  const [shortcutMode, setShortcutMode] = useState(false)
+  const shortcutTimeoutRef = useRef(null)
 
   const [priceOpen, setPriceOpen] = useState(false)
   const [sortOpen, setSortOpen] = useState(false)
@@ -63,11 +65,79 @@ export default function SearchBar({
       if (!accountRef.current?.contains(e.target)) setAccountOpen(false)
       if (!infoRef.current?.contains(e.target)) setInfoOpen(false)
       if (!createRef.current?.contains(e.target)) setCreateOpen(false)
-      if (!filterRef.current?.contains(_e.target)) setFilterOpen(false)
+      if (!filterRef.current?.contains(e.target)) setFilterOpen(false)
     }
     document.addEventListener('mousedown', closeAll)
     return () => document.removeEventListener('mousedown', closeAll)
   }, [])
+
+  // Chord-based keyboard shortcuts (Alt+N + second key)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      const isInInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA'
+      
+      // First chord: Alt+N (works even in inputs)
+      if (e.altKey && e.key.toLowerCase() === 'n') {
+        e.preventDefault()
+        setShortcutMode(true)
+        
+        // Clear any existing timeout
+        if (shortcutTimeoutRef.current) {
+          clearTimeout(shortcutTimeoutRef.current)
+        }
+        
+        // Reset shortcut mode after 1 second
+        shortcutTimeoutRef.current = setTimeout(() => {
+          setShortcutMode(false)
+        }, 1000)
+        
+        return
+      }
+
+      // Second chord: Execute shortcuts when in shortcut mode
+      if (shortcutMode) {
+        e.preventDefault()
+        
+        switch (e.key.toLowerCase()) {
+          case 'p':
+            // Navigate to add product
+            navigate('/products/new')
+            break
+          case 's':
+            // Navigate to add store
+            navigate('/stores/new')
+            break
+          case 'h':
+            // Navigate to home
+            navigate('/')
+            break
+          case 'a':
+            // Toggle account menu
+            if (isLoggedIn) {
+              setAccountOpen(!accountOpen)
+            }
+            break
+          case 'escape':
+            // Cancel shortcut mode
+            break
+        }
+        
+        // Clear timeout and exit shortcut mode
+        if (shortcutTimeoutRef.current) {
+          clearTimeout(shortcutTimeoutRef.current)
+        }
+        setShortcutMode(false)
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      if (shortcutTimeoutRef.current) {
+        clearTimeout(shortcutTimeoutRef.current)
+      }
+    }
+  }, [shortcutMode, isLoggedIn, accountOpen, navigate])
 
   
 

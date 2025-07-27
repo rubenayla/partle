@@ -1,3 +1,6 @@
+- Simple api to use.
+    - 1. see products
+    - 2. auth and upload products
 - Ok, now i'd like to implement the feature to recover my password. The typical button "Forgot your password?" or "Recover your password with an email" something like that.
 - add recover password email, need vercel or something
 - consider types of stores, and start adding them
