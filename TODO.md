@@ -34,6 +34,7 @@ how many stores?
 ## Not urgent, long term
 - Mechanism to store searches performed by users so we can know what products are more demanded
 - How to optimize for AI like chatgpt, so they can use my website to search or see the results from my website
+    - Think super long term: My AI knows what i have and what i need, and automatically searches for the best products for me. Once one is good enough, it suggests it to me, taking even my calendar into account, when will i need it, time to arrive etc.
 - limit max item count per row to 3?
 - Think of better name. People don't understand what it is, how to write etc.
 - Allow custom images and add the UI to add them, so we don't depend on other websites.

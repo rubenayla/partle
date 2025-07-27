@@ -1,44 +1,7 @@
 import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import StaticPool
-
-from app.main import app
-from app.api.v1 import auth, parts, stores
-from app.auth import security
-from app.db.models import Base
-
-SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL,
-    connect_args={"check_same_thread": False},
-    poolclass=StaticPool,
-)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# Create tables
-Base.metadata.create_all(bind=engine)
 
 
-def override_get_db():
-    db = TestingSessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-# Override dependencies
-app.dependency_overrides[auth.get_db] = override_get_db
-app.dependency_overrides[parts.get_db] = override_get_db
-app.dependency_overrides[stores.get_db] = override_get_db
-app.dependency_overrides[security.get_db] = override_get_db
-
-client = TestClient(app)
-
-
-def test_register_and_login_email_password():
+def test_register_and_login_email_password(client, db):
     """User can register and login using email + password."""
     email = "foo@example.com"
     password = "barbaz"
@@ -58,7 +21,7 @@ def test_register_and_login_email_password():
     assert me.json()["email"] == email
 
 
-def test_logout_then_login_again():
+def test_logout_then_login_again(client, db):
     email = "bar@example.com"
     password = "bazqux"
     client.post("/v1/auth/register", json={"email": email, "password": password})
@@ -79,7 +42,7 @@ def test_logout_then_login_again():
     assert login2.status_code == 200
 
 
-def test_delete_account():
+def test_delete_account(client, db):
     email = "deleteme@example.com"
     password = "secret"
     client.post("/v1/auth/register", json={"email": email, "password": password})

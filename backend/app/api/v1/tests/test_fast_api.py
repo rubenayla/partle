@@ -1,10 +1,4 @@
-from fastapi.testclient import TestClient
-from app.main import app
-
-client = TestClient(app)
-
-
-def test_get_parts():
+def test_get_parts(client, db):
     resp = client.get("/v1/parts/")
     assert resp.status_code == 200
     data = resp.json()
@@ -13,7 +7,7 @@ def test_get_parts():
         assert "name" in data[0]
 
 
-def test_get_stores():
+def test_get_stores(client, db):
     resp = client.get("/v1/stores/")
     assert resp.status_code == 200
     data = resp.json()

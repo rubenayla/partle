@@ -1,53 +1,13 @@
 import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import StaticPool
-
-from app.main import app
-from app.api.v1 import parts, stores, auth, tags, products
-from app.auth import security
-from app.db.models import Base
-
-SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL,
-    connect_args={"check_same_thread": False},
-    poolclass=StaticPool,
-)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# Create tables
-Base.metadata.create_all(bind=engine)
-
-# Dependency override
 
 
-def override_get_db():
-    db = TestingSessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-app.dependency_overrides[parts.get_db] = override_get_db
-app.dependency_overrides[stores.get_db] = override_get_db
-app.dependency_overrides[auth.get_db] = override_get_db
-app.dependency_overrides[tags.get_db] = override_get_db
-app.dependency_overrides[security.get_db] = override_get_db
-app.dependency_overrides[products.get_db] = override_get_db
-
-client = TestClient(app)
-
-
-def test_get_parts_empty():
+def test_get_parts_empty(client, db):
     response = client.get("/v1/parts/")
     assert response.status_code == 200
     assert response.json() == []
 
 
-def test_login_unknown_email():
+def test_login_unknown_email(client, db):
     resp = client.post(
         "/v1/auth/login",
         data={"username": "missing@example.com", "password": "x"},
@@ -55,7 +15,7 @@ def test_login_unknown_email():
     assert resp.status_code == 404
 
 
-def test_login_incorrect_password():
+def test_login_incorrect_password(client, db):
     # register user
     reg_payload = {"email": "user6@example.com", "password": "secret"}
     client.post("/v1/auth/register", json=reg_payload)
@@ -69,7 +29,7 @@ def test_login_incorrect_password():
     assert "Incorrect email or password" in resp.json()["detail"]
 
 
-def test_create_store_and_part():
+def test_create_store_and_part(client, db):
     # register and authenticate user
     reg_payload = {"email": "user@example.com", "password": "secret"}
     client.post("/v1/auth/register", json=reg_payload)
@@ -110,7 +70,7 @@ def test_create_store_and_part():
     assert parts_list[0]["name"] == "Widget"
 
 
-def test_create_and_link_tags():
+def test_create_and_link_tags(client, db):
     # register and authenticate user
     reg_payload = {"email": "user2@example.com", "password": "secret"}
     client.post("/v1/auth/register", json=reg_payload)
@@ -157,7 +117,7 @@ def test_create_and_link_tags():
     assert product_json["tags"][0]["name"] == "Test Tag"
 
 
-def test_create_and_link_tag_to_store():
+def test_create_and_link_tag_to_store(client, db):
     # register and authenticate user
     reg_payload = {"email": "user3@example.com", "password": "secret"}
     client.post("/v1/auth/register", json=reg_payload)
@@ -194,7 +154,7 @@ def test_create_and_link_tag_to_store():
     assert store_json["tags"][0]["name"] == "Test Tag 2"
 
 
-def test_delete_product():
+def test_delete_product(client, db):
     # register and authenticate user
     reg_payload = {"email": "user4@example.com", "password": "secret"}
     client.post("/v1/auth/register", json=reg_payload)
@@ -230,7 +190,7 @@ def test_delete_product():
     assert get_resp.status_code == 404
 
 
-def test_delete_store():
+def test_delete_store(client, db):
     # register and authenticate user
     reg_payload = {"email": "user5@example.com", "password": "secret"}
     client.post("/v1/auth/register", json=reg_payload)

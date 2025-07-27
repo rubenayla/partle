@@ -1,69 +1,29 @@
 import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import StaticPool
+import unittest.mock
+import json
+import sys # Keep sys for import_ferreterias
 
-from app.main import app
-from app.api.v1 import parts, stores, auth, tags, products
-from app.auth import security
-from app.db.models import Base, StoreType
-
-SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL,
-    connect_args={"check_same_thread": False},
-    poolclass=StaticPool,
-)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# Create tables
-Base.metadata.create_all(bind=engine)
-
-# Dependency override
+from app.db.models import StoreType
+from app.scraper.import_ferreterias import import_stores, SCRAPED_DATA_FILE, BASE_URL, LOGIN_URL, STORES_URL, EMAIL, PASSWORD
 
 
-def override_get_db():
-    db = TestingSessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-app.dependency_overrides[parts.get_db] = override_get_db
-app.dependency_overrides[stores.get_db] = override_get_db
-app.dependency_overrides[auth.get_db] = override_get_db
-app.dependency_overrides[tags.get_db] = override_get_db
-app.dependency_overrides[security.get_db] = override_get_db
-app.dependency_overrides[products.get_db] = override_get_db
-
-client = TestClient(app)
-
-
-@pytest.fixture(name="test_client")
-def test_client_fixture():
-    # Clear the database before each test
-    Base.metadata.drop_all(bind=engine)
-    Base.metadata.create_all(bind=engine)
-    return client
 
 
 @pytest.fixture(name="authenticated_client")
-def authenticated_client_fixture(test_client):
+def authenticated_client_fixture(client, db): # Use client and db from conftest
     # Register and authenticate a user for tests requiring authentication
     reg_payload = {"email": "test_user@example.com", "password": "test_password"}
-    test_client.post("/v1/auth/register", json=reg_payload)
-    login_resp = test_client.post(
+    client.post("/v1/auth/register", json=reg_payload)
+    login_resp = client.post(
         "/v1/auth/login",
         data={"username": reg_payload["email"], "password": reg_payload["password"]},
     )
     token = login_resp.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
-    return test_client, headers
+    return client, headers
 
 
-def test_create_store_physical_enum(authenticated_client):
+def test_create_store_physical_enum(authenticated_client, client, db):
     client, headers = authenticated_client
     store_data = {"name": "Physical Store", "lat": 1.0, "lon": 1.0, "type": "physical"}
     store_resp = client.post("/v1/stores/", json=store_data, headers=headers)
@@ -71,7 +31,7 @@ def test_create_store_physical_enum(authenticated_client):
     assert store_resp.json()["type"] == "physical"
 
 
-def test_create_store_online_enum(authenticated_client):
+def test_create_store_online_enum(authenticated_client, client, db):
     client, headers = authenticated_client
     store_data = {"name": "Online Store", "lat": 2.0, "lon": 2.0, "type": "online"}
     store_resp = client.post("/v1/stores/", json=store_data, headers=headers)
@@ -79,7 +39,7 @@ def test_create_store_online_enum(authenticated_client):
     assert store_resp.json()["type"] == "online"
 
 
-def test_create_store_chain_enum(authenticated_client):
+def test_create_store_chain_enum(authenticated_client, client, db):
     client, headers = authenticated_client
     store_data = {"name": "Chain Store", "lat": 3.0, "lon": 3.0, "type": "chain"}
     store_resp = client.post("/v1/stores/", json=store_data, headers=headers)
@@ -87,11 +47,7 @@ def test_create_store_chain_enum(authenticated_client):
     assert store_resp.json()["type"] == "chain"
 
 
-# Mocking requests for import_ferreterias.py tests
-import unittest.mock
-import sys
-import json
-from app.scraper.import_ferreterias import import_stores, SCRAPED_DATA_FILE, BASE_URL, LOGIN_URL, STORES_URL, EMAIL, PASSWORD
+
 
 
 @pytest.fixture
@@ -103,7 +59,7 @@ def mock_requests():
         yield mock_post, mock_get, mock_exists, mock_open
 
 
-def test_import_stores_skips_exact_duplicates(mock_requests):
+def test_import_stores_skips_exact_duplicates(mock_requests, client, db):
     mock_post, mock_get, mock_exists, mock_open = mock_requests
 
     # Mock login success
@@ -143,7 +99,7 @@ def test_import_stores_skips_exact_duplicates(mock_requests):
     })
 
 
-def test_import_stores_suffixes_name_duplicates(mock_requests):
+def test_import_stores_suffixes_name_duplicates(mock_requests, client, db):
     mock_post, mock_get, mock_exists, mock_open = mock_requests
 
     # Mock login success
@@ -176,7 +132,7 @@ def test_import_stores_suffixes_name_duplicates(mock_requests):
     })
 
 
-def test_import_stores_handles_multiple_name_duplicates(mock_requests):
+def test_import_stores_handles_multiple_name_duplicates(mock_requests, client, db):
     mock_post, mock_get, mock_exists, mock_open = mock_requests
 
     # Mock login success

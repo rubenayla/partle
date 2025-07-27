@@ -1,41 +1,7 @@
 import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import StaticPool
-
-from app.main import app
-from app.api.v1 import products, stores, auth
-from app.auth import security
-from app.db.models import Base
-
-SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL,
-    connect_args={"check_same_thread": False},
-    poolclass=StaticPool,
-)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-Base.metadata.create_all(bind=engine)
 
 
-def override_get_db():
-    db = TestingSessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-app.dependency_overrides[products.get_db] = override_get_db
-app.dependency_overrides[stores.get_db] = override_get_db
-app.dependency_overrides[auth.get_db] = override_get_db
-app.dependency_overrides[security.get_db] = override_get_db
-
-client = TestClient(app)
-
-
-def test_product_updated_fields():
+def test_product_updated_fields(client, db):
     # register and login
     email = "mod@example.com"
     password = "pw"
@@ -66,7 +32,7 @@ def test_product_updated_fields():
     assert data["updated_by_id"] == user_id
 
 
-def test_update_product_changes_name_and_updater():
+def test_update_product_changes_name_and_updater(client, db):
     """PATCH /v1/products/{id} updates fields and updated_by_id."""
     # creator user and product
     creator = {"email": "creator@example.com", "password": "creds"}
@@ -108,7 +74,7 @@ def test_update_product_changes_name_and_updater():
     assert data["updated_by_id"] == updater_id
 
 
-def test_update_product_not_found():
+def test_update_product_not_found(client, db):
     """PATCH with unknown product id returns 404."""
     user = {"email": "nouser@example.com", "password": "pw"}
     client.post("/v1/auth/register", json=user)
