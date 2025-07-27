@@ -60,8 +60,9 @@ class Tag(Base):
 
 
 class StoreType(str, Enum):
-    PHYSICAL = "physical"
-    ONLINE = "online"
+    physical = "physical"
+    online = "online"
+    chain = "chain"
 
 
 class User(Base):
@@ -89,7 +90,7 @@ class Store(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String)
     type: Mapped[StoreType] = mapped_column(
-        PgEnum(StoreType, name="store_type"), default=StoreType.PHYSICAL
+        PgEnum(StoreType, name="store_type", enum_values_callable=lambda enum: [e.value for e in enum]), default=StoreType.physical
     )
     lat: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     lon: Mapped[Optional[float]] = mapped_column(Float, nullable=True)

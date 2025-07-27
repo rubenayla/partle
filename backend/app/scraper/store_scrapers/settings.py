@@ -1,4 +1,4 @@
-# Scrapy settings for leroy_merlin_scraper project
+# Scrapy settings for store_scrapers project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -7,10 +7,10 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = "leroy_merlin_scraper"
+BOT_NAME = "store_scrapers"
 
-SPIDER_MODULES = ["leroy_merlin_scraper.spiders"]
-NEWSPIDER_MODULE = "leroy_merlin_scraper.spiders"
+SPIDER_MODULES = ["store_scrapers.spiders"]
+NEWSPIDER_MODULE = "store_scrapers.spiders"
 
 ADDONS = {}
 
@@ -43,7 +43,7 @@ DEFAULT_REQUEST_HEADERS = {
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    "leroy_merlin_scraper.middlewares.LeroyMerlinScraperSpiderMiddleware": 543,
+#    "store_scrapers.middlewares.StoreScrapersSpiderMiddleware": 543,
 #}
 
 # Enable or disable downloader middlewares
@@ -51,7 +51,7 @@ DEFAULT_REQUEST_HEADERS = {
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    "leroy_merlin_scraper.middlewares.LeroyMerlinScraperDownloaderMiddleware": 543,
+#    "store_scrapers.middlewares.StoreScrapersDownloaderMiddleware": 543,
 #}
 
 DOWNLOAD_HANDLERS = {
@@ -68,7 +68,7 @@ DOWNLOAD_HANDLERS = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 #ITEM_PIPELINES = {
-#    "leroy_merlin_scraper.pipelines.LeroyMerlinScraperPipeline": 300,
+#    "store_scrapers.pipelines.StoreScrapersPipeline": 300,
 #}
 
 # Enable and configure the AutoThrottle extension (disabled by default)

@@ -16,6 +16,7 @@ class ProductIn(BaseModel):
     lat: Optional[float] = None
     lon: Optional[float] = None
     description: Optional[str] = None
+    image_url: Optional[HttpUrl] = None
 
     model_config = ConfigDict(from_attributes=True)  # pydantic-v2 replacement for orm_mode
 
@@ -33,5 +34,6 @@ class ProductOut(ProductIn):
     id: int
     updated_at: datetime
     updated_by_id: Optional[int] = None
+    image_url: Optional[HttpUrl] = None
     tags: list[Tag] = []
 

@@ -1,13 +1,15 @@
+
+
 - Simple api to use.
     - 1. see products. No auth required.
     - 2. auth and upload products
 - consider types of stores, and start adding them
+- MAKE MOBILE VERSION
 
 - Store CRUD (3 → 4) – lets you seed real data from the UI.
 - Parts under stores (5 → 6) – completes the core data model.
 - Tune the reliability rating of the info uploaded. It should go -1 to 1. Start at 0, depending on other people ratings get modified.
 - Users should be able to add products from other stores. Last updated time should be stored as parameter for every product. And who did that last update is relevant too.
-- MAKE MOBILE VERSION
 - Get data
     - Scraping?
         - Google Maps
@@ -16,7 +18,6 @@
     - Ask gpt sources
 - Mobile version (bar at the bottom with easy interface. Go ahead to new standards)
 - The product of each store must have a unique name. If you don't agree with the data, several versions will appear, with capability to up/down vote them. It just like several products squished together in the same frontend card.
-- Mechanism to store searches performed by users so we can know what products are more demanded
 - seo for chatgpt searches so I can get pro users that will actually buy, being of benefit to the stores. Can charge the stores instead of the user, since use through chatgpt will be free
 - Users report products (illegal etc)
 - Improve unit tests
@@ -29,9 +30,12 @@
 
 
 ## Not urgent, long term
+- Mechanism to store searches performed by users so we can know what products are more demanded
+- How to optimize for AI like chatgpt, so they can use my website to search or see the results from my website
 - limit max item count per row to 3?
 - Think of better name. People don't understand what it is, how to write etc.
-- - Ask gemini to try to implement FIDO2. I think the best way is using SimpleWebAuthn. I already have Node.js for the frontend, so no extra dependencies. Should probably use the same PostgreSQL database i have, let Node return user_id and email, FastAPI issues the token.
+- Allow custom images and add the UI to add them, so we don't depend on other websites.
+- Ask gemini to try to implement FIDO2. I think the best way is using SimpleWebAuthn. I already have Node.js for the frontend, so no extra dependencies. Should probably use the same PostgreSQL database i have, let Node return user_id and email, FastAPI issues the token.
 - AI thingy to load them to the database just by recording with the phone. It recognizes the products, screenshots them, lists the price, geo location and everything. You can go around stores and record to add thousands of products.
 - What if i put the search terms at the left, the search bar at the top of the left section, and on startup the website already includes products as suggestions? The left search terms stay there, and the scroll only includes the products. The right is blank or left for ads etc.
 - Make map take the whole screen while keeping list with 4xl

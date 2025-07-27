@@ -11,6 +11,7 @@ interface FormState {
   price: number;
   url: string;
   description: string;
+  image_url: string;
   store_id: string;
 }
 
@@ -23,6 +24,7 @@ export default function AddProduct() {
     price: 0,
     url: '',
     description: '',
+    image_url: '',
     store_id: '',
   });
   const [saving, setSaving] = useState(false);
@@ -108,6 +110,13 @@ export default function AddProduct() {
             onChange={change}
             placeholder="Description"
             className="border border-gray-300 dark:border-gray-600 p-2 rounded bg-background w-full h-24"
+          />
+          <input
+            name="image_url"
+            value={form.image_url}
+            onChange={change}
+            placeholder="Image URL (optional)"
+            className="border border-gray-300 dark:border-gray-600 p-2 rounded bg-background w-full"
           />
           <select
             name="store_id"

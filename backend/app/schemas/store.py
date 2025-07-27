@@ -5,7 +5,7 @@ from app.schemas.tag import Tag
 
 class StoreBase(BaseModel):
     name: str
-    type: Literal["physical", "online"]
+    type: Literal["physical", "online", "chain"]
     address: Optional[str] = None
     lat: Optional[float] = None
     lon: Optional[float] = None

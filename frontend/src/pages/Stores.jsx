@@ -37,8 +37,7 @@ export default function Stores() {
       <ul className="space-y-2">
         {stores.map(s => (
           <li key={s.id} className="border p-3 rounded">
-            <strong>{s.name}</strong>
-              <Link to={`/stores/${s.id}/products`} className="text-blue-600 hover:underline">
+            <Link to={`/stores/${s.id}/products`} className="text-blue-600 hover:underline">
                 <strong>{s.name}</strong>
               </Link>
             <div className="text-sm text-gray-600">{s.address}</div>

@@ -495,3 +495,15 @@ Backend tests: poetry run pytest -q → 1 failed, 22 passed
 
 Frontend tests: npm test → tests pass but output shows cancellation after network errors
 
+# 
+✦ I have updated the StoreScrapersItem and created a new Scrapy spider named ferreterias.py.
+
+  To run this spider, you would navigate to the backend/app/scraper/store_scrapers/ directory in your terminal and execute the following command:
+
+   1 scrapy crawl ferreterias -o ferreterias_output.json
+
+# to add ferreterias
+OpenStreetMap
+
+#
+
