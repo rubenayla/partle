@@ -10,6 +10,8 @@ import ProductDetail from "./pages/ProductDetail";
 import Contact from "./pages/Contact"; // Import the new Contact page
 import Terms from "./pages/Terms"; // Import the new Terms page
 import Privacy from "./pages/Privacy"; // Import the new Privacy page
+import Account from "./pages/Account"; // Import the new Account page
+import ResetPassword from "./pages/ResetPassword"; // Import the new ResetPassword page
 import { useBackendStatus } from './hooks/useBackendStatus'
 
 import Layout from "./components/Layout";
@@ -44,11 +46,13 @@ export default function App() {
           <Route path="/contact" element={<Contact />} /> {/* Add the new route for Contact page */}
           <Route path="/terms" element={<Terms />} /> {/* Add the new route for Terms page */}
           <Route path="/privacy" element={<Privacy />} /> {/* Add the new route for Privacy page */}
+          <Route path="/reset-password" element={<ResetPassword />} /> {/* Add the new route for ResetPassword page */}
 
           {/* actions that require login */}
           <Route element={<RequireAuth />}>
             <Route path="/products/new" element={<AddProduct />} />
             <Route path="/stores/new" element={<AddStore />} />
+            <Route path="/account" element={<Account />} />
           </Route>
 
           {/* catch-all → go to home */}

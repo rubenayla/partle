@@ -1,9 +1,8 @@
-- recovery via email works
-    - vercel put .env as in the example?
-- Fix view of product, to keep the searchbar (header?) at all times.
 - Ok, now i'd like to implement the feature to recover my password. The typical button "Forgot your password?" or "Recover your password with an email" something like that.
 - add recover password email, need vercel or something
 - consider types of stores, and start adding them
+- recovery via email works
+    - vercel put .env as in the example?
 - Store CRUD (3 → 4) – lets you seed real data from the UI.
 - Parts under stores (5 → 6) – completes the core data model.
 - Tune the reliability rating of the info uploaded. It should go -1 to 1. Start at 0, depending on other people ratings get modified.
@@ -38,3 +37,8 @@ Explore direct public key login (passkeys) so the browser handles authentication
 - Do evaluation of each metric by the users, when
 - Consider composite search mode with slide bars to select what I care more about, and instead of filter do a score assignation. For example, prioritize stock and distance over price when it's urgent, or prioritize price 
 - Do AI search, consider external services or a language model that maps high level abstraction of the query with the closest product matches in the vector space.
+- Implement multiple login methods:
+    - Passkey (WebAuthn) for passwordless authentication.
+    - Google-linked authentication (OAuth 2.0).
+    - Ensure all methods link to a single user identity.
+    - Provide options for managing these methods in account settings.

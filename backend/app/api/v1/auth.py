@@ -74,6 +74,31 @@ async def request_password_reset(
     return {"status": "ok"}
 
 
+    return {"status": "ok"}
+
+
+# ─── Password-reset confirmation ─────────────────────────────────────────────
+@router.post("/reset-password", status_code=200)
+def reset_password(
+    data: schema.PasswordResetConfirm,
+    db: Session = Depends(get_db),
+):
+    email = verify_reset_token(data.token)
+    if not email:
+        raise HTTPException(status_code=400, detail="Invalid or expired token")
+
+    user = db.query(User).filter_by(email=email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user.password_hash = hash_password(data.new_password)
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+    return {"status": "ok"}
+
+
 # ─── Get current user ───────────────────────────────────────────────────────
 @router.get("/me", response_model=schema.UserRead)
 def read_current_user(current_user: User = Depends(get_current_user)):
@@ -93,3 +118,21 @@ def delete_account(current_user: User = Depends(get_current_user), db: Session =
 def logout(current_user: User = Depends(get_current_user)):
     """Placeholder endpoint for logging out JWT-based sessions."""
     return None
+
+
+# ─── Change Password ─────────────────────────────────────────────────────────
+@router.post("/change-password", status_code=200)
+def change_password(
+    data: schema.PasswordChange,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if not verify_password(data.current_password, current_user.password_hash):
+        raise HTTPException(status_code=401, detail="Incorrect current password")
+
+    current_user.password_hash = hash_password(data.new_password)
+    db.add(current_user)
+    db.commit()
+    db.refresh(current_user)
+
+    return {"status": "ok"}

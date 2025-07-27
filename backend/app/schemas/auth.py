@@ -32,3 +32,13 @@ class EmailOnly(BaseModel):
 class RegisterInput(BaseModel):
     email: EmailStr
     password: str
+
+
+class PasswordChange(BaseModel):
+    current_password: str
+    new_password: str
+
+
+class PasswordResetConfirm(BaseModel):
+    token: str
+    new_password: str

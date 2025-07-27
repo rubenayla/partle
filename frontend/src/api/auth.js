@@ -25,3 +25,7 @@ export async function currentUser() {
 export async function deleteAccount() {
   return api.delete("/v1/auth/account");
 }
+
+export async function changePassword(current_password, new_password) {
+  return api.post("/v1/auth/change-password", { current_password, new_password });
+}
