@@ -140,6 +140,30 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* ─── Search Input Clear Button ─────────────────────────────────────────── */
+/* Style the native search input clear button to match theme */
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 16px;
+  width: 16px;
+  background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m18 6-12 12'/%3E%3Cpath d='m6 6 12 12'/%3E%3C/svg%3E") no-repeat center;
+  background-size: 16px 16px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+input[type="search"]::-webkit-search-cancel-button:hover {
+  opacity: 1;
+}
+
+/* Dark mode styling for search clear button */
+.dark input[type="search"]::-webkit-search-cancel-button {
+  background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e0e0e0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m18 6-12 12'/%3E%3Cpath d='m6 6 12 12'/%3E%3C/svg%3E") no-repeat center;
+  background-size: 16px 16px;
+}
+
 /* ─── Tooltip ───────────────────────────────────────────────────────────── */
 .tooltip-container {
   position: relative;

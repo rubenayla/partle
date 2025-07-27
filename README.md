@@ -33,6 +33,39 @@ Users can rate the reliability of almost all data shown about products and store
 * 🟘 Toggle between list and map view
 * ⚡ Quick sign-in with passkeys (fallback to email + password)
 
+### Adding Products
+
+Products can be added via the frontend UI or directly through the backend API.
+
+**Via UI:**
+1. Ensure both frontend and backend are running (`make dev`).
+2. Navigate to the "Add Product" page in the frontend (usually accessible via a link in the UI).
+3. Fill out the form with product details (name, spec, price, etc.) and select a store if applicable.
+4. Click "Save" to add the product.
+
+**Via API:**
+Products can be added by sending a `POST` request to the `/v1/products` endpoint of the backend API.
+
+**Endpoint:** `POST /v1/products`
+**Base URL (local dev):** `http://localhost:8000`
+
+**Request Body (JSON):**
+```json
+{
+  "name": "Example Product Name",
+  "store_id": 1,
+  "spec": "Product Specification",
+  "price": 19.99,
+  "url": "http://example.com/product",
+  "lat": 34.052235,
+  "lon": -118.243683,
+  "description": "A detailed description of the product."
+}
+```
+**Authentication:** Requires a valid JWT in the `Authorization: Bearer <token>` header.
+
+For more details on the API schema, refer to `backend/app/schemas/product.py` and `backend/app/api/v1/products.py`.
+
 ## 📦 Tech Stack
 
 - **frontend/** uses Node.js, Vite + React + Tailwind CSS, and Leaflet (OpenStreetMap) for map view

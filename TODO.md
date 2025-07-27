@@ -1,7 +1,6 @@
 - Simple api to use.
-    - 1. see products
+    - 1. see products. No auth required.
     - 2. auth and upload products
-- Ok, now i'd like to implement the feature to recover my password. The typical button "Forgot your password?" or "Recover your password with an email" something like that.
 - add recover password email, need vercel or something
 - consider types of stores, and start adding them
 - recovery via email works
@@ -28,6 +27,7 @@
 - Map toggle (7) – visual polish that sells the idea.
 - Hosting partle.rubenayla.xyz
 - Add some color
+- Ok, now i'd like to implement the feature to recover my password. The typical button "Forgot your password?" or "Recover your password with an email" something like that.
 
 ## Not urgent, long term
 - limit max item count per row to 3?

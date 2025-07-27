@@ -28,7 +28,7 @@ export default function AddProduct() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    api.get('/v1/stores/').then(res => setStores(res.data));
+    api.get('/api/v1/stores/').then(res => setStores(res.data));
   }, []);
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export default function AddProduct() {
     e.preventDefault();
     setSaving(true);
     try {
-      await api.post('/v1/products', { ...form, store_id: form.store_id || null });
+      await api.post('/api/v1/products', { ...form, store_id: form.store_id || null });
       navigate('/');
     } catch {
       alert('Could not create product');
