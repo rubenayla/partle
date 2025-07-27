@@ -21,7 +21,7 @@ export default function Layout({ children }: Props) {
       {accountOpen && (
         <AuthModal onClose={() => setAccountOpen(false)} onSuccess={() => setIsLoggedIn(true)} />
       )}
-      <main className="flex-1 pt-[76px]">{children}</main>
+      <main className="flex-1 pt-[96px]">{children}</main>
     </div>
   );
 }
