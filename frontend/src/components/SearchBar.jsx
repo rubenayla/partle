@@ -12,6 +12,7 @@ export default function SearchBar({
   onAccountClick = () => { },
 }) {
   const [query, setQuery] = useState('')
+  const [searchType, setSearchType] = useState('products')
   const [priceMin, setPriceMin] = useState(0)
   const [priceMax, setPriceMax] = useState(500)
   const [selectedTags, setSelectedTags] = useState([])
@@ -143,7 +144,7 @@ export default function SearchBar({
 
   const handleSearch = (event) => {
     event.preventDefault()
-    onSearch({ query, priceMin, priceMax, sortBy, selectedTags })
+    onSearch({ query, searchType, priceMin, priceMax, sortBy, selectedTags })
   }
 
   return (
@@ -163,12 +164,29 @@ export default function SearchBar({
         >
           <input
             type="search"
-            placeholder="What are you looking for?"
+            placeholder={searchType === 'products' ? 'What products are you looking for?' : 'What stores are you looking for?'}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="flex-1 h-full bg-transparent placeholder-text-secondary text-foreground focus:outline-none"
             autoFocus
           />
+
+          <div className="flex items-center ml-2">
+            <button
+              type="button"
+              onClick={() => setSearchType('products')}
+              className={`px-3 py-1 rounded-full text-sm font-medium ${searchType === 'products' ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'}`}
+            >
+              Products
+            </button>
+            <button
+              type="button"
+              onClick={() => setSearchType('stores')}
+              className={`ml-2 px-3 py-1 rounded-full text-sm font-medium ${searchType === 'stores' ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'}`}
+            >
+              Stores
+            </button>
+          </div>
 
           <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-3" />
           {/* New Filter Section */}

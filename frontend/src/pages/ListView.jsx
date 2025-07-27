@@ -3,25 +3,33 @@ import { Link } from "react-router-dom";
 
 /**
  * Simple list view to unblock the UI.
- * – Uses static mock data if no `products` prop is passed.
+ * – Uses static mock data if no `items` prop is passed.
  */
-export default function ListView({ products }) {
-  const items = products;
-
+export default function ListView({ items }) {
   if (!Array.isArray(items)) {
-    return <p className="text-danger">ListView: products must be an array</p>;
+    return <p className="text-danger">ListView: items must be an array</p>;
   }
 
   return (
     <ul className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
-      {items.map((p) => (
-        <li key={p.id} className="border border-surface-hover rounded-xl p-4 bg-surface hover:bg-surface-hover transition">
+      {items.map((item) => (
+        <li key={item.id} className="border border-surface-hover rounded-xl p-4 bg-surface hover:bg-surface-hover transition">
           <h3 className="font-semibold mb-1">
-            <Link to={`/products/${p.id}`} className="text-foreground hover:underline">
-              {p.name}
-            </Link>
+            {item.price ? (
+              <Link to={`/products/${item.id}`} className="text-foreground hover:underline">
+                {item.name}
+              </Link>
+            ) : (
+              <Link to={`/stores/${item.id}`} className="text-foreground hover:underline">
+                {item.name}
+              </Link>
+            )}
           </h3>
-          <p className="text-sm text-muted">€{p.price} — {p.store}</p>
+          {item.price ? (
+            <p className="text-sm text-muted">€{item.price} — {item.store}</p>
+          ) : (
+            <p className="text-sm text-muted">{item.address || item.homepage || 'No additional info'}</p>
+          )}
         </li>
       ))}
     </ul>
