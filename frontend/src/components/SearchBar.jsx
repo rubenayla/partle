@@ -281,7 +281,9 @@ export default function SearchBar({
                       className="block px-2 py-1 text-foreground hover:bg-background rounded"
                     >Add product</a>
                   </Tooltip>
-                  <a href="/stores/new" className="block px-2 py-1 text-foreground hover:bg-background rounded">Add store (Alt+N, S)</a>
+                  <Tooltip text="Add store (Alt+N, S)">
+                    <a href="/stores/new" className="block px-2 py-1 text-foreground hover:bg-background rounded">Add store</a>
+                  </Tooltip>
                 </div>
               )}
             </div>

@@ -1,0 +1,25 @@
+## Database Querying
+
+To query the database, ensure your `DATABASE_URL` environment variable is set correctly. Then, you can use the `query_db.py` script.
+
+### Example: List all tags
+
+```bash
+cd backend
+export DATABASE_URL="postgresql://user:password@localhost:5432/your_database_name" # Replace with your actual URL
+poetry run python ../.gemini/query_db.py list_tags
+```
+
+### Example: List all users
+
+```bash
+cd backend
+export DATABASE_URL="postgresql://user:password@localhost:5432/your_database_name" # Replace with your actual URL
+poetry run python ../.gemini/query_db.py list_users
+```
+
+### How to find your DATABASE_URL (for local PostgreSQL)
+
+*   **Common Defaults:** `postgresql://postgres:your_password@localhost:5432/your_database_name`
+*   **Check `pg_hba.conf` and `postgresql.conf`:** These files contain your PostgreSQL configuration. Their location varies by OS and installation.
+*   **Check Environment Variables:** `echo $DATABASE_URL` in your terminal.
