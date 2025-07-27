@@ -1,23 +1,19 @@
 - Simple api to use.
     - 1. see products. No auth required.
     - 2. auth and upload products
-- add recover password email, need vercel or something
 - consider types of stores, and start adding them
-- recovery via email works
-    - vercel put .env as in the example?
+
 - Store CRUD (3 → 4) – lets you seed real data from the UI.
 - Parts under stores (5 → 6) – completes the core data model.
 - Tune the reliability rating of the info uploaded. It should go -1 to 1. Start at 0, depending on other people ratings get modified.
 - Users should be able to add products from other stores. Last updated time should be stored as parameter for every product. And who did that last update is relevant too.
-- Add tags table, for products
-    - like my favourites ones, just a tag for those, to play
+- MAKE MOBILE VERSION
 - Get data
     - Scraping?
         - Google Maps
         - Amazon
         - Wallapop?
     - Ask gpt sources
-- Make theme mode auto actually work based on the browser theme
 - Mobile version (bar at the bottom with easy interface. Go ahead to new standards)
 - The product of each store must have a unique name. If you don't agree with the data, several versions will appear, with capability to up/down vote them. It just like several products squished together in the same frontend card.
 - Mechanism to store searches performed by users so we can know what products are more demanded
@@ -25,9 +21,12 @@
 - Users report products (illegal etc)
 - Improve unit tests
 - Map toggle (7) – visual polish that sells the idea.
+- add "Forgot password?" via email, need vercel or something
+    - vercel put .env as in the example?
 - Hosting partle.rubenayla.xyz
 - Add some color
 - Ok, now i'd like to implement the feature to recover my password. The typical button "Forgot your password?" or "Recover your password with an email" something like that.
+
 
 ## Not urgent, long term
 - limit max item count per row to 3?

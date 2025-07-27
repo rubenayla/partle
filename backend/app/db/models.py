@@ -117,6 +117,7 @@ class Product(Base):
     lat: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     lon: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    image_url: Mapped[Optional[str]] = mapped_column(String, nullable=True)
 
     store_id: Mapped[Optional[int]] = mapped_column(
         ForeignKey("stores.id", ondelete="SET NULL"), nullable=True

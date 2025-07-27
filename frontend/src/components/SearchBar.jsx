@@ -159,7 +159,7 @@ export default function SearchBar({
         </Tooltip>
         <form
           onSubmit={handleSearch}
-          className="flex flex-1 mx-6 bg-surface rounded-full pl-4 pr-2 h-12 items-center"
+          className="flex flex-1 mx-2 sm:mx-4 md:mx-6 bg-surface rounded-full pl-3 sm:pl-4 pr-2 h-12 items-center"
         >
           <input
             type="search"
@@ -262,15 +262,15 @@ export default function SearchBar({
           </button>
         </form>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-1 sm:gap-2 md:gap-3">
           {isLoggedIn && (
             <div ref={createRef} className="relative">
               <button
                 type="button"
                 onClick={() => setCreateOpen(!createOpen)}
-                className="bg-transparent text-foreground hover:text-foreground focus:outline-none"
+                className="bg-transparent text-foreground hover:text-foreground focus:outline-none p-1 sm:p-2"
               >
-                <Plus className="h-6 w-6" />
+                <Plus className="h-5 w-5 sm:h-6 sm:w-6" />
               </button>
 
               {createOpen && (
@@ -295,9 +295,9 @@ export default function SearchBar({
               onClick={() =>
                 isLoggedIn ? setAccountOpen(!accountOpen) : onAccountClick()
               }
-              className="bg-transparent text-foreground hover:text-foreground focus:outline-none"
+              className="bg-transparent text-foreground hover:text-foreground focus:outline-none p-1 sm:p-2"
             >
-              <User className="h-8 w-8" />
+              <User className="h-6 w-6 sm:h-7 sm:w-7" />
             </button>
 
             {isLoggedIn && accountOpen && (
@@ -348,9 +348,9 @@ export default function SearchBar({
             <button
               type="button"
               onClick={() => setInfoOpen(!infoOpen)}
-              className="bg-transparent text-foreground hover:text-foreground focus:outline-none"
+              className="bg-transparent text-foreground hover:text-foreground focus:outline-none p-1 sm:p-2"
             >
-              <Info className="h-6 w-6" />
+              <Info className="h-5 w-5 sm:h-6 sm:w-6" />
             </button>
             {infoOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-surface rounded-xl shadow-lg p-4 z-50">
@@ -380,12 +380,10 @@ function ThemeSwitch({ value, onChange }) {
       <div className="relative flex h-full rounded-full bg-surface shadow-inner border border-gray-300 dark:border-gray-600 overflow-hidden">
         {/* Knob */}
         <div
-          className="absolute inset-y-0 left-0 rounded-full transition-transform duration-200 z-0 pointer-events-none"
+          className="absolute inset-y-0 left-0 rounded-full transition-transform duration-200 z-0 pointer-events-none bg-primary"
           style={{
             width: `${SEGMENT}px`,
-            transform: `translateX(${index * SEGMENT}px)`,
-            backgroundColor: "var(--color-accent)",
-            color: "white"
+            transform: `translateX(${index * SEGMENT}px)`
           }}
         />
         {/* Labels */}
@@ -394,8 +392,8 @@ function ThemeSwitch({ value, onChange }) {
             key={mode}
             onClick={() => onChange(mode)}
             style={{ width: `${SEGMENT}px` }}
-            className={`relative z-10 h-full flex items-center justify-center text-sm font-medium
-              ${index === i ? "text-white" : "text-foreground"}
+            className={`relative z-10 h-full flex items-center justify-center text-sm font-medium transition-colors
+              ${index === i ? "text-white dark:text-white" : "text-foreground"}
               focus:outline-none border-none`}
           >
             {mode.charAt(0).toUpperCase() + mode.slice(1)}

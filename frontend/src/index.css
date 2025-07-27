@@ -43,18 +43,28 @@
   --color-text-secondary:    #4b5563;   /* muted */
   --color-text-disabled:     #9ca3af;   /* disabled */
 
-  /* Actions & branding */
-  --color-primary:           #6366f1;   /* button / active icon */
-  --color-primary-hover:     #535bf2;
-  --color-accent:            #0b57d0;   /* logo / brand */
+  /* Primary brand color palette (based on #0b57d0) */
+  --color-primary-50:        #eff6ff;   /* lightest */
+  --color-primary-100:       #dbeafe;
+  --color-primary-200:       #bfdbfe;
+  --color-primary-300:       #93c5fd;
+  --color-primary-400:       #60a5fa;
+  --color-primary:           #0b57d0;   /* main brand color */
+  --color-primary-600:       #094bb8;
+  --color-primary-700:       #073f9f;
+  --color-primary-800:       #063286;
+  --color-primary-900:       #04266d;   /* darkest */
+  --color-primary-hover:     #094bb8;   /* hover state */
 
   /* Links */
-  --color-link:              #2563eb;
-  --color-link-hover:        #1d4ed8;
+  --color-link:              #0b57d0;   /* use primary for links */
+  --color-link-hover:        #094bb8;
 
-  /* Misc */
-  --color-focus:             #2563eb;   /* focus ring */
+  /* States */
+  --color-focus:             #0b57d0;   /* focus ring */
   --color-danger:            #dc2626;   /* errors */
+  --color-success:           #16a34a;   /* success states */
+  --color-warning:           #d97706;   /* warning states */
 }
 
 /* ─── Design tokens — dark theme ──────────────────────────────── */
@@ -69,18 +79,28 @@
   --color-text-secondary:    #9ca3af;   /* muted */
   --color-text-disabled:     #6b7280;   /* disabled */
 
-  /* Actions & branding */
-  --color-primary:           #e0e0e0;   /* button / active icon (neutral) */
-  --color-primary-hover:     #ffffff;
-  --color-accent:            #004a77;   /* logo / brand */
+  /* Primary brand color palette (adjusted for dark theme) */
+  --color-primary-50:        #1a2332;   /* darkest in dark mode */
+  --color-primary-100:       #233249;
+  --color-primary-200:       #2d4060;
+  --color-primary-300:       #3b5998;
+  --color-primary-400:       #4a73cf;
+  --color-primary:           #5b8def;   /* lighter version of #0b57d0 for dark mode */
+  --color-primary-600:       #6b9df2;
+  --color-primary-700:       #8ab4f8;
+  --color-primary-800:       #a9c7fb;
+  --color-primary-900:       #c8daff;   /* lightest in dark mode */
+  --color-primary-hover:     #6b9df2;   /* hover state */
 
   /* Links */
-  --color-link:              #8ab4f8;
-  --color-link-hover:        #aecbfa;
+  --color-link:              #5b8def;   /* use primary for links */
+  --color-link-hover:        #6b9df2;
 
-  /* Misc */
-  --color-focus:             #8ab4f8;   /* focus ring */
+  /* States */
+  --color-focus:             #5b8def;   /* focus ring */
   --color-danger:            #f87171;   /* errors */
+  --color-success:           #4ade80;   /* success states */
+  --color-warning:           #fbbf24;   /* warning states */
 }
 
 
