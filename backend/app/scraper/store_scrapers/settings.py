@@ -21,10 +21,15 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 
-# Concurrency and throttling settings
-#CONCURRENT_REQUESTS = 16
+# Ultra-conservative settings for maximum stability
+CONCURRENT_REQUESTS = 1  
 CONCURRENT_REQUESTS_PER_DOMAIN = 1
-DOWNLOAD_DELAY = 1
+DOWNLOAD_DELAY = 5  # Wait 5 seconds between requests
+RANDOMIZE_DOWNLOAD_DELAY = 0.5
+AUTOTHROTTLE_ENABLED = True
+AUTOTHROTTLE_START_DELAY = 5
+AUTOTHROTTLE_MAX_DELAY = 15
+AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
 
 JOBDIR = 'crawls/bricodepot_crawl_state'
 
@@ -56,6 +61,7 @@ DEFAULT_REQUEST_HEADERS = {
 #    "store_scrapers.middlewares.StoreScrapersDownloaderMiddleware": 543,
 #}
 
+# Re-enable Playwright with stable configuration
 DOWNLOAD_HANDLERS = {
     "http": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
     "https": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
@@ -69,22 +75,11 @@ DOWNLOAD_HANDLERS = {
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    "store_scrapers.pipelines.StoreScrapersPipeline": 300,
-#}
+ITEM_PIPELINES = {
+    "store_scrapers.pipelines.DatabasePipeline": 300,
+}
 
-# Enable and configure the AutoThrottle extension (disabled by default)
-# See https://docs.scrapy.org/en/latest/topics/autothrottle.html
-#AUTOTHROTTLE_ENABLED = True
-# The initial download delay
-#AUTOTHROTTLE_START_DELAY = 5
-# The maximum download delay to be set in case of high latencies
-#AUTOTHROTTLE_MAX_DELAY = 60
-# The average number of requests Scrapy should be sending in parallel to
-# each remote server
-#AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
-# Enable showing throttling stats for every response received:
-#AUTOTHROTTLE_DEBUG = False
+# AutoThrottle is now enabled above for stability
 
 # Enable and configure HTTP caching (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
@@ -96,4 +91,35 @@ DOWNLOAD_HANDLERS = {
 
 # Set settings whose default value is deprecated to a future-proof value
 FEED_EXPORT_ENCODING = "utf-8"
-PLAYWRIGHT_DEFAULT_NAVIGATION_TIMEOUT = 60000
+# Minimal Playwright settings for maximum stability
+PLAYWRIGHT_DEFAULT_NAVIGATION_TIMEOUT = 20000
+PLAYWRIGHT_BROWSER_TYPE = 'chromium'
+PLAYWRIGHT_LAUNCH_OPTIONS = {
+    'headless': True,
+    'args': [
+        '--no-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        '--single-process',
+        '--disable-extensions',
+        '--disable-plugins',
+        '--disable-images',  # Don't load images for faster processing
+        # JavaScript re-enabled - needed for product listings
+        '--memory-pressure-off'
+    ]
+}
+PLAYWRIGHT_MAX_CONTEXTS = 1
+PLAYWRIGHT_MAX_PAGES_PER_CONTEXT = 1
+
+# Close pages immediately after use
+PLAYWRIGHT_CLOSE_PAGES_ON_FINISH = True
+
+# Retry settings
+RETRY_ENABLED = True
+RETRY_TIMES = 2
+RETRY_HTTP_CODES = [500, 502, 503, 504, 408, 429]
+
+# Memory and resource management
+MEMUSAGE_ENABLED = True
+MEMUSAGE_LIMIT_MB = 2048
+MEMUSAGE_WARNING_MB = 1024

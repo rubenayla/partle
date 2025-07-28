@@ -1,9 +1,9 @@
-- Start adding products
+- Refactor dropdown positioning to use CSS-only or component library (Headless UI/Radix) instead of manual JavaScript getBoundingClientRect() calculations
+- Make add product page prettier and easy to use, once logged in add one another another... no need to click add again.
+- Scrape products
+- Create docs with sections for API use (people should be able to connect easily), database structure, standards, etc.
+- [products|stores] toggle should go under filters
 - MAKE MOBILE VERSION
-- Simple api to use.
-    - 1. see products. No auth required.
-    - 2. auth and upload products
-[products|stores] toggle should go under filters
 
 - Store CRUD (3 → 4) – lets you seed real data from the UI.
 - Parts under stores (5 → 6) – completes the core data model.

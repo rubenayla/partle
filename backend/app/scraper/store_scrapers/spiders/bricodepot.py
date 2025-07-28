@@ -3,16 +3,13 @@ Scrapy spider for scraping product data from Brico Depot.
 
 This spider navigates through categories, extracts product links, and then
 scrapes detailed information for each product, including name, price,
-description, and image URL. It then sends this data to the local backend API.
+description, and image URL. It saves this data directly to the database
+using Scrapy pipelines.
 """
 
 import scrapy
-import json
-import requests
-
-BASE_URL = "http://localhost:8000"
-# TODO: This token should ideally be loaded from a secure configuration or environment variable, not hardcoded.
-AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMiIsImV4cCI6MTc1Mzc0MjM5M30.6gPP3p5lIVQpr74eskj9jys8p4Nwfpzrrp0kzDUz7uQ"
+from ..items import ProductItem
+from ..config import config
 
 
 class BricodepotSpider(scrapy.Spider):
@@ -21,7 +18,7 @@ class BricodepotSpider(scrapy.Spider):
     """
     name = "bricodepot"
     allowed_domains = ["bricodepot.es"]
-    store_id = 4064  # BRICO DEPOT chain store ID in the backend
+    store_id = config.STORE_IDS["bricodepot"]
 
     def start_requests(self):
         """
@@ -40,6 +37,7 @@ class BricodepotSpider(scrapy.Spider):
                 },
                 playwright_page_methods=[
                     {'method': 'wait_for_selector', 'args': ['body']},
+                    {'method': 'wait_for_timeout', 'args': [5000]},  # Wait for Algolia to load products
                 ],
             ),
             dont_filter=True,  # Ensures the request is not filtered even if it's already visited
@@ -52,10 +50,14 @@ class BricodepotSpider(scrapy.Spider):
         Args:
             response (scrapy.http.Response): The response object from the homepage.
         """
-        page = response.meta["playwright_page"]
-        html_content = await page.content()
-        await page.close()
-        response = response.replace(body=html_content, encoding='utf-8')
+        try:
+            page = response.meta["playwright_page"]
+            html_content = await page.content()
+            await page.close()
+            response = response.replace(body=html_content, encoding='utf-8')
+        except Exception as e:
+            self.logger.error(f"Error processing homepage: {e}")
+            return
 
         # Extract category links from the homepage navigation
         category_links = response.css('a.hm-link.main-navbar--item-parent::attr(href)').getall()
@@ -72,6 +74,7 @@ class BricodepotSpider(scrapy.Spider):
                     },
                     playwright_page_methods=[
                         {'method': 'wait_for_selector', 'args': ['body']},
+                        {'method': 'wait_for_timeout', 'args': [5000]},  # Wait for Algolia to load products
                     ],
                 ),
                 dont_filter=True,
@@ -84,13 +87,45 @@ class BricodepotSpider(scrapy.Spider):
         Args:
             response (scrapy.http.Response): The response object from a category page.
         """
-        page = response.meta["playwright_page"]
-        html_content = await page.content()
-        await page.close()
-        response = response.replace(body=html_content, encoding='utf-8')
+        try:
+            page = response.meta["playwright_page"]
+            html_content = await page.content()
+            await page.close()
+            response = response.replace(body=html_content, encoding='utf-8')
+        except Exception as e:
+            self.logger.error(f"Error processing category page {response.url}: {e}")
+            return
 
-        # Extract product links from the category page listings
-        product_links = response.css('a.product-item-link::attr(href)').getall()
+        # Extract product links - Bricodepot uses Algolia so products load via JS
+        # Try multiple selectors for Algolia-loaded products
+        product_selectors = [
+            'a.product-item-link',  # Original selector
+            '.ais-Hits-item a',     # Algolia InstantSearch hits
+            '.algolia-hit a',       # Algolia hit links
+            '[class*="hit"] a',     # Generic hit containers
+            '.product-item a',      # Alternative product items
+            '[data-objectid] a',    # Algolia object IDs
+            '.item a[href*="/"]',   # Generic item links that go to products
+        ]
+        
+        product_links = []
+        for selector in product_selectors:
+            links = response.css(f'{selector}::attr(href)').getall()
+            if links:
+                # Filter to actual product links (not category/static links)
+                filtered_links = [
+                    link for link in links 
+                    if link and not any(skip in link.lower() for skip in [
+                        '/static/', '/media/', '#', 'javascript:', 'mailto:', 'tel:',
+                        '/categoria', '/category', '/promociones', '/ofertas'
+                    ])
+                ]
+                if filtered_links:
+                    product_links.extend(filtered_links)
+                    self.logger.info(f"Selector '{selector}' found {len(filtered_links)} valid product links")
+                    break
+        
+        self.logger.info(f"Total product links found: {len(product_links)}")
         for link in product_links:
             yield scrapy.Request(
                 url=response.urljoin(link),
@@ -104,6 +139,7 @@ class BricodepotSpider(scrapy.Spider):
                     },
                     playwright_page_methods=[
                         {'method': 'wait_for_selector', 'args': ['body']},
+                        {'method': 'wait_for_timeout', 'args': [5000]},  # Wait for Algolia to load products
                     ],
                 ),
                 dont_filter=True,
@@ -116,10 +152,14 @@ class BricodepotSpider(scrapy.Spider):
         Args:
             response (scrapy.http.Response): The response object from a product page.
         """
-        page = response.meta["playwright_page"]
-        html_content = await page.content()
-        await page.close()
-        response = response.replace(body=html_content, encoding='utf-8')
+        try:
+            page = response.meta["playwright_page"]
+            html_content = await page.content()
+            await page.close()
+            response = response.replace(body=html_content, encoding='utf-8')
+        except Exception as e:
+            self.logger.error(f"Error processing product page {response.url}: {e}")
+            return
 
         # Extract product name
         product_name = response.css('h1.product-name::text').get()
@@ -129,7 +169,9 @@ class BricodepotSpider(scrapy.Spider):
         # Extract price and clean it (remove thousand separators, replace comma with dot)
         price = response.css('span.price::text').get()
         if price:
-            price = price.strip().replace('.', '').replace(',', '.')
+            # Clean price: remove spaces, non-breaking spaces, currency symbols
+            price = price.strip().replace('\xa0', '').replace('€', '').replace('$', '')
+            price = price.replace('.', '').replace(',', '.')  # Handle thousand separators
 
         # Extract description
         description = response.css('div.product-description-content p::text').get()
@@ -139,34 +181,15 @@ class BricodepotSpider(scrapy.Spider):
         # Extract image URL
         image_url = response.css('img.product-image-photo::attr(src)').get()
 
-        product_data = {
-            'name': product_name,
-            'price': float(price) if price else None,
-            'url': response.url,
-            'description': description,
-            'image_url': image_url,
-            'store_id': self.store_id,
-        }
+        # Create and yield the product item
+        product_item = ProductItem(
+            name=product_name,
+            price=float(price) if price else None,
+            url=response.url,
+            description=description,
+            image_url=image_url,
+            store_id=self.store_id,
+        )
 
-        self.logger.info(f"Sending product data: {product_data}")
-        self.create_product(product_data)
-
-    def create_product(self, product_data):
-        """
-        Sends the scraped product data to the backend API.
-
-        Args:
-            product_data (dict): A dictionary containing the product details.
-        """
-        headers = {
-            "Authorization": f"Bearer {AUTH_TOKEN}",
-            "Content-Type": "application/json"
-        }
-        try:
-            response = requests.post(f"{BASE_URL}/v1/products/", data=json.dumps(product_data), headers=headers)
-            response.raise_for_status()  # Raise an exception for HTTP errors (4xx or 5xx)
-            self.logger.info(f"Product created successfully: {response.json()}")
-        except requests.exceptions.RequestException as e:
-            self.logger.error(f"Error creating product: {e}")
-            if hasattr(e, 'response') and e.response is not None:
-                self.logger.error(f"Response content: {e.response.text}")
+        self.logger.info(f"Scraped product: {product_name}")
+        yield product_item
