@@ -1,6 +1,6 @@
 # backend/app/api/v1/products.py
 from collections.abc import Generator
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -58,6 +58,8 @@ def list_products(
         query = query.order_by(Product.price.asc())
     elif sort_by == "price_desc":
         query = query.order_by(Product.price.desc())
+    elif sort_by == "random":
+        query = query.order_by(func.random())
 
     return query.all()
 

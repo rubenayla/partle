@@ -28,6 +28,7 @@ export default function SearchBar({
     price_asc: 'Price ↑',
     price_desc: 'Price ↓',
     distance: 'Distance',
+    random: 'Random',
   };
 
   const [priceOpen, setPriceOpen] = useState(false)
