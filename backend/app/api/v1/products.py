@@ -1,6 +1,6 @@
 # backend/app/api/v1/products.py
 from collections.abc import Generator
-
+from sqlalchemy import or_
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -18,12 +18,48 @@ router = APIRouter()
 @router.get("/", response_model=list[schema.ProductOut])
 def list_products(
     store_id: int | None = None,
+    q: str | None = None,
+    min_price: float | None = None,
+    max_price: float | None = None,
+    tags: str | None = None,
+    sort_by: str | None = None,
     db: Session = Depends(get_db),
 ):
-    q = db.query(Product)
+    query = db.query(Product)
+
     if store_id is not None:
-        q = q.filter(Product.store_id == store_id)
-    return q.all()
+        query = query.filter(Product.store_id == store_id)
+
+    if q:
+        search_term = f"%{q}%"
+        query = query.filter(
+            or_(
+                Product.name.ilike(search_term),
+                Product.description.ilike(search_term)
+            )
+        )
+
+    if min_price is not None:
+        query = query.filter(Product.price >= min_price)
+
+    if max_price is not None:
+        query = query.filter(Product.price <= max_price)
+
+    if tags:
+        tag_list = [tag.strip() for tag in tags.split(',')]
+        if tag_list:
+            query = query.join(Product.tags).filter(Tag.name.in_(tag_list))
+
+    if sort_by == "created_at":
+        query = query.order_by(Product.created_at.desc())
+    elif sort_by == "created_at_asc":
+        query = query.order_by(Product.created_at.asc())
+    elif sort_by == "price_asc":
+        query = query.order_by(Product.price.asc())
+    elif sort_by == "price_desc":
+        query = query.order_by(Product.price.desc())
+
+    return query.all()
 
 
 @router.get("/store/{store_id}", response_model=list[schema.ProductOut])

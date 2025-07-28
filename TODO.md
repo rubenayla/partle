@@ -1,6 +1,3 @@
-
-how many stores?
-- consider types of stores, and start adding them
 - Start adding products
 - MAKE MOBILE VERSION
 - Simple api to use.

@@ -27,6 +27,14 @@ export default function ProductDetail() {
         
       </header>
 
+      {product.image_url && (
+        <img
+          src={product.image_url}
+          alt={product.name}
+          className="w-full max-w-sm h-auto object-cover rounded mb-4"
+        />
+      )}
+
       {product.description && <p className="mb-3">{product.description}</p>}
 
       {product.url && (

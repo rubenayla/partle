@@ -131,6 +131,9 @@ class Product(Base):
         back_populates="products", foreign_keys=[creator_id]
     )
 
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )

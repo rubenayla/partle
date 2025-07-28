@@ -21,6 +21,15 @@ export default function SearchBar({
   const [shortcutMode, setShortcutMode] = useState(false)
   const shortcutTimeoutRef = useRef(null)
 
+  const sortOptions = {
+    relevance: 'Relevance',
+    created_at: 'Newest',
+    created_at_asc: 'Oldest',
+    price_asc: 'Price ↑',
+    price_desc: 'Price ↓',
+    distance: 'Distance',
+  };
+
   const [priceOpen, setPriceOpen] = useState(false)
   const [sortOpen, setSortOpen] = useState(false)
   const [accountOpen, setAccountOpen] = useState(false)
@@ -189,6 +198,37 @@ export default function SearchBar({
           </div>
 
           <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-3" />
+          <div ref={sortRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setSortOpen(!sortOpen)}
+              className="h-full px-3 text-sm text-foreground bg-transparent focus:outline-none"
+            >
+              Sort: {sortOptions[sortBy]}
+            </button>
+            {sortOpen && (
+              <div className="absolute top-14 left-0 w-44 bg-surface rounded-xl shadow-lg p-2 z-50">
+                {Object.entries(sortOptions).map(([value, label]) => (
+                  <button
+                    key={value}
+                    onClick={() => {
+                      setSortBy(value);
+                      setSortOpen(false);
+                      onSearch({ query, searchType, priceMin, priceMax, sortBy: value, selectedTags });
+                    }}
+                    className={`block w-full text-left px-2 py-1 rounded hover:bg-background ${sortBy === value
+                        ? 'font-semibold text-foreground'
+                        : 'text-foreground'
+                      }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-3" />
           {/* New Filter Section */}
           <div className="relative">
             <button
@@ -239,37 +279,7 @@ export default function SearchBar({
             )}
           </div>
 
-          <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-3" />
-          <div ref={sortRef} className="relative">
-            <button
-              type="button"
-              onClick={() => setSortOpen(!sortOpen)}
-              className="h-full px-3 text-sm text-foreground bg-transparent focus:outline-none"
-            >
-              Sort: {sortBy.replace('_', ' ')}
-            </button>
-            {sortOpen && (
-              <div className="absolute top-14 left-0 w-44 bg-surface rounded-xl shadow-lg p-2 z-50">
-                {['relevance', 'price_asc', 'price_desc', 'distance'].map(
-                  (opt) => (
-                    <button
-                      key={opt}
-                      onClick={() => {
-                        setSortBy(opt)
-                        setSortOpen(false)
-                      }}
-                      className={`block w-full text-left px-2 py-1 rounded hover:bg-background ${sortBy === opt
-                          ? 'font-semibold text-foreground'
-                          : 'text-foreground'
-                        }`}
-                    >
-                      {opt.replace('_', ' ').replace('asc', '↑').replace('desc', '↓')}
-                    </button>
-                  ),
-                )}
-              </div>
-            )}
-          </div>
+          
 
           <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-3" />
           <button

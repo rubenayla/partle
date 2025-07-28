@@ -14,6 +14,13 @@ export default function ListView({ items }) {
     <ul className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
       {items.map((item) => (
         <li key={item.id} className="border border-surface-hover rounded-xl p-4 bg-surface hover:bg-surface-hover transition">
+          {item.image_url && (
+            <img
+              src={item.image_url}
+              alt={item.name}
+              className="w-full h-32 object-cover rounded mb-2"
+            />
+          )}
           <h3 className="font-semibold mb-1">
             {item.price ? (
               <Link to={`/products/${item.id}`} className="text-foreground hover:underline">

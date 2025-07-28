@@ -1,6 +1,6 @@
 import sys
 from app.db.session import SessionLocal
-from app.db.models import Tag, User, Store
+from app.db.models import Tag, User, Store, Product
 
 def list_tags():
     db = SessionLocal()
@@ -34,10 +34,20 @@ def list_stores():
             print(f"ID: {store.id}, Name: {store.name}, Type: {store.type.value}")
     db.close()
 
+def list_products():
+    db = SessionLocal()
+    products = db.query(Product).all()
+    print("--- Products ---")
+    if not products:
+        print("(No products found)")
+    else:
+        print(f"Total products: {len(products)}")
+    db.close()
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: python query_db.py <command>")
-        print("Commands: list_tags, list_users, list_stores")
+        print("Commands: list_tags, list_users, list_stores, list_products")
         sys.exit(1)
 
     command = sys.argv[1]
@@ -48,6 +58,8 @@ if __name__ == "__main__":
         list_users()
     elif command == "list_stores":
         list_stores()
+    elif command == "list_products":
+        list_products()
     else:
         print(f"Unknown command: {command}")
         sys.exit(1)

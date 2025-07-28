@@ -49,13 +49,24 @@ export default function Products() {
       <ul className="space-y-2">
         {products.map((p) => (
           <li key={p.id} className="border p-3 rounded">
-            <Link
-              to={`/products/${p.id}`}
-              className="text-blue-600 hover:underline"
-            >
-              <strong>{p.name}</strong>
-            </Link>{" "}
-            — {p.spec ?? "–"} — €{p.price ?? "?"}
+            <div className="flex items-center gap-4">
+              {p.image_url && (
+                <img
+                  src={p.image_url}
+                  alt={p.name}
+                  className="w-16 h-16 object-cover rounded"
+                />
+              )}
+              <div>
+                <Link
+                  to={`/products/${p.id}`}
+                  className="text-blue-600 hover:underline"
+                >
+                  <strong>{p.name}</strong>
+                </Link>{" "}
+                — {p.spec ?? "–"} — €{p.price ?? "?"}
+              </div>
+            </div>
           </li>
         ))}
       </ul>
