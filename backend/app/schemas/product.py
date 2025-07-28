@@ -32,6 +32,7 @@ from app.schemas.tag import Tag
 class ProductOut(ProductIn):
     """What the API returns."""
     id: int
+    created_at: datetime
     updated_at: datetime
     updated_by_id: Optional[int] = None
     image_url: Optional[HttpUrl] = None
