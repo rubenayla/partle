@@ -22,7 +22,7 @@ export default function Home() {
     priceMin: 0,
     priceMax: 500,
     selectedTags: [],
-    sortBy: "relevance",
+    sortBy: "random",
   });
 
   useEffect(() => {

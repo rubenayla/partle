@@ -67,7 +67,7 @@ def list_products(
 @router.get("/store/{store_id}", response_model=list[schema.ProductOut])
 def list_products_by_store(store_id: int, db: Session = Depends(get_db)):
     """List products for a specific store."""
-    return db.query(Product).filter(Product.store_id == store_id).all()
+    return db.query(Product).filter(Product.store_id == store_id).order_by(func.random()).all()
 
 
 # TODO HOW TO UPDATE PRODUCT
