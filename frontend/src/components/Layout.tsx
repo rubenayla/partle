@@ -16,7 +16,7 @@ export default function Layout({ children }: Props) {
   }, []);
 
   return (
-    <div className="min-h-screen w-screen flex flex-col bg-background text-foreground">
+    <div className="min-h-screen w-full flex flex-col bg-background text-foreground overflow-x-hidden">
       <SearchBar isLoggedIn={isLoggedIn} onAccountClick={() => setAccountOpen(true)} />
       {accountOpen && (
         <AuthModal onClose={() => setAccountOpen(false)} onSuccess={() => setIsLoggedIn(true)} />

@@ -37,6 +37,7 @@ export default function SearchBar({
   const [infoOpen, setInfoOpen] = useState(false)
   const [createOpen, setCreateOpen] = useState(false)
   const [filterOpen, setFilterOpen] = useState(false)
+  const [sortPosition, setSortPosition] = useState({ top: 0, left: 0 })
 
   const priceRef = useRef()
   const sortRef = useRef()
@@ -159,7 +160,7 @@ export default function SearchBar({
 
   return (
     <header className="fixed top-0 left-0 right-0 z-20 bg-background border-b border-gray-200 dark:border-gray-700">
-      <div className="w-full max-w-screen-2xl mx-auto flex items-center justify-between px-4 py-3">
+      <div className="w-full max-w-screen-2xl mx-auto flex items-center justify-between px-2 sm:px-4 py-3 overflow-x-hidden">
         <Tooltip text="Go home (Alt+N, H)">
           <a
             href="/"
@@ -170,7 +171,7 @@ export default function SearchBar({
         </Tooltip>
         <form
           onSubmit={handleSearch}
-          className="flex flex-1 mx-2 sm:mx-4 md:mx-6 bg-surface rounded-full pl-3 sm:pl-4 pr-2 h-12 items-center"
+          className="flex flex-1 mx-1 sm:mx-2 md:mx-4 lg:mx-6 bg-surface rounded-full pl-2 sm:pl-3 md:pl-4 pr-1 sm:pr-2 h-10 sm:h-12 items-center overflow-hidden"
         >
           <input
             type="search"
@@ -181,66 +182,55 @@ export default function SearchBar({
             autoFocus
           />
 
-          <div className="flex items-center ml-2">
+          <div className="hidden sm:flex items-center ml-2">
             <button
               type="button"
               onClick={() => setSearchType('products')}
-              className={`px-3 py-1 rounded-full text-sm font-medium ${searchType === 'products' ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'}`}
+              className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${searchType === 'products' ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'}`}
             >
               Products
             </button>
             <button
               type="button"
               onClick={() => setSearchType('stores')}
-              className={`ml-2 px-3 py-1 rounded-full text-sm font-medium ${searchType === 'stores' ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'}`}
+              className={`ml-1 sm:ml-2 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${searchType === 'stores' ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'}`}
             >
               Stores
             </button>
           </div>
 
-          <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-3" />
-          <div ref={sortRef} className="relative">
+          <div className="hidden sm:block h-6 border-l border-gray-300 dark:border-gray-600 mx-1 sm:mx-2 md:mx-3" />
+          <div ref={sortRef} className="relative hidden md:block overflow-visible">
             <button
               type="button"
-              onClick={() => setSortOpen(!sortOpen)}
-              className="h-full px-3 text-sm text-foreground bg-transparent focus:outline-none"
+              onClick={() => {
+                if (sortRef.current) {
+                  const rect = sortRef.current.getBoundingClientRect();
+                  setSortPosition({ 
+                    top: rect.bottom + 8, 
+                    left: rect.right - 160 // 160px = w-40 width
+                  });
+                }
+                setSortOpen(!sortOpen);
+              }}
+              className="h-full px-1 sm:px-2 md:px-3 text-xs sm:text-sm text-foreground bg-transparent focus:outline-none whitespace-nowrap"
             >
-              Sort: {sortOptions[sortBy]}
+              <span className="hidden lg:inline">Sort: </span>{sortOptions[sortBy]}
             </button>
-            {sortOpen && (
-              <div className="absolute top-14 left-0 w-44 bg-surface rounded-xl shadow-lg p-2 z-50">
-                {Object.entries(sortOptions).map(([value, label]) => (
-                  <button
-                    key={value}
-                    onClick={() => {
-                      setSortBy(value);
-                      setSortOpen(false);
-                      onSearch({ query, searchType, priceMin, priceMax, sortBy: value, selectedTags });
-                    }}
-                    className={`block w-full text-left px-2 py-1 rounded hover:bg-background ${sortBy === value
-                        ? 'font-semibold text-foreground'
-                        : 'text-foreground'
-                      }`}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
 
-          <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-3" />
+          <div className="hidden sm:block h-6 border-l border-gray-300 dark:border-gray-600 mx-1 sm:mx-2 md:mx-3" />
           {/* New Filter Section */}
-          <div className="relative">
+          <div className="relative hidden lg:block overflow-visible">
             <button
               type="button"
-              onClick={() => setFilterOpen(!filterOpen)} // Assuming a new state for filterOpen
-              className="h-full px-3 text-sm text-foreground bg-transparent focus:outline-none"
+              onClick={() => setFilterOpen(!filterOpen)}
+              className="h-full px-1 sm:px-2 md:px-3 text-xs sm:text-sm text-foreground bg-transparent focus:outline-none"
             >
               Filters
             </button>
             {filterOpen && (
-              <div ref={filterRef} className="absolute top-14 left-0 w-64 bg-surface rounded-xl shadow-lg p-4 z-50 space-y-2">
+              <div ref={filterRef} className="absolute top-full mt-2 right-0 w-64 bg-surface rounded-xl shadow-lg p-4 z-50 space-y-2 max-w-screen">
                 <TagFilter
                   selectedTags={selectedTags}
                   onTagChange={setSelectedTags}
@@ -249,17 +239,17 @@ export default function SearchBar({
             )}
           </div>
 
-          <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-3" />
-          <div ref={priceRef} className="relative">
+          <div className="hidden sm:block h-6 border-l border-gray-300 dark:border-gray-600 mx-1 sm:mx-2 md:mx-3" />
+          <div ref={priceRef} className="relative hidden md:block overflow-visible">
             <button
               type="button"
               onClick={() => setPriceOpen(!priceOpen)}
-              className="h-full px-3 text-sm text-foreground bg-transparent focus:outline-none"
+              className="h-full px-1 sm:px-2 md:px-3 text-xs sm:text-sm text-foreground bg-transparent focus:outline-none whitespace-nowrap"
             >
-              Price: {priceMin}–{priceMax}
+              <span className="hidden lg:inline">Price: </span>{priceMin}–{priceMax}
             </button>
             {priceOpen && (
-              <div className="absolute top-14 left-0 w-64 bg-surface rounded-xl shadow-lg p-4 z-50 space-y-2">
+              <div className="absolute top-full mt-2 right-0 w-64 bg-surface rounded-xl shadow-lg p-4 z-50 space-y-2 max-w-screen">
                 <label className="text-sm text-secondary">Min €</label>
                 <input
                   type="number"
@@ -282,7 +272,7 @@ export default function SearchBar({
 
           
 
-          <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-3" />
+          <div className="hidden sm:block h-6 border-l border-gray-300 dark:border-gray-600 mx-1 sm:mx-2 md:mx-3" />
           <button
             type="submit"
             className="p-2 rounded-full bg-transparent text-foreground hover:text-white hover:bg-primary focus:outline-none"
@@ -392,6 +382,31 @@ export default function SearchBar({
           </div>
         </div>
       </div>
+      
+      {/* Dropdowns positioned outside form to avoid scroll issues */}
+      {sortOpen && (
+        <div 
+          className="fixed w-40 bg-surface rounded-xl shadow-lg p-2 z-[100] max-w-screen border border-gray-200 dark:border-gray-600"
+          style={{ top: `${sortPosition.top}px`, left: `${sortPosition.left}px` }}
+        >
+          {Object.entries(sortOptions).map(([value, label]) => (
+            <button
+              key={value}
+              onClick={() => {
+                setSortBy(value);
+                setSortOpen(false);
+                onSearch({ query, searchType, priceMin, priceMax, sortBy: value, selectedTags });
+              }}
+              className={`block w-full text-left px-2 py-1 rounded hover:bg-background ${sortBy === value
+                  ? 'font-semibold text-foreground'
+                  : 'text-foreground'
+                }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
     </header>
   )
 }
