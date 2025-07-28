@@ -1,3 +1,5 @@
+- Add image urls to the mock data of the database, with lorem ipsum images as url, so we get some in the website.
+    
 - Refactor dropdown positioning to use CSS-only or component library (Headless UI/Radix) instead of manual JavaScript getBoundingClientRect() calculations
 - Make add product page prettier and easy to use, once logged in add one another another... no need to click add again.
 - Scrape products
