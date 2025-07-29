@@ -289,7 +289,7 @@ export default function SearchBar({
 
               <DropdownMenu.Portal>
                 <DropdownMenu.Content
-                  className="w-48 bg-surface rounded-xl shadow-lg p-4 z-50 border border-gray-200 dark:border-gray-600"
+                  className="w-48 bg-surface rounded-xl shadow-lg p-4 z-50 border border-gray-200 dark:border-gray-700"
                   align="end"
                   sideOffset={8}
                 >
@@ -381,7 +381,7 @@ export default function SearchBar({
             
             <DropdownMenu.Portal>
               <DropdownMenu.Content
-                className="w-48 bg-surface rounded-xl shadow-lg p-4 z-50 border border-gray-200 dark:border-gray-600"
+                className="w-48 bg-surface rounded-xl shadow-lg p-4 z-50 border border-gray-200 dark:border-gray-700"
                 align="end"
                 sideOffset={8}
               >
