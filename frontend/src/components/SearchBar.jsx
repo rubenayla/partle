@@ -386,6 +386,9 @@ export default function SearchBar({
                 sideOffset={8}
               >
                 <DropdownMenu.Item className="block px-2 py-1 text-foreground hover:bg-background rounded cursor-pointer focus:outline-none focus:bg-background">
+                  <a href="/about" className="block text-foreground hover:text-foreground hover:font-medium">About</a>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item className="block px-2 py-1 text-foreground hover:bg-background rounded cursor-pointer focus:outline-none focus:bg-background">
                   <a href="/contact" className="block text-foreground hover:text-foreground hover:font-medium">Contact</a>
                 </DropdownMenu.Item>
                 <DropdownMenu.Item className="block px-2 py-1 text-foreground hover:bg-background rounded cursor-pointer focus:outline-none focus:bg-background">

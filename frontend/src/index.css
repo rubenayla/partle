@@ -109,8 +109,7 @@
 /* ─── Base Styles ───────────────────────────────────────────────────────── */
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  width: 100%;
   min-width: 320px;
   min-height: 100vh;
   overflow-x: hidden; /* Prevent horizontal scroll */
@@ -129,7 +128,12 @@ body {
 
 /* Global overflow prevention */
 html {
+  width: 100%;
   overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
 }
 
 * {
