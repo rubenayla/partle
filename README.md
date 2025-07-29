@@ -68,7 +68,7 @@ For more details on the API schema, refer to `backend/app/schemas/product.py` an
 
 ## 📦 Tech Stack
 
-- **frontend/** uses Node.js, Vite + React + Tailwind CSS, and Leaflet (OpenStreetMap) for map view
+- **frontend/** uses Node.js, Vite + React + Tailwind CSS, Radix UI for accessible components, and Leaflet (OpenStreetMap) for map view
     - Manages dependencies with npm. No Python virtual environment is needed.
     - I prefer TypeScript for type safety
 - **backend/**

@@ -33,10 +33,8 @@ export default function SearchBar({
   };
 
   const [priceOpen, setPriceOpen] = useState(false)
-  const [filterOpen, setFilterOpen] = useState(false)
 
   const priceRef = useRef()
-  const filterRef = useRef()
 
   const navigate = useNavigate()
 
@@ -65,7 +63,6 @@ export default function SearchBar({
   useEffect(() => {
     const closeAll = (e) => {
       if (!priceRef.current?.contains(e.target)) setPriceOpen(false)
-      if (!filterRef.current?.contains(e.target)) setFilterOpen(false)
     }
     document.addEventListener('mousedown', closeAll)
     return () => document.removeEventListener('mousedown', closeAll)
@@ -162,29 +159,13 @@ export default function SearchBar({
         >
           <input
             type="search"
-            placeholder={searchType === 'products' ? 'What products are you looking for?' : 'What stores are you looking for?'}
+            placeholder="What are you looking for?"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="flex-1 h-full bg-transparent placeholder-text-secondary text-foreground focus:outline-none"
             autoFocus
           />
 
-          <div className="hidden sm:flex items-center ml-2">
-            <button
-              type="button"
-              onClick={() => setSearchType('products')}
-              className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${searchType === 'products' ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'}`}
-            >
-              Products
-            </button>
-            <button
-              type="button"
-              onClick={() => setSearchType('stores')}
-              className={`ml-1 sm:ml-2 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${searchType === 'stores' ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'}`}
-            >
-              Stores
-            </button>
-          </div>
 
           <div className="hidden sm:block h-6 border-l border-gray-300 dark:border-gray-600 mx-1 sm:mx-2 md:mx-3" />
           <DropdownMenu.Root>
@@ -220,23 +201,55 @@ export default function SearchBar({
 
           <div className="hidden sm:block h-6 border-l border-gray-300 dark:border-gray-600 mx-1 sm:mx-2 md:mx-3" />
           {/* New Filter Section */}
-          <div className="relative hidden lg:block overflow-visible">
-            <button
-              type="button"
-              onClick={() => setFilterOpen(!filterOpen)}
-              className="h-full px-1 sm:px-2 md:px-3 text-xs sm:text-sm text-foreground bg-transparent focus:outline-none"
-            >
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger className="hidden sm:block h-full px-1 sm:px-2 md:px-3 text-xs sm:text-sm text-foreground bg-transparent focus:outline-none">
               Filters
-            </button>
-            {filterOpen && (
-              <div ref={filterRef} className="absolute top-full mt-2 right-0 w-64 bg-surface rounded-xl shadow-lg p-4 z-50 space-y-2 max-w-screen">
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content
+                className="w-64 bg-surface rounded-xl shadow-lg p-4 z-[100] border border-gray-200 dark:border-gray-600 space-y-4"
+                align="end"
+                sideOffset={8}
+              >
+                {/* Search Type Toggle */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-secondary">Search Type</label>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchType('products');
+                        if (onSearch) {
+                          onSearch({ query, searchType: 'products', priceMin, priceMax, sortBy, selectedTags });
+                        }
+                      }}
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${searchType === 'products' ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'}`}
+                    >
+                      Products
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchType('stores');
+                        if (onSearch) {
+                          onSearch({ query, searchType: 'stores', priceMin, priceMax, sortBy, selectedTags });
+                        }
+                      }}
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${searchType === 'stores' ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'}`}
+                    >
+                      Stores
+                    </button>
+                  </div>
+                </div>
+                
+                {/* Tag Filter */}
                 <TagFilter
                   selectedTags={selectedTags}
                   onTagChange={setSelectedTags}
                 />
-              </div>
-            )}
-          </div>
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Root>
 
           <div className="hidden sm:block h-6 border-l border-gray-300 dark:border-gray-600 mx-1 sm:mx-2 md:mx-3" />
           <div ref={priceRef} className="relative hidden md:block overflow-visible">
