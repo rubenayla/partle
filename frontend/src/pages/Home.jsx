@@ -1,9 +1,10 @@
 // frontend/src/pages/Home.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import SearchBar from "../components/SearchBar";
 import ListView from "./ListView";
 import AuthModal from "../components/AuthModal";
+import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 
 export default function Home() {
   /** ─── Auth flag ─────────────────────────────────────────────── */
@@ -16,6 +17,8 @@ export default function Home() {
 
   const [products, setProducts] = useState([]);
   const [stores, setStores] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [offset, setOffset] = useState(0);
   const [searchParams, setSearchParams] = useState({
     query: "",
     searchType: "products",
@@ -25,36 +28,71 @@ export default function Home() {
     sortBy: "random",
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        let response;
-        if (searchParams.searchType === "products") {
-          response = await axios.get("/api/v1/products", {
-            params: {
-              q: searchParams.query,
-              min_price: searchParams.priceMin,
-              max_price: searchParams.priceMax,
-              sort_by: searchParams.sortBy,
-              tags: searchParams.selectedTags.join(","),
-            },
-          });
+  const fetchData = useCallback(async (reset = true, currentSearchParams = searchParams, currentOffset = offset) => {
+    try {
+      const offsetToUse = reset ? 0 : currentOffset;
+      let response;
+      
+      if (currentSearchParams.searchType === "products") {
+        response = await axios.get("/api/v1/products", {
+          params: {
+            q: currentSearchParams.query,
+            min_price: currentSearchParams.priceMin,
+            max_price: currentSearchParams.priceMax,
+            sort_by: currentSearchParams.sortBy,
+            tags: currentSearchParams.selectedTags.join(","),
+            limit: 20,
+            offset: offsetToUse,
+          },
+        });
+        
+        if (reset) {
           setProducts(response.data);
         } else {
-          response = await axios.get("/api/v1/stores", {
-            params: {
-              q: searchParams.query,
-              sort_by: searchParams.sortBy,
-              tags: searchParams.selectedTags.join(","),
-            },
-          });
-          setStores(response.data);
+          setProducts(prev => [...prev, ...response.data]);
         }
-      } catch (error) {
-        console.error(`Error fetching ${searchParams.searchType}:`, error);
+      } else {
+        response = await axios.get("/api/v1/stores", {
+          params: {
+            q: currentSearchParams.query,
+            sort_by: currentSearchParams.sortBy,
+            tags: currentSearchParams.selectedTags.join(","),
+            limit: 20,
+            offset: offsetToUse,
+          },
+        });
+        
+        if (reset) {
+          setStores(response.data);
+        } else {
+          setStores(prev => [...prev, ...response.data]);
+        }
       }
-    };
-    fetchData();
+      
+      // Update pagination state
+      if (reset) {
+        setOffset(20);
+        setHasMore(response.data.length === 20);
+      } else {
+        setOffset(prev => prev + 20);
+        setHasMore(response.data.length === 20);
+      }
+    } catch (error) {
+      console.error(`Error fetching ${currentSearchParams.searchType}:`, error);
+    }
+  }, [searchParams, offset]);
+
+  const fetchMoreData = useCallback(() => {
+    return fetchData(false, searchParams, offset);
+  }, [searchParams, offset, fetchData]);
+
+  const [isFetching] = useInfiniteScroll(fetchMoreData, hasMore);
+
+  useEffect(() => {
+    setOffset(0);
+    setHasMore(true);
+    fetchData(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   /* keep isLoggedIn fresh (other tab → logout, etc.) */
@@ -92,6 +130,18 @@ export default function Home() {
             <ListView items={products} />
           ) : (
             <ListView items={stores} />
+          )}
+          
+          {isFetching && (
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          )}
+          
+          {!hasMore && (searchParams.searchType === "products" ? products.length > 0 : stores.length > 0) && (
+            <div className="text-center py-8 text-muted">
+              No more {searchParams.searchType} to load
+            </div>
           )}
         </div>
       </main>

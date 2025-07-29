@@ -40,7 +40,7 @@ export default function Products() {
 
       <button
         onClick={() => setOpen(true)}
-        className="bg-blue-600 text-white px-3 py-1 rounded mb-4"
+        className="bg-transparent text-foreground hover:bg-background border border-gray-300 dark:border-gray-600 px-3 py-1 rounded mb-4"
       >
         + Add product
       </button>

@@ -12,6 +12,7 @@
     "deploy": "vercel"
   },
   "dependencies": {
+    "@radix-ui/react-dropdown-menu": "^2.1.15",
     "axios": "^1.10.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.518.0",

@@ -12,6 +12,7 @@ from collections.abc import Generator
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from sqlalchemy import or_, func
 
 from app.auth.security import get_current_user
 from app.db.models import Store, User, Tag
@@ -25,16 +26,54 @@ router = APIRouter(tags=["Stores"])
 # ─────────────────────────────────────────────
 
 @router.get("/", response_model=list[schema.StoreRead])
-def list_stores(db: Session = Depends(get_db)):
-    """Return **all** stores in the database."""
-    return db.query(Store).all()
+def list_stores(
+    q: str | None = None,
+    tags: str | None = None,
+    sort_by: str | None = None,
+    limit: int = 20,
+    offset: int = 0,
+    db: Session = Depends(get_db)
+):
+    """Return stores with optional search, filtering and pagination."""
+    query = db.query(Store)
+
+    if q:
+        search_term = f"%{q}%"
+        query = query.filter(
+            or_(
+                Store.name.ilike(search_term),
+                Store.address.ilike(search_term),
+                Store.homepage.ilike(search_term)
+            )
+        )
+
+    if tags:
+        tag_list = [tag.strip() for tag in tags.split(',')]
+        if tag_list:
+            query = query.join(Store.tags).filter(Tag.name.in_(tag_list))
+
+    if sort_by == "created_at":
+        query = query.order_by(Store.created_at.desc())
+    elif sort_by == "created_at_asc":
+        query = query.order_by(Store.created_at.asc())
+    elif sort_by == "random":
+        query = query.order_by(func.random())
+
+    return query.offset(offset).limit(limit).all()
 
 
 # Allow `/v1/stores` (without the trailing slash) to work too.
 # `include_in_schema=False` prevents duplicate docs entries.
 @router.get("", response_model=list[schema.StoreRead], include_in_schema=False)
-def list_stores_alt(*, db: Session = Depends(get_db)):
-    return list_stores(db=db)
+def list_stores_alt(
+    q: str | None = None,
+    tags: str | None = None,
+    sort_by: str | None = None,
+    limit: int = 20,
+    offset: int = 0,
+    db: Session = Depends(get_db)
+):
+    return list_stores(q=q, tags=tags, sort_by=sort_by, limit=limit, offset=offset, db=db)
 
 
 @router.post("/", response_model=schema.StoreRead, status_code=status.HTTP_201_CREATED)

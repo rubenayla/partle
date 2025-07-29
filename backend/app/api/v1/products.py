@@ -23,6 +23,8 @@ def list_products(
     max_price: float | None = None,
     tags: str | None = None,
     sort_by: str | None = None,
+    limit: int = 20,
+    offset: int = 0,
     db: Session = Depends(get_db),
 ):
     query = db.query(Product)
@@ -61,7 +63,7 @@ def list_products(
     elif sort_by == "random":
         query = query.order_by(func.random())
 
-    return query.all()
+    return query.offset(offset).limit(limit).all()
 
 
 @router.get("/store/{store_id}", response_model=list[schema.ProductOut])

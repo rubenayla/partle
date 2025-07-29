@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { deleteAccount } from '../api/auth'
 import Tooltip from './Tooltip'
 import TagFilter from './TagFilter'
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 
 export default function SearchBar({
   onSearch = () => { },
@@ -32,21 +33,12 @@ export default function SearchBar({
   };
 
   const [priceOpen, setPriceOpen] = useState(false)
-  const [sortOpen, setSortOpen] = useState(false)
-  const [accountOpen, setAccountOpen] = useState(false)
-  const [infoOpen, setInfoOpen] = useState(false)
-  const [createOpen, setCreateOpen] = useState(false)
   const [filterOpen, setFilterOpen] = useState(false)
-  const [sortPosition, setSortPosition] = useState({ top: 0, left: 0 })
 
   const priceRef = useRef()
-  const sortRef = useRef()
-  const accountRef = useRef()
-  const infoRef = useRef()
   const filterRef = useRef()
 
   const navigate = useNavigate()
-  const createRef = useRef()
 
   useEffect(() => {
     const root = document.documentElement
@@ -73,10 +65,6 @@ export default function SearchBar({
   useEffect(() => {
     const closeAll = (e) => {
       if (!priceRef.current?.contains(e.target)) setPriceOpen(false)
-      if (!sortRef.current?.contains(e.target)) setSortOpen(false)
-      if (!accountRef.current?.contains(e.target)) setAccountOpen(false)
-      if (!infoRef.current?.contains(e.target)) setInfoOpen(false)
-      if (!createRef.current?.contains(e.target)) setCreateOpen(false)
       if (!filterRef.current?.contains(e.target)) setFilterOpen(false)
     }
     document.addEventListener('mousedown', closeAll)
@@ -86,7 +74,6 @@ export default function SearchBar({
   // Chord-based keyboard shortcuts (Alt+N + second key)
   useEffect(() => {
     const handleKeyDown = (e) => {
-      const isInInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA'
       
       // First chord: Alt+N (works even in inputs)
       if (e.altKey && e.key.toLowerCase() === 'n') {
@@ -124,9 +111,9 @@ export default function SearchBar({
             navigate('/')
             break
           case 'a':
-            // Toggle account menu
+            // Navigate to account (since dropdown is now handled by Radix)
             if (isLoggedIn) {
-              setAccountOpen(!accountOpen)
+              navigate('/account')
             }
             break
           case 'escape':
@@ -149,7 +136,7 @@ export default function SearchBar({
         clearTimeout(shortcutTimeoutRef.current)
       }
     }
-  }, [shortcutMode, isLoggedIn, accountOpen, navigate])
+  }, [shortcutMode, isLoggedIn, navigate])
 
   
 
@@ -200,24 +187,36 @@ export default function SearchBar({
           </div>
 
           <div className="hidden sm:block h-6 border-l border-gray-300 dark:border-gray-600 mx-1 sm:mx-2 md:mx-3" />
-          <div ref={sortRef} className="relative hidden md:block overflow-visible">
-            <button
-              type="button"
-              onClick={() => {
-                if (sortRef.current) {
-                  const rect = sortRef.current.getBoundingClientRect();
-                  setSortPosition({ 
-                    top: rect.bottom + 8, 
-                    left: rect.right - 160 // 160px = w-40 width
-                  });
-                }
-                setSortOpen(!sortOpen);
-              }}
-              className="h-full px-1 sm:px-2 md:px-3 text-xs sm:text-sm text-foreground bg-transparent focus:outline-none whitespace-nowrap"
-            >
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger className="hidden md:block h-full px-1 sm:px-2 md:px-3 text-xs sm:text-sm text-foreground bg-transparent focus:outline-none whitespace-nowrap">
               <span className="hidden lg:inline">Sort: </span>{sortOptions[sortBy]}
-            </button>
-          </div>
+            </DropdownMenu.Trigger>
+
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content
+                className="w-40 bg-surface rounded-xl shadow-lg p-2 z-[100] border border-gray-200 dark:border-gray-600"
+                align="end"
+                sideOffset={8}
+              >
+                {Object.entries(sortOptions).map(([value, label]) => (
+                  <DropdownMenu.Item
+                    key={value}
+                    className={`block w-full text-left px-2 py-1 rounded hover:bg-background cursor-pointer focus:outline-none focus:bg-background ${
+                      sortBy === value
+                        ? 'font-semibold text-foreground'
+                        : 'text-foreground'
+                    }`}
+                    onSelect={() => {
+                      setSortBy(value);
+                      onSearch({ query, searchType, priceMin, priceMax, sortBy: value, selectedTags });
+                    }}
+                  >
+                    {label}
+                  </DropdownMenu.Item>
+                ))}
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Root>
 
           <div className="hidden sm:block h-6 border-l border-gray-300 dark:border-gray-600 mx-1 sm:mx-2 md:mx-3" />
           {/* New Filter Section */}
@@ -283,130 +282,123 @@ export default function SearchBar({
 
         <div className="flex items-center gap-1 sm:gap-2 md:gap-3">
           {isLoggedIn && (
-            <div ref={createRef} className="relative">
-              <button
-                type="button"
-                onClick={() => setCreateOpen(!createOpen)}
-                className="bg-transparent text-foreground hover:text-foreground focus:outline-none p-1 sm:p-2"
-              >
+            <DropdownMenu.Root>
+              <DropdownMenu.Trigger className="bg-transparent text-foreground hover:text-foreground focus:outline-none p-1 sm:p-2">
                 <Plus className="h-5 w-5 sm:h-6 sm:w-6" />
-              </button>
+              </DropdownMenu.Trigger>
 
-              {createOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-surface rounded-xl shadow-lg p-4 z-50">
-                  <Tooltip text="Add product (Alt+N, P)">
-                    <a
-                      href="/products/new"
-                      className="block px-2 py-1 text-foreground hover:bg-background rounded"
-                    >Add product</a>
-                  </Tooltip>
-                  <Tooltip text="Add store (Alt+N, S)">
-                    <a href="/stores/new" className="block px-2 py-1 text-foreground hover:bg-background rounded">Add store</a>
-                  </Tooltip>
-                </div>
-              )}
-            </div>
+              <DropdownMenu.Portal>
+                <DropdownMenu.Content
+                  className="w-48 bg-surface rounded-xl shadow-lg p-4 z-50 border border-gray-200 dark:border-gray-600"
+                  align="end"
+                  sideOffset={8}
+                >
+                  <DropdownMenu.Item className="block px-2 py-1 text-foreground hover:bg-background rounded cursor-pointer focus:outline-none focus:bg-background">
+                    <Tooltip text="Add product (Alt+N, P)">
+                      <a href="/products/new" className="block text-foreground hover:text-foreground hover:font-medium">Add product</a>
+                    </Tooltip>
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item className="block px-2 py-1 text-foreground hover:bg-background rounded cursor-pointer focus:outline-none focus:bg-background">
+                    <Tooltip text="Add store (Alt+N, S)">
+                      <a href="/stores/new" className="block text-foreground hover:text-foreground hover:font-medium">Add store</a>
+                    </Tooltip>
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu.Portal>
+            </DropdownMenu.Root>
           )}
 
-          <div ref={accountRef} className="relative">
-            <button
-              type="button"
-              onClick={() =>
-                isLoggedIn ? setAccountOpen(!accountOpen) : onAccountClick()
-              }
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger
               className="bg-transparent text-foreground hover:text-foreground focus:outline-none p-1 sm:p-2"
+              onClick={!isLoggedIn ? onAccountClick : undefined}
             >
               <User className="h-6 w-6 sm:h-7 sm:w-7" />
-            </button>
+            </DropdownMenu.Trigger>
 
-            {isLoggedIn && accountOpen && (
-              <div className="absolute right-0 mt-2 w-56 bg-surface rounded-xl shadow-lg p-4 z-50">
-                <a href="/products/favourites" className="block px-2 py-1 text-foreground hover:bg-background rounded">Favourite Products</a>
-                <a href="/stores/favourites" className="block px-2 py-1 text-foreground hover:bg-background rounded">Favourite Stores</a>
-                <a href="/account" className="block px-2 py-1 text-foreground hover:bg-background rounded">Account</a>
-
-                <div className="mt-2 px-2 py-1">
-                  <div className="text-sm font-semibold text-secondary mb-2">Theme</div>
-                  <ThemeSwitch value={theme} onChange={(mode) => setTheme(mode)} />
-                </div>
-
-                <div className="border-t border-gray-200 dark:border-gray-600 my-2" />
-                <button
-                  className="block w-full bg-transparent text-left px-2 py-1 text-danger hover:bg-background rounded"
-                  onClick={() => {
-                    localStorage.removeItem('token')
-                    window.location.reload()
-                  }}
+            {isLoggedIn && (
+              <DropdownMenu.Portal>
+                <DropdownMenu.Content
+                  className="w-56 bg-surface rounded-xl shadow-lg p-4 z-50 border border-gray-200 dark:border-gray-600"
+                  align="end"
+                  sideOffset={8}
                 >
-                  Log out
-                </button>
-                <button
-                  className="mt-1 block w-full bg-transparent text-left px-2 py-1 text-danger hover:bg-background rounded"
-                  onClick={async () => {
-                    if (confirm('Delete account?')) {
-                      try {
-                        await deleteAccount()
-                        localStorage.removeItem('token')
-                        window.location.reload()
-                      } catch (e) {
-                        alert('Could not delete account')
+                  <DropdownMenu.Item className="block px-2 py-1 text-foreground hover:bg-background rounded cursor-pointer focus:outline-none focus:bg-background">
+                    <a href="/products/favourites" className="block text-foreground hover:text-foreground hover:font-medium">Favourite Products</a>
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item className="block px-2 py-1 text-foreground hover:bg-background rounded cursor-pointer focus:outline-none focus:bg-background">
+                    <a href="/stores/favourites" className="block text-foreground hover:text-foreground hover:font-medium">Favourite Stores</a>
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item className="block px-2 py-1 text-foreground hover:bg-background rounded cursor-pointer focus:outline-none focus:bg-background">
+                    <a href="/account" className="block text-foreground hover:text-foreground hover:font-medium">Account</a>
+                  </DropdownMenu.Item>
+
+                  <div className="mt-2 px-2 py-1">
+                    <div className="text-sm font-semibold text-secondary mb-2">Theme</div>
+                    <ThemeSwitch value={theme} onChange={(mode) => setTheme(mode)} />
+                  </div>
+
+                  <DropdownMenu.Separator className="border-t border-gray-200 dark:border-gray-600 my-2" />
+                  <DropdownMenu.Item
+                    className="block w-full bg-transparent text-left px-2 py-1 text-danger hover:bg-background hover:text-danger hover:font-medium rounded cursor-pointer focus:outline-none focus:bg-background"
+                    onSelect={() => {
+                      localStorage.removeItem('token')
+                      window.location.reload()
+                    }}
+                  >
+                    Log out
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item
+                    className="mt-1 block w-full bg-transparent text-left px-2 py-1 text-danger hover:bg-background hover:text-danger hover:font-medium rounded cursor-pointer focus:outline-none focus:bg-background"
+                    onSelect={async () => {
+                      if (confirm('Delete account?')) {
+                        try {
+                          await deleteAccount()
+                          localStorage.removeItem('token')
+                          window.location.reload()
+                        } catch {
+                          alert('Could not delete account')
+                        }
                       }
-                    }
-                  }}
-                >
-                  Delete account
-                </button>
+                    }}
+                  >
+                    Delete account
+                  </DropdownMenu.Item>
 
-                <div className="border-t border-gray-200 dark:border-gray-600 my-2" />
-                <a href="/premium" className="block px-2 py-1 text-foreground hover:bg-background rounded">Premium</a>
-              </div>
+                  <DropdownMenu.Separator className="border-t border-gray-200 dark:border-gray-600 my-2" />
+                  <DropdownMenu.Item className="block px-2 py-1 text-foreground hover:bg-background rounded cursor-pointer focus:outline-none focus:bg-background">
+                    <a href="/premium" className="block text-foreground hover:text-foreground hover:font-medium">Premium</a>
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu.Portal>
             )}
-          </div>
+          </DropdownMenu.Root>
 
-          <div ref={infoRef} className="relative">
-            <button
-              type="button"
-              onClick={() => setInfoOpen(!infoOpen)}
-              className="bg-transparent text-foreground hover:text-foreground focus:outline-none p-1 sm:p-2"
-            >
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger className="bg-transparent text-foreground hover:text-foreground focus:outline-none p-1 sm:p-2">
               <Info className="h-5 w-5 sm:h-6 sm:w-6" />
-            </button>
-            {infoOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-surface rounded-xl shadow-lg p-4 z-50">
-                <a href="/contact" className="block px-2 py-1 text-foreground hover:bg-background rounded">Contact</a>
-                <a href="/terms" className="block px-2 py-1 text-foreground hover:bg-background rounded">Terms</a>
-                <a href="/privacy" className="block px-2 py-1 text-foreground hover:bg-background rounded">Privacy</a>
-                
-              </div>
-            )}
-          </div>
+            </DropdownMenu.Trigger>
+            
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content
+                className="w-48 bg-surface rounded-xl shadow-lg p-4 z-50 border border-gray-200 dark:border-gray-600"
+                align="end"
+                sideOffset={8}
+              >
+                <DropdownMenu.Item className="block px-2 py-1 text-foreground hover:bg-background rounded cursor-pointer focus:outline-none focus:bg-background">
+                  <a href="/contact" className="block text-foreground hover:text-foreground hover:font-medium">Contact</a>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item className="block px-2 py-1 text-foreground hover:bg-background rounded cursor-pointer focus:outline-none focus:bg-background">
+                  <a href="/terms" className="block text-foreground hover:text-foreground hover:font-medium">Terms</a>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item className="block px-2 py-1 text-foreground hover:bg-background rounded cursor-pointer focus:outline-none focus:bg-background">
+                  <a href="/privacy" className="block text-foreground hover:text-foreground hover:font-medium">Privacy</a>
+                </DropdownMenu.Item>
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Root>
         </div>
       </div>
-      
-      {/* Dropdowns positioned outside form to avoid scroll issues */}
-      {sortOpen && (
-        <div 
-          className="fixed w-40 bg-surface rounded-xl shadow-lg p-2 z-[100] max-w-screen border border-gray-200 dark:border-gray-600"
-          style={{ top: `${sortPosition.top}px`, left: `${sortPosition.left}px` }}
-        >
-          {Object.entries(sortOptions).map(([value, label]) => (
-            <button
-              key={value}
-              onClick={() => {
-                setSortBy(value);
-                setSortOpen(false);
-                onSearch({ query, searchType, priceMin, priceMax, sortBy: value, selectedTags });
-              }}
-              className={`block w-full text-left px-2 py-1 rounded hover:bg-background ${sortBy === value
-                  ? 'font-semibold text-foreground'
-                  : 'text-foreground'
-                }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      )}
     </header>
   )
 }
