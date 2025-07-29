@@ -44,11 +44,11 @@ export default function App() {
           <Route path="/stores" element={<Stores />} />
           <Route path="/stores/:id/products" element={<Products />} />
           <Route path="/products/:id" element={<ProductDetail />} />
-          <Route path="/contact" element={<Contact />} /> {/* Add the new route for Contact page */}
-          <Route path="/terms" element={<Terms />} /> {/* Add the new route for Terms page */}
-          <Route path="/privacy" element={<Privacy />} /> {/* Add the new route for Privacy page */}
-          <Route path="/about" element={<About />} /> {/* Add the new route for About page */}
-          <Route path="/reset-password" element={<ResetPassword />} /> {/* Add the new route for ResetPassword page */}
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* actions that require login */}
           <Route element={<RequireAuth />}>
