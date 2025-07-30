@@ -169,7 +169,7 @@ export default function SearchBar({
 
           <div className="hidden sm:block h-6 border-l border-gray-300 dark:border-gray-600 mx-1 sm:mx-2 md:mx-3" />
           <DropdownMenu.Root>
-            <DropdownMenu.Trigger className="hidden md:block h-full px-1 sm:px-2 md:px-3 text-xs sm:text-sm text-foreground bg-transparent focus:outline-none whitespace-nowrap">
+            <DropdownMenu.Trigger className="hidden md:block h-full px-1 sm:px-2 md:px-3 text-xs sm:text-sm text-foreground bg-transparent hover:bg-surface-hover focus:outline-none focus:ring-0 border-0 hover:border-0 whitespace-nowrap">
               <span className="hidden lg:inline">Sort: </span>{sortOptions[sortBy]}
             </DropdownMenu.Trigger>
 
@@ -202,7 +202,7 @@ export default function SearchBar({
           <div className="hidden sm:block h-6 border-l border-gray-300 dark:border-gray-600 mx-1 sm:mx-2 md:mx-3" />
           {/* New Filter Section */}
           <DropdownMenu.Root>
-            <DropdownMenu.Trigger className="hidden sm:block h-full px-1 sm:px-2 md:px-3 text-xs sm:text-sm text-foreground bg-transparent focus:outline-none">
+            <DropdownMenu.Trigger className="hidden sm:block h-full px-1 sm:px-2 md:px-3 text-xs sm:text-sm text-foreground bg-transparent hover:bg-surface-hover focus:outline-none focus:ring-0 border-0 hover:border-0">
               Filters
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
@@ -256,7 +256,7 @@ export default function SearchBar({
             <button
               type="button"
               onClick={() => setPriceOpen(!priceOpen)}
-              className="h-full px-1 sm:px-2 md:px-3 text-xs sm:text-sm text-foreground bg-transparent focus:outline-none whitespace-nowrap"
+              className="h-full px-1 sm:px-2 md:px-3 text-xs sm:text-sm text-foreground bg-transparent hover:bg-surface-hover focus:outline-none focus:ring-0 border-0 hover:border-0 whitespace-nowrap"
             >
               <span className="hidden lg:inline">Price: </span>{priceMin}–{priceMax}
             </button>
@@ -287,7 +287,7 @@ export default function SearchBar({
           <div className="hidden sm:block h-6 border-l border-gray-300 dark:border-gray-600 mx-1 sm:mx-2 md:mx-3" />
           <button
             type="submit"
-            className="p-2 rounded-full bg-transparent text-foreground hover:text-white hover:bg-primary focus:outline-none"
+            className="p-2 rounded-full bg-transparent text-foreground hover:text-white hover:bg-primary focus:outline-none focus:ring-0 border-0 hover:border-0"
           >
             <Search className="h-5 w-5" />
           </button>
@@ -296,7 +296,7 @@ export default function SearchBar({
         <div className="flex items-center gap-1 sm:gap-2 md:gap-3">
           {isLoggedIn && (
             <DropdownMenu.Root>
-              <DropdownMenu.Trigger className="bg-transparent text-foreground hover:text-foreground focus:outline-none p-1 sm:p-2">
+              <DropdownMenu.Trigger className="bg-transparent text-foreground hover:text-foreground hover:bg-surface-hover focus:outline-none focus:ring-0 border-0 hover:border-0 p-1 sm:p-2">
                 <Plus className="h-5 w-5 sm:h-6 sm:w-6" />
               </DropdownMenu.Trigger>
 
@@ -323,7 +323,7 @@ export default function SearchBar({
 
           <DropdownMenu.Root>
             <DropdownMenu.Trigger
-              className="bg-transparent text-foreground hover:text-foreground focus:outline-none p-1 sm:p-2"
+              className="bg-transparent text-foreground hover:text-foreground hover:bg-surface-hover focus:outline-none focus:ring-0 border-0 hover:border-0 p-1 sm:p-2"
               onClick={!isLoggedIn ? onAccountClick : undefined}
             >
               <User className="h-6 w-6 sm:h-7 sm:w-7" />
@@ -388,7 +388,7 @@ export default function SearchBar({
           </DropdownMenu.Root>
 
           <DropdownMenu.Root>
-            <DropdownMenu.Trigger className="bg-transparent text-foreground hover:text-foreground focus:outline-none p-1 sm:p-2">
+            <DropdownMenu.Trigger className="bg-transparent text-foreground hover:text-foreground hover:bg-surface-hover focus:outline-none focus:ring-0 border-0 hover:border-0 p-1 sm:p-2">
               <Info className="h-5 w-5 sm:h-6 sm:w-6" />
             </DropdownMenu.Trigger>
             
