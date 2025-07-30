@@ -139,9 +139,6 @@ export default function SearchBar({
 
   const handleSearch = (event) => {
     event.preventDefault()
-    console.log('Search triggered:', { query, searchType, priceMin, priceMax, sortBy, selectedTags });
-    console.log('onSearch function:', onSearch);
-    console.log('window.homeSearchHandler:', window.homeSearchHandler);
     if (onSearch) {
       onSearch({ query, searchType, priceMin, priceMax, sortBy, selectedTags })
     }

@@ -35,27 +35,22 @@ export default function Home() {
   });
 
   const fetchData = useCallback(async (reset = true, currentSearchParams = searchParams, currentOffset = offset) => {
-    console.log('fetchData called with reset:', reset, 'currentSearchParams:', currentSearchParams);
     try {
       const offsetToUse = reset ? 0 : currentOffset;
       let response;
       
       if (currentSearchParams.searchType === "products") {
-        console.log('API call - currentSearchParams:', currentSearchParams);
-        const apiParams = {
-          q: currentSearchParams.query,
-          min_price: currentSearchParams.priceMin,
-          max_price: currentSearchParams.priceMax,
-          sort_by: currentSearchParams.sortBy,
-          tags: currentSearchParams.selectedTags.join(","),
-          limit: 20,
-          offset: offsetToUse,
-        };
-        console.log('API call - sending params:', apiParams);
         response = await api.get("/v1/products/", {
-          params: apiParams,
+          params: {
+            q: currentSearchParams.query,
+            min_price: currentSearchParams.priceMin,
+            max_price: currentSearchParams.priceMax,
+            sort_by: currentSearchParams.sortBy,
+            tags: currentSearchParams.selectedTags.join(","),
+            limit: 20,
+            offset: offsetToUse,
+          },
         });
-        console.log('API response received:', response.data?.length, 'products');
         
         if (reset) {
           setProducts(response.data);
@@ -109,7 +104,6 @@ export default function Home() {
   const [isFetching] = useInfiniteScroll(fetchMoreData, hasMore);
 
   useEffect(() => {
-    console.log('🔥 useEffect triggered - searchParams changed:', searchParams);
     setOffset(0);
     setHasMore(true);
     fetchData(true, searchParams, 0);
@@ -120,19 +114,12 @@ export default function Home() {
   // For now, we'll use a global approach via window object as a quick solution
   useEffect(() => {
     window.homeSearchHandler = (params) => {
-      console.log('homeSearchHandler called with:', params);
-      console.log('🔥 About to call setSearchParams with:', params);
       setSearchParams(params);
-      console.log('🔥 setSearchParams called');
     };
     return () => {
       delete window.homeSearchHandler;
     };
   }, []);
-
-  console.log('Render - searchParams:', searchParams);
-  console.log('Render - products:', products);
-  console.log('Render - stores:', stores);
 
   return (
     <>
