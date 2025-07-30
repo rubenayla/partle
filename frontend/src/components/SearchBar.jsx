@@ -11,6 +11,8 @@ export default function SearchBar({
   onSearch = () => { },
   isLoggedIn = false,
   onAccountClick = () => { },
+  currentTheme, // New prop
+  setTheme,     // New prop
 }) {
   const [query, setQuery] = useState('')
   const [searchType, setSearchType] = useState('products')
@@ -18,7 +20,6 @@ export default function SearchBar({
   const [priceMax, setPriceMax] = useState(500)
   const [selectedTags, setSelectedTags] = useState([])
   const [sortBy, setSortBy] = useState('relevance')
-  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'auto')
   const [shortcutMode, setShortcutMode] = useState(false)
   const shortcutTimeoutRef = useRef(null)
 
@@ -38,27 +39,25 @@ export default function SearchBar({
 
   const navigate = useNavigate()
 
-  useEffect(() => {
-    const root = document.documentElement
-
-    const applyTheme = (mode) => {
-      if (mode === 'dark') root.classList.add('dark')
-      else root.classList.remove('dark')
-    }
-
-    let media
-    if (theme === 'auto') {
-      media = window.matchMedia('(prefers-color-scheme: dark)')
-      applyTheme(media.matches ? 'dark' : 'light')
-      const handler = (e) => applyTheme(e.matches ? 'dark' : 'light')
-      media.addEventListener('change', handler)
-      return () => media.removeEventListener('change', handler)
-    } else {
-      applyTheme(theme)
-    }
-
-    localStorage.setItem('theme', theme)
-  }, [theme])
+  // Remove the local theme state and useEffect for theme management
+  // useEffect(() => {
+  //   const root = document.documentElement
+  //   const applyTheme = (mode) => {
+  //     if (mode === 'dark') root.classList.add('dark')
+  //     else root.classList.remove('dark')
+  //   }
+  //   let media
+  //   if (theme === 'auto') {
+  //     media = window.matchMedia('(prefers-color-scheme: dark)')
+  //     applyTheme(media.matches ? 'dark' : 'light')
+  //     const handler = (e) => applyTheme(e.matches ? 'dark' : 'light')
+  //     media.addEventListener('change', handler)
+  //     return () => media.removeEventListener('change', handler)
+  //   } else {
+  //     applyTheme(theme)
+  //   }
+  //   localStorage.setItem('theme', theme)
+  // }, [theme])
 
   useEffect(() => {
     const closeAll = (e) => {
@@ -354,7 +353,7 @@ export default function SearchBar({
 
                   <div className="mt-2 px-2 py-1">
                     <div className="text-sm font-semibold text-secondary mb-2">Theme</div>
-                    <ThemeSwitch value={theme} onChange={(mode) => setTheme(mode)} />
+                    <ThemeSwitch value={currentTheme} onChange={(mode) => setTheme(mode)} />
                   </div>
 
                   <DropdownMenu.Separator className="border-t border-gray-200 dark:border-gray-600 my-2" />
@@ -427,7 +426,7 @@ export default function SearchBar({
 
 // ─── ThemeSwitch ──────────────────────────────────────────
 function ThemeSwitch({ value, onChange }) {
-  const options = ["light", "auto", "dark"];
+  const options = ["light", "system", "dark"];
   const index = options.indexOf(value);
 
   const WIDTH = 180; // px

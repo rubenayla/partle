@@ -505,5 +505,60 @@ Frontend tests: npm test → tests pass but output shows cancellation after netw
 # to add ferreterias
 OpenStreetMap
 
-#
+# 2025-07-29  
+● The Problem Explained in Detail
+
+  The search functionality failure was caused by a timing/lifecycle bug in how React components communicate. Here's exactly what was happening:
+
+  🔥 The Core Issue: Component Communication Timing
+
+  The Problem:
+  // In Layout.tsx - BROKEN
+  onSearch={isHomePage ? (window as any).homeSearchHandler : undefined}
+
+  1. Layout component renders first when the app loads
+  2. At this moment, window.homeSearchHandler is undefined (Home component hasn't mounted yet)
+  3. Layout passes undefined to SearchBar as the onSearch prop
+  4. SearchBar defaults undefined to an empty function: onSearch = () => { }
+  5. Home component mounts later and sets window.homeSearchHandler
+  6. But SearchBar still has the original empty function - the connection is broken
+
+  🔧 The Fix: Dynamic Handler Resolution
+
+  The Solution:
+  // In Layout.tsx - FIXED
+  onSearch={isHomePage ? (params: any) => {
+    if ((window as any).homeSearchHandler) {
+      (window as any).homeSearchHandler(params);
+    }
+  } : undefined}
+
+  Instead of passing the handler directly, we pass a wrapper function that checks for the handler's existence at runtime, not at render time.
+
+  🔍 Additional Issues Found & Fixed
+
+  1. Wrong API Configuration
+    - Problem: Home.jsx used raw axios instead of configured api instance
+    - Result: No base URL, no auth headers, wrong endpoints
+    - Fix: import api from "../api" and use /v1/products/ endpoints
+  2. Circular Dependency in useCallback
+    - Problem: fetchData had [searchParams, offset] dependencies
+    - Result: Infinite re-creation loop preventing API calls
+    - Fix: Empty dependency array [] and explicit parameter passing
+  3. Test Infrastructure Missing
+    - Problem: No comprehensive test coverage
+    - Fix: Added @testing-library/user-event and full test suites
+  4. Accessibility Issues
+    - Problem: Buttons without accessible names
+    - Fix: Added aria-label attributes
+
+  🎯 Why This Was So Hard to Debug
+
+  1. Multiple moving parts: Search UI → SearchBar → Layout → Home → API
+  2. Timing dependency: The bug only occurred due to React component mount order
+  3. Silent failure: No errors thrown, just empty functions being called
+  4. State appeared correct: Console showed right parameters, but they never reached the API
+  5. Multiple similar issues: API config problems masked the main timing bug
+
+
 

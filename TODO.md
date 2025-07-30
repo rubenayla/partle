@@ -1,4 +1,4 @@
-- Make add product page prettier and easy to use, once logged in add one another another... no need to click add again.
+- Add several products fast and check they're there.
 - Scrape products
 - Create docs with sections for API use (people should be able to connect easily), database structure, standards, etc.
 - [products|stores] toggle should go under filters

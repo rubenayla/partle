@@ -5,6 +5,8 @@ import AuthModal from './AuthModal';
 
 interface Props {
   children: ReactNode;
+  setTheme: (theme: 'light' | 'dark' | 'system') => void;
+  currentTheme: 'light' | 'dark' | 'system';
 }
 
 /**
@@ -17,14 +19,14 @@ interface Props {
  * - Provides fixed SearchBar at top of viewport
  * - Handles global auth modals and state
  * - Manages consistent spacing (mt-[72px] pt-4) to clear fixed SearchBar
- * - Contains max-width container and horizontal padding for all pages
+ * - Contains max-w-width container and horizontal padding for all pages
  * 
  * Usage:
  * - App.tsx wraps the entire Router with <Layout>
  * - Page components are rendered as {children} inside Layout's <main>
  * - Pages should never use Layout directly - they're already inside it
  */
-export default function Layout({ children }: Props) {
+export default function Layout({ children, setTheme, currentTheme }: Props) {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(!!localStorage.getItem('token'));
   const [accountOpen, setAccountOpen] = useState(false);
   const location = useLocation();
@@ -46,6 +48,8 @@ export default function Layout({ children }: Props) {
             (window as any).homeSearchHandler(params);
           }
         } : undefined}
+        currentTheme={currentTheme}
+        setTheme={setTheme}
       />
 
       {accountOpen && (

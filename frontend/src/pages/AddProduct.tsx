@@ -28,17 +28,34 @@ export default function AddProduct() {
   });
   const [saving, setSaving] = useState(false);
 
+  const [altNPressed, setAltNPressed] = useState(false);
+
   useEffect(() => {
     api.get('/v1/stores/').then(res => setStores(res.data));
   }, []);
 
   useEffect(() => {
     const handle = (e: KeyboardEvent) => {
-      if (e.key.toLowerCase() === 'h') navigate('/');
+      // Prevent navigation if an input, textarea, or select is focused
+      const targetTagName = (e.target as HTMLElement).tagName;
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(targetTagName)) {
+        return;
+      }
+
+      if (e.altKey && e.key.toLowerCase() === 'n') {
+        setAltNPressed(true);
+        // Reset altNPressed after a short delay if 'h' isn't pressed
+        setTimeout(() => setAltNPressed(false), 1000); // 1 second timeout
+      } else if (altNPressed && e.key.toLowerCase() === 'h') {
+        navigate('/');
+        setAltNPressed(false); // Reset after successful navigation
+      } else {
+        setAltNPressed(false); // Reset if any other key is pressed
+      }
     };
     window.addEventListener('keydown', handle);
     return () => window.removeEventListener('keydown', handle);
-  }, [navigate]);
+  }, [navigate, altNPressed]);
 
   const change = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -80,7 +97,7 @@ export default function AddProduct() {
         <button
           type="button"
           onClick={() => navigate('/')}
-          title="Back to home (H)"
+          title="Back to home (Alt+N, H)"
           className="p-1 rounded hover:bg-surface-hover"
         >
           <ArrowLeft className="h-5 w-5" />

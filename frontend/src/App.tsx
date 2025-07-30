@@ -14,11 +14,13 @@ import About from "./pages/About"; // Import the new About page
 import Account from "./pages/Account"; // Import the new Account page
 import ResetPassword from "./pages/ResetPassword"; // Import the new ResetPassword page
 import { useBackendStatus } from './hooks/useBackendStatus'
+import { useTheme } from './hooks/useTheme';
 
 import Layout from "./components/Layout";
 
 export default function App() {
   const status = useBackendStatus()
+  const [theme, setTheme] = useTheme();
 
   if (status === 'checking') {
     return <div className='p-8 text-center'>Checking backend status...</div>
@@ -38,7 +40,7 @@ export default function App() {
   return (
     <BrowserRouter>
       {/* Global Layout wrapper - provides SearchBar, spacing, and container for ALL pages */}
-      <Layout>
+      <Layout setTheme={setTheme} currentTheme={theme}>
         <Routes>
           {/* public routes */}
           <Route path="/" element={<Home />} />
