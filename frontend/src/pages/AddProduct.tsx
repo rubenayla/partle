@@ -1,7 +1,6 @@
 import { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import Layout from '../components/Layout';
 import api from '../api';
 
 interface Store { id: number; name: string; }
@@ -59,8 +58,8 @@ export default function AddProduct() {
   };
 
   return (
-    <Layout>
-      <header className="flex items-center gap-2 mb-6">
+    <>
+      <header className="flex items-center gap-2 mb-4">
         <button
           type="button"
           onClick={() => navigate('/')}
@@ -72,8 +71,7 @@ export default function AddProduct() {
         <h1 className="text-2xl font-semibold">Add product</h1>
       </header>
       
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-surface rounded-xl shadow-lg border border-gray-300 dark:border-gray-600 p-8">
+      <div className="bg-surface rounded-xl shadow-lg border border-gray-300 dark:border-gray-600 p-8 max-w-4xl mx-auto">
             <form onSubmit={save} className="space-y-6">
               {/* Primary Information Section */}
               <div className="space-y-4">
@@ -253,8 +251,7 @@ export default function AddProduct() {
                 </div>
               </div>
             </form>
-        </div>
       </div>
-    </Layout>
+    </>
   );
 }

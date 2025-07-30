@@ -32,3 +32,16 @@
 ## Testing
 - Backend: pytest (check for test commands in pyproject.toml)
 - Frontend: Vitest (configured in vite.config.js)
+
+## Layout Architecture
+- **Layout Component** (`frontend/src/components/Layout.tsx`): Global wrapper used ONLY at App level
+- **App.tsx** wraps entire Router with `<Layout>` - provides SearchBar, spacing, container
+- **Individual pages** should NEVER import or use Layout directly - they're already inside it
+- **Fixed SearchBar** requires `mt-[72px] pt-4` spacing: 72px margin clears SearchBar + 16px padding
+- **Container**: `max-w-screen-2xl mx-auto px-4` provides consistent width and horizontal padding
+
+### CRITICAL: Avoid Nested Layouts
+Pages like AddProduct, AddStore should use React fragments (`<>`) not `<Layout>` to prevent:
+- Duplicate main elements
+- Inconsistent spacing
+- Visual layout issues

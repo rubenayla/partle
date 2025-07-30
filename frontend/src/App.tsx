@@ -37,6 +37,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      {/* Global Layout wrapper - provides SearchBar, spacing, and container for ALL pages */}
       <Layout>
         <Routes>
           {/* public routes */}

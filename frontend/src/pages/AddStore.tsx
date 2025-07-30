@@ -1,7 +1,6 @@
 import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import Layout from '../components/Layout';
 import api from '../api';
 
 interface FormState {
@@ -43,7 +42,7 @@ export default function AddStore() {
   };
 
   return (
-    <Layout>
+    <>
       <div className="w-full max-w-screen-2xl mx-auto px-4">
           <header className="flex items-center gap-2 mb-4">
             <button
@@ -94,6 +93,6 @@ export default function AddStore() {
             </button>
           </form>
         </div>
-      </Layout>
+      </>
   );
 }
