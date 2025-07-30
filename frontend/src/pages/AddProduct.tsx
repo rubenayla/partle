@@ -29,7 +29,7 @@ export default function AddProduct() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    api.get('/api/v1/stores/').then(res => setStores(res.data));
+    api.get('/v1/stores/').then(res => setStores(res.data));
   }, []);
 
   useEffect(() => {
@@ -48,10 +48,27 @@ export default function AddProduct() {
     e.preventDefault();
     setSaving(true);
     try {
-      await api.post('/api/v1/products', { ...form, store_id: form.store_id || null });
+      // Prepare data with proper null values and type conversions
+      const productData = {
+        name: form.name.trim(),
+        spec: form.spec.trim() || null,
+        price: form.price ? Number(form.price) : null,
+        url: form.url.trim() || null,
+        description: form.description.trim() || null,
+        image_url: form.image_url.trim() || null,
+        store_id: form.store_id ? Number(form.store_id) : null,
+      };
+      
+      console.log('Sending product data:', productData);
+      console.log('Auth token:', localStorage.getItem('token'));
+      const response = await api.post('/v1/products/', productData);
+      console.log('Product created:', response.data);
       navigate('/');
-    } catch {
-      alert('Could not create product');
+    } catch (error) {
+      console.error('Create product error:', error);
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
+      alert(`Could not create product: ${error.response?.data?.detail || error.message}`);
     } finally {
       setSaving(false);
     }

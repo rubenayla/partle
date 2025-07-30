@@ -33,6 +33,10 @@
 - Backend: pytest (check for test commands in pyproject.toml)
 - Frontend: Vitest (configured in vite.config.js)
 
+## API Standards
+- **ALWAYS use trailing slash** for all API endpoints: `/v1/stores/`, `/v1/products/`, `/v1/auth/`
+- Base URL: `http://localhost:8000` (from VITE_API_BASE in .env.local)
+
 ## Layout Architecture
 - **Layout Component** (`frontend/src/components/Layout.tsx`): Global wrapper used ONLY at App level
 - **App.tsx** wraps entire Router with `<Layout>` - provides SearchBar, spacing, container
