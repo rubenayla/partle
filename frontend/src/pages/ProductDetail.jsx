@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../api/index.ts";
+import { Helmet } from "react-helmet-async";
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -20,8 +21,36 @@ export default function ProductDetail() {
 
   if (!product) return <p>Loading…</p>;
 
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": product.name,
+    "description": product.description || product.name,
+    "image": product.image_url || "",
+    "url": `https://partle.vercel.app/products/${product.id}`,
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "EUR",
+      "price": product.price,
+      "itemCondition": "https://schema.org/NewCondition",
+      "availability": "https://schema.org/InStock",
+      "seller": {
+        "@type": "Organization",
+        "name": store ? store.name : "Partle",
+      },
+    },
+  };
+
   return (
     <main className="w-full max-w-screen-2xl mx-auto px-4">
+      <Helmet>
+        <title>{product.name} - Partle</title>
+        <meta name="description" content={product.description || product.name} />
+        <script type="application/ld+json">
+          {JSON.stringify(productSchema)}
+        </script>
+      </Helmet>
+
       <header className="flex justify-between mb-4">
         <h1 className="text-2xl font-semibold">{product.name}</h1>
         

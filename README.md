@@ -66,6 +66,21 @@ Products can be added by sending a `POST` request to the `/v1/products` endpoint
 
 For more details on the API schema, refer to `backend/app/schemas/product.py` and `backend/app/api/v1/products.py`.
 
+## 🤖 AI and API Discoverability
+
+To optimize the site for AI search and allow AI agents to discover and potentially use the API, the following files and configurations have been implemented:
+
+*   **`robots.txt`**: Located at `frontend/public/robots.txt`, this file provides instructions to web crawlers, including AI bots like `GPTBot` and `Google-Extended`, on which parts of the site they are allowed or disallowed to access. It is configured to allow full access and points to the `sitemap.xml`.
+
+*   **`ai.txt`**: Located at `frontend/public/ai.txt`, this emerging standard file provides specific instructions and usage rights for AI crawlers and models, indicating that the site's content can be used for training purposes.
+
+*   **`openapi.json`**: Generated from the FastAPI backend and located at `frontend/public/api/openapi.json`, this file provides a machine-readable description of the entire backend API. It details available endpoints, their parameters, and expected responses, enabling AI agents to understand and interact with the API programmatically.
+
+*   **`sitemap.xml`**: Located at `frontend/public/sitemap.xml`, this file lists all the public pages of the website, helping crawlers efficiently discover and index all content.
+
+*   **Structured Data (Schema.org)**: Implemented on product detail pages (`frontend/src/pages/ProductDetail.jsx`), this uses JSON-LD to embed rich, semantic information about products directly into the HTML. This allows AI models to unambiguously understand product attributes like name, price, description, and availability, enhancing discoverability and enabling richer search results.
+    *   The `react-helmet-async` library has been added to the frontend (`frontend/package.json` and `frontend/src/main.tsx`) to facilitate injecting this structured data into the document's `<head>`.
+
 ## 📦 Tech Stack
 
 - **frontend/** uses Node.js, Vite + React + Tailwind CSS, Radix UI for accessible components, and Leaflet (OpenStreetMap) for map view
@@ -296,7 +311,7 @@ This must be:
   * [http://localhost:8000/redoc](http://localhost:8000/redoc)   (ReDoc docs)
   * [http://localhost:8000/v1/parts](http://localhost:8000/v1/parts)  (API endpoint)
   * [http://localhost:8000/v1/stores](http://localhost:8000/v1/stores) (API endpoint)
-  * [http://localhost:8000/docs#/Auth/register\_auth\_register\_post](http://localhost:8000/docs#/Auth/register_auth_register_post)
+  * [http://localhost:8000/docs#/Auth/register_auth_register_post](http://localhost:8000/docs#/Auth/register_auth_register_post)
 
 ## DB Structure
 tags
@@ -315,17 +330,18 @@ tag_links
 ```bash
 partle/
 ├── frontend/
-│   ├── public/                         # Static assets
+│   ├── public/                         # Static assets (includes robots.txt, ai.txt, sitemap.xml, openapi.json)
 │   └── src/
 │       ├── assets/                    # Logos, icons, etc
 │       ├── components/                # Reusable UI components
 │       ├── pages/                     # Views (Home, Stores, Products, etc.)
+│       │   └── ProductDetail.jsx      # Product detail page with Schema.org structured data
 │       ├── data/                      # Temp: mock JSON data
 │       ├── App.tsx                    # Main routing
-│       ├── main.tsx                   # React root
+│       ├── main.tsx                   # React root (HelmetProvider configured here)
 │       └── index.css                  # Tailwind entrypoint
 │   ├── index.html
-│   ├── package.json
+│   ├── package.json                   # react-helmet-async dependency added here
 │   ├── tailwind.config.js
 │   └── vite.config.js
 │

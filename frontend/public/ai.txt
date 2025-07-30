@@ -1,0 +1,16 @@
+# Instructions for AI crawlers
+
+# Allow general-purpose AI crawlers to access the site
+User-agent: *
+Allow: /
+
+# Allow specific AI crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+# Usage rights for AI training.
+# The content on this site may be used for training AI models.
+# For more detailed licensing information, please refer to our Terms of Service.
