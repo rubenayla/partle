@@ -16,7 +16,7 @@
  * - Overall page structure and styling
  */
 import { useState, useEffect, useCallback } from "react";
-import axios from "axios";
+import api from "../api";
 import ListView from "./ListView";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 
@@ -35,22 +35,27 @@ export default function Home() {
   });
 
   const fetchData = useCallback(async (reset = true, currentSearchParams = searchParams, currentOffset = offset) => {
+    console.log('fetchData called with reset:', reset, 'currentSearchParams:', currentSearchParams);
     try {
       const offsetToUse = reset ? 0 : currentOffset;
       let response;
       
       if (currentSearchParams.searchType === "products") {
-        response = await axios.get("/api/v1/products", {
-          params: {
-            q: currentSearchParams.query,
-            min_price: currentSearchParams.priceMin,
-            max_price: currentSearchParams.priceMax,
-            sort_by: currentSearchParams.sortBy,
-            tags: currentSearchParams.selectedTags.join(","),
-            limit: 20,
-            offset: offsetToUse,
-          },
+        console.log('API call - currentSearchParams:', currentSearchParams);
+        const apiParams = {
+          q: currentSearchParams.query,
+          min_price: currentSearchParams.priceMin,
+          max_price: currentSearchParams.priceMax,
+          sort_by: currentSearchParams.sortBy,
+          tags: currentSearchParams.selectedTags.join(","),
+          limit: 20,
+          offset: offsetToUse,
+        };
+        console.log('API call - sending params:', apiParams);
+        response = await api.get("/v1/products/", {
+          params: apiParams,
         });
+        console.log('API response received:', response.data?.length, 'products');
         
         if (reset) {
           setProducts(response.data);
@@ -62,7 +67,7 @@ export default function Home() {
           });
         }
       } else {
-        response = await axios.get("/api/v1/stores", {
+        response = await api.get("/v1/stores/", {
           params: {
             q: currentSearchParams.query,
             sort_by: currentSearchParams.sortBy,
@@ -93,8 +98,9 @@ export default function Home() {
       }
     } catch (error) {
       console.error(`Error fetching ${currentSearchParams.searchType}:`, error);
+      console.error('Error details:', error.response?.data || error.message);
     }
-  }, [searchParams, offset]);
+  }, []);
 
   const fetchMoreData = useCallback(() => {
     return fetchData(false, searchParams, offset);
@@ -103,20 +109,30 @@ export default function Home() {
   const [isFetching] = useInfiniteScroll(fetchMoreData, hasMore);
 
   useEffect(() => {
+    console.log('🔥 useEffect triggered - searchParams changed:', searchParams);
     setOffset(0);
     setHasMore(true);
-    fetchData(true);
+    fetchData(true, searchParams, 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   // Expose setSearchParams to parent via useImperativeHandle or props
   // For now, we'll use a global approach via window object as a quick solution
   useEffect(() => {
-    window.homeSearchHandler = setSearchParams;
+    window.homeSearchHandler = (params) => {
+      console.log('homeSearchHandler called with:', params);
+      console.log('🔥 About to call setSearchParams with:', params);
+      setSearchParams(params);
+      console.log('🔥 setSearchParams called');
+    };
     return () => {
       delete window.homeSearchHandler;
     };
   }, []);
+
+  console.log('Render - searchParams:', searchParams);
+  console.log('Render - products:', products);
+  console.log('Render - stores:', stores);
 
   return (
     <>

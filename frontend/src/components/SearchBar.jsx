@@ -142,7 +142,9 @@ export default function SearchBar({
     console.log('Search triggered:', { query, searchType, priceMin, priceMax, sortBy, selectedTags });
     console.log('onSearch function:', onSearch);
     console.log('window.homeSearchHandler:', window.homeSearchHandler);
-    onSearch({ query, searchType, priceMin, priceMax, sortBy, selectedTags })
+    if (onSearch) {
+      onSearch({ query, searchType, priceMin, priceMax, sortBy, selectedTags })
+    }
   }
 
   return (
@@ -192,7 +194,9 @@ export default function SearchBar({
                     }`}
                     onSelect={() => {
                       setSortBy(value);
-                      onSearch({ query, searchType, priceMin, priceMax, sortBy: value, selectedTags });
+                      if (onSearch) {
+                        onSearch({ query, searchType, priceMin, priceMax, sortBy: value, selectedTags });
+                      }
                     }}
                   >
                     {label}
@@ -290,6 +294,7 @@ export default function SearchBar({
           <div className="hidden sm:block h-6 border-l border-gray-300 dark:border-gray-600 mx-1 sm:mx-2 md:mx-3" />
           <button
             type="submit"
+            aria-label="Search"
             className="p-2 rounded-full bg-transparent text-foreground hover:text-white hover:bg-primary focus:outline-none focus:ring-0 border-0 hover:border-0"
           >
             <Search className="h-5 w-5" />
@@ -328,6 +333,7 @@ export default function SearchBar({
             <DropdownMenu.Trigger
               className="bg-transparent text-foreground hover:text-foreground hover:bg-surface-hover focus:outline-none focus:ring-0 border-0 hover:border-0 p-1 sm:p-2"
               onClick={!isLoggedIn ? onAccountClick : undefined}
+              aria-label="User account"
             >
               <User className="h-6 w-6 sm:h-7 sm:w-7" />
             </DropdownMenu.Trigger>

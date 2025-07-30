@@ -41,7 +41,11 @@ export default function Layout({ children }: Props) {
       <SearchBar
         isLoggedIn={isLoggedIn}
         onAccountClick={() => setAccountOpen(true)}
-        onSearch={isHomePage ? (window as any).homeSearchHandler : undefined}
+        onSearch={isHomePage ? (params: any) => {
+          if ((window as any).homeSearchHandler) {
+            (window as any).homeSearchHandler(params);
+          }
+        } : undefined}
       />
 
       {accountOpen && (
