@@ -42,24 +42,21 @@ def list_products(
         )
 
     if min_price is not None:
-        query = query.filter(Product.price >= min_price)
+        query = query.filter(or_(Product.price >= min_price, Product.price.is_(None)))
 
     if max_price is not None:
-        query = query.filter(Product.price <= max_price)
+        query = query.filter(or_(Product.price <= max_price, Product.price.is_(None)))
 
     if tags:
         tag_list = [tag.strip() for tag in tags.split(',')]
-        if tag_list:
+        # Only apply tag filter if tag_list contains actual tag names
+        if tag_list and any(tag_name for tag_name in tag_list):
             query = query.join(Product.tags).filter(Tag.name.in_(tag_list))
 
-    if sort_by == "created_at":
-        query = query.order_by(Product.created_at.desc())
-    elif sort_by == "created_at_asc":
-        query = query.order_by(Product.created_at.asc())
-    elif sort_by == "price_asc":
-        query = query.order_by(Product.price.asc())
-    elif sort_by == "price_desc":
+    if sort_by == "price_desc":
         query = query.order_by(Product.price.desc())
+    elif sort_by == "name_asc":
+        query = query.order_by(Product.name.asc())
     elif sort_by == "random":
         query = query.order_by(func.random())
 
@@ -79,13 +76,24 @@ def create_product(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    existing = (
-        db.query(Product)
-        .filter_by(name=payload.name, store_id=payload.store_id)
-        .first()
-    )
-    if existing:
-        raise HTTPException(409, "Product already exists")
+    if payload.store_id is not None:
+        # If product is linked to a store, check for uniqueness by name and store_id
+        existing = (
+            db.query(Product)
+            .filter_by(name=payload.name, store_id=payload.store_id)
+            .first()
+        )
+        if existing:
+            raise HTTPException(409, "Product with this name already exists in this store")
+    else:
+        # If product is an orphan, check for uniqueness by name and creator_id
+        existing = (
+            db.query(Product)
+            .filter_by(name=payload.name, creator_id=current_user.id)
+            .first()
+        )
+        if existing:
+            raise HTTPException(409, "You already have an orphan product with this name")
 
     product = Product(
         **payload.model_dump(),
