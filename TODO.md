@@ -1,4 +1,15 @@
+---
+I have these notes about using tailwind, i think we should do it like this, not having names for super specific purposes, but for the colours themselves and use this standard:
+
+Utility-first: Instead of writing custom CSS classes (e.g. .btn-primary { background-color: blue; padding: 1rem }), you apply small utility classes directly:
+
+<button class="bg-blue-500 text-white px-4 py-2 rounded">Click me</button>
+No naming: You don’t name styles or components — you compose them from atomic utility classes.No
+---
+- add Filter icon to filters
 - Add search functionality like regex or something else
+- How to modify product. If you are the user, when you click a product to see it, allow editing? Or do it in other way
+- In add product, add capability to add tags like #tag1 
 - Add buttons to get feedback from users, and form page to receive it. The buttons will link to that page.
 - Add several products fast and check they're there.
 - Scrape products

@@ -1,0 +1,52 @@
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: partle-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - partle-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  postgres:
+    image: postgres:15
+    container_name: partle-postgres
+    environment:
+      POSTGRES_DB: partle
+      POSTGRES_USER: partle
+      POSTGRES_PASSWORD: partle_password
+    ports:
+      - "5433:5432"  # Changed to avoid conflict
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - partle-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U partle -d partle"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  elasticsearch_data:
+    driver: local
+  postgres_data:
+    driver: local
+
+networks:
+  partle-network:
+    driver: bridge

@@ -30,12 +30,20 @@
 - SQLAlchemy models may need app restart after enum changes
 
 ## Testing
-- Backend: pytest (check for test commands in pyproject.toml)
-- Frontend: Vitest (configured in vite.config.js)
+- **Backend**: pytest (check for test commands in pyproject.toml)
+- **Frontend**: Vitest (configured in vite.config.js)
+- **Search Engine**: `poetry run python test_search_quick.py` (quick verification)
+- **Search Tests**: `poetry run pytest app/tests/test_search_simple.py -v` (comprehensive)
 
 ## API Standards
 - **ALWAYS use trailing slash** for all API endpoints: `/v1/stores/`, `/v1/products/`, `/v1/auth/`
 - Base URL: `http://localhost:8000` (from VITE_API_BASE in .env.local)
+
+## Search Engine
+- **Elasticsearch** for scalable search (millions of products)
+- **Setup**: `docker compose up -d elasticsearch && poetry run python manage_search.py setup`
+- **New endpoint**: `/v1/search/products/` with advanced filtering
+- **Fallback**: `/v1/products/` uses database search if Elasticsearch unavailable
 
 ## Layout Architecture
 - **Layout Component** (`frontend/src/components/Layout.tsx`): Global wrapper used ONLY at App level
