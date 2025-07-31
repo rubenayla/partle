@@ -3,13 +3,17 @@ from collections.abc import Generator
 from sqlalchemy import or_, func
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+import logging
 
 from app.db.models import Product, User, Tag
 from app.schemas import product as schema
 from app.auth.security import get_current_user
 from app.api.deps import get_db
+from app.search.indexing import index_product, delete_product_from_index
+from app.search.client import search_client
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 # ───────────────────────────────────────────
@@ -103,6 +107,14 @@ def create_product(
     db.add(product)
     db.commit()
     db.refresh(product)
+    
+    # Index in Elasticsearch if available
+    if search_client.is_available():
+        try:
+            index_product(product)
+        except Exception as e:
+            logger.warning(f"Failed to index product {product.id} in Elasticsearch: {e}")
+    
     return product
 
 
@@ -131,6 +143,14 @@ def update_product(
 
     db.commit()
     db.refresh(product)
+    
+    # Update in Elasticsearch if available
+    if search_client.is_available():
+        try:
+            index_product(product)
+        except Exception as e:
+            logger.warning(f"Failed to update product {product.id} in Elasticsearch: {e}")
+    
     return product
 
 
@@ -143,6 +163,14 @@ def delete_product(
     product = db.get(Product, product_id)
     if not product:
         raise HTTPException(404, "Product not found")
+    
+    # Delete from Elasticsearch if available
+    if search_client.is_available():
+        try:
+            delete_product_from_index(product_id)
+        except Exception as e:
+            logger.warning(f"Failed to delete product {product_id} from Elasticsearch: {e}")
+    
     db.delete(product)
     db.commit()
 
@@ -164,4 +192,12 @@ def add_tag_to_product(
     product.tags.append(tag)
     db.commit()
     db.refresh(product)
+    
+    # Update in Elasticsearch if available (tags changed)
+    if search_client.is_available():
+        try:
+            index_product(product)
+        except Exception as e:
+            logger.warning(f"Failed to update product {product.id} tags in Elasticsearch: {e}")
+    
     return product
