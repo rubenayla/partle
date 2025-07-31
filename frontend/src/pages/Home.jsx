@@ -35,11 +35,13 @@ export default function Home() {
   });
 
   const fetchData = useCallback(async (reset = true, currentSearchParams = searchParams, currentOffset = offset) => {
+    console.log('fetchData: currentSearchParams', currentSearchParams);
     try {
       const offsetToUse = reset ? 0 : currentOffset;
       let response;
       
       if (currentSearchParams.searchType === "products") {
+        console.log('fetchData: Sending product query', currentSearchParams.query);
         response = await api.get("/v1/products/", {
           params: {
             q: currentSearchParams.query,
@@ -52,6 +54,7 @@ export default function Home() {
           },
         });
         
+        console.log('fetchData: Product API response', response.data);
         if (reset) {
           setProducts(response.data);
         } else {
@@ -61,7 +64,9 @@ export default function Home() {
             return [...prev, ...newItems];
           });
         }
+        console.log('fetchData: Products state after update', products);
       } else {
+        console.log('fetchData: Sending store query', currentSearchParams.query);
         response = await api.get("/v1/stores/", {
           params: {
             q: currentSearchParams.query,
@@ -72,6 +77,7 @@ export default function Home() {
           },
         });
         
+        console.log('fetchData: Store API response', response.data);
         if (reset) {
           setStores(response.data);
         } else {
@@ -81,6 +87,7 @@ export default function Home() {
             return [...prev, ...newItems];
           });
         }
+        console.log('fetchData: Stores state after update', stores);
       }
       
       // Update pagination state
@@ -104,6 +111,7 @@ export default function Home() {
   const [isFetching] = useInfiniteScroll(fetchMoreData, hasMore);
 
   useEffect(() => {
+    console.log('Home.jsx: searchParams changed', searchParams);
     setOffset(0);
     setHasMore(true);
     fetchData(true, searchParams, 0);
@@ -114,6 +122,7 @@ export default function Home() {
   // For now, we'll use a global approach via window object as a quick solution
   useEffect(() => {
     window.homeSearchHandler = (params) => {
+      console.log('Home.jsx: window.homeSearchHandler called with params', params);
       setSearchParams(params);
     };
     return () => {

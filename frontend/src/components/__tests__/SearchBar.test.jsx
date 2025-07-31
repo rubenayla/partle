@@ -47,7 +47,7 @@ describe("SearchBar", () => {
         priceMin: 0,
         priceMax: 500,
         selectedTags: [],
-        sortBy: "relevance"
+        sortBy: "random"
       });
     });
   });
@@ -101,7 +101,7 @@ describe("SearchBar", () => {
     );
 
     // Find the sort dropdown trigger button
-    const sortTrigger = screen.getByRole("button", { name: /Sort: Relevance/i });
+    const sortTrigger = screen.getByRole("button", { name: /Sort: Random/i });
     await user.click(sortTrigger);
 
     // Find and click a different sort option
@@ -145,7 +145,7 @@ describe("SearchBar", () => {
         priceMin: 0,
         priceMax: 500,
         selectedTags: [],
-        sortBy: "relevance"
+        sortBy: "random"
       });
     });
   });

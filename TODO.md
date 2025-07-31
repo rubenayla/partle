@@ -1,3 +1,5 @@
+- Add search functionality like regex or something else
+- Add buttons to get feedback from users, and form page to receive it. The buttons will link to that page.
 - Add several products fast and check they're there.
 - Scrape products
 - Create docs with sections for API use (people should be able to connect easily), database structure, standards, etc.
@@ -17,6 +19,8 @@
 - Mobile version (bar at the bottom with easy interface. Go ahead to new standards)
 - The product of each store must have a unique name. If you don't agree with the data, several versions will appear, with capability to up/down vote them. It just like several products squished together in the same frontend card.
 - seo for chatgpt searches so I can get pro users that will actually buy, being of benefit to the stores. Can charge the stores instead of the user, since use through chatgpt will be free
+
+- once db is working with remote computer, not locally, tell codex to scrape sites, add the scraping software with tests and actually do some scraping
 - Users report products (illegal etc)
 - Improve unit tests
 - Map toggle (7) – visual polish that sells the idea.
@@ -47,3 +51,4 @@ Explore direct public key login (passkeys) so the browser handles authentication
     - Google-linked authentication (OAuth 2.0).
     - Ensure all methods link to a single user identity.
     - Provide options for managing these methods in account settings.
+- Add 'relevant' sorting method

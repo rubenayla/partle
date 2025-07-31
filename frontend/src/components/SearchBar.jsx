@@ -19,18 +19,18 @@ export default function SearchBar({
   const [priceMin, setPriceMin] = useState(0)
   const [priceMax, setPriceMax] = useState(500)
   const [selectedTags, setSelectedTags] = useState([])
-  const [sortBy, setSortBy] = useState('relevance')
+  const [sortBy, setSortBy] = useState('random')
   const [shortcutMode, setShortcutMode] = useState(false)
   const shortcutTimeoutRef = useRef(null)
 
   const sortOptions = {
-    relevance: 'Relevance',
     created_at: 'Newest',
     created_at_asc: 'Oldest',
     price_asc: 'Price ↑',
     price_desc: 'Price ↓',
     distance: 'Distance',
     random: 'Random',
+    name_asc: 'Alphabetical Name',
   };
 
   const [priceOpen, setPriceOpen] = useState(false)

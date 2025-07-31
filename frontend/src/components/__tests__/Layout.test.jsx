@@ -77,7 +77,7 @@ describe("Layout", () => {
         priceMin: 0,
         priceMax: 500,
         selectedTags: [],
-        sortBy: "relevance"
+        sortBy: "random"
       });
     });
   });

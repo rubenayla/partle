@@ -2,6 +2,7 @@ import sys
 from app.db.session import SessionLocal
 from app.db.models import Tag, User, Store, Product
 from datetime import datetime, timedelta
+from sqlalchemy import or_, func
 
 def list_tags():
     db = SessionLocal()
@@ -43,6 +44,75 @@ def list_products():
         print("(No products found)")
     else:
         print(f"Total products: {len(products)}")
+        for product in products:
+            print(f"ID: {product.id}, Name: {product.name}, Store ID: {product.store_id}, Creator ID: {product.creator_id}")
+    db.close()
+
+def search_products(query_str: str):
+    db = SessionLocal()
+    search_term = f"%{query_str}%"
+    products = db.query(Product).filter(Product.name.ilike(search_term)).all()
+    print(f"--- Products matching '{query_str}' ---")
+    if not products:
+        print("(No products found matching query)")
+    else:
+        print(f"Total products matching: {len(products)}")
+        for product in products:
+            print(f"ID: {product.id}, Name: {product.name}, Store ID: {product.store_id}, Creator ID: {product.creator_id}")
+    db.close()
+
+def query_products_with_full_filters(
+    q: str | None = None,
+    min_price: float | None = None,
+    max_price: float | None = None,
+    tags: str | None = None,
+    sort_by: str | None = None,
+    limit: int = 20,
+    offset: int = 0,
+):
+    db = SessionLocal()
+    query = db.query(Product)
+
+    if q:
+        search_term = f"%{q}%"
+        query = query.filter(
+            or_(
+                Product.name.ilike(search_term),
+                Product.description.ilike(search_term)
+            )
+        )
+
+    if min_price is not None:
+        query = query.filter(Product.price >= min_price)
+
+    if max_price is not None:
+        query = query.filter(Product.price <= max_price)
+
+    if tags:
+        tag_list = [tag.strip() for tag in tags.split(',')]
+        if tag_list:
+            query = query.join(Product.tags).filter(Tag.name.in_(tag_list))
+
+    if sort_by == "created_at":
+        query = query.order_by(Product.created_at.desc())
+    elif sort_by == "created_at_asc":
+        query = query.order_by(Product.created_at.asc())
+    elif sort_by == "price_asc":
+        query = query.order_by(Product.price.asc())
+    elif sort_by == "price_desc":
+        query = query.order_by(Product.price.desc())
+    elif sort_by == "random":
+        query = query.order_by(func.random())
+
+    products = query.offset(offset).limit(limit).all()
+
+    print(f"--- Products with full filters (q='{q}', min_price={min_price}, max_price={max_price}, sort_by='{sort_by}', limit={limit}, offset={offset}) ---")
+    if not products:
+        print("(No products found with these filters)")
+    else:
+        print(f"Total products found: {len(products)}")
+        for product in products:
+            print(f"ID: {product.id}, Name: {product.name}, Store ID: {product.store_id}, Creator ID: {product.creator_id}")
     db.close()
 
 def populate_created_at():
@@ -81,6 +151,39 @@ if __name__ == "__main__":
         list_products()
     elif command == "populate_created_at":
         populate_created_at()
+    elif command == "search_products":
+        if len(sys.argv) < 3:
+            print("Usage: python query_db.py search_products <query_string>")
+            sys.exit(1)
+        search_products(sys.argv[2])
+    elif command == "query_products_with_full_filters":
+        # Example usage: poetry run python .gemini/query_db.py query_products_with_full_filters --q test2 --sort_by relevance
+        # Parse arguments manually for simplicity
+        args = sys.argv[2:]
+        params = {}
+        i = 0
+        while i < len(args):
+            if args[i].startswith("--"):
+                key = args[i][2:]
+                if i + 1 < len(args) and not args[i+1].startswith("--"):
+                    value = args[i+1]
+                    params[key] = value
+                    i += 2
+                else:
+                    params[key] = True # For boolean flags if any
+                    i += 1
+            else:
+                i += 1 # Skip unexpected args
+        
+        query_products_with_full_filters(
+            q=params.get("q"),
+            min_price=float(params["min_price"]) if "min_price" in params else None,
+            max_price=float(params["max_price"]) if "max_price" in params else None,
+            tags=params.get("tags"),
+            sort_by=params.get("sort_by"),
+            limit=int(params.get("limit", 20)),
+            offset=int(params.get("offset", 0)),
+        )
     else:
         print(f"Unknown command: {command}")
         sys.exit(1)
