@@ -39,7 +39,7 @@ export default function Layout({ children, setTheme, currentTheme }: Props) {
   }, []);
 
   return (
-    <div className="min-h-screen w-full bg-background text-foreground">
+    <div className="min-h-screen w-full bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
       <SearchBar
         isLoggedIn={isLoggedIn}
         onAccountClick={() => setAccountOpen(true)}

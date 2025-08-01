@@ -28,10 +28,10 @@ export default function App() {
 
   if (status === 'offline') {
     return (
-      <div className='flex h-screen items-center justify-center bg-gray-100'>
+      <div className='flex h-screen items-center justify-center bg-gray-100 dark:bg-gray-900'>
         <div className='text-center'>
-          <h1 className='text-2xl font-bold'>⚠️ Backend offline</h1>
-          <p className='mt-2 text-gray-600'>We're doing maintenance or sleeping. Please try again later.</p>
+          <h1 className='text-2xl font-bold text-gray-900 dark:text-white'>⚠️ Backend offline</h1>
+          <p className='mt-2 text-gray-600 dark:text-gray-300'>We're doing maintenance or sleeping. Please try again later.</p>
         </div>
       </div>
     )
