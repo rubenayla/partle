@@ -6,6 +6,7 @@ import { deleteAccount } from '../api/auth'
 import Tooltip from './Tooltip'
 import TagFilter from './TagFilter'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
+import api from '../api/index.ts'
 
 export default function SearchBar({
   onSearch = () => { },
@@ -19,6 +20,8 @@ export default function SearchBar({
   const [priceMin, setPriceMin] = useState(0)
   const [priceMax, setPriceMax] = useState(500)
   const [selectedTags, setSelectedTags] = useState([])
+  const [selectedStore, setSelectedStore] = useState('')
+  const [stores, setStores] = useState([])
   const [sortBy, setSortBy] = useState('random')
   const [shortcutMode, setShortcutMode] = useState(false)
   const shortcutTimeoutRef = useRef(null)
@@ -35,6 +38,19 @@ export default function SearchBar({
 
 
   const navigate = useNavigate()
+
+  // Load stores for the filter dropdown
+  useEffect(() => {
+    const loadStores = async () => {
+      try {
+        const response = await api.get('/v1/stores/')
+        setStores(response.data || [])
+      } catch (error) {
+        console.error('Failed to load stores:', error)
+      }
+    }
+    loadStores()
+  }, [])
 
   // Remove the local theme state and useEffect for theme management
   // useEffect(() => {
@@ -129,7 +145,7 @@ export default function SearchBar({
   const handleSearch = (event) => {
     event.preventDefault()
     if (onSearch) {
-      onSearch({ query, searchType, priceMin, priceMax, sortBy, selectedTags })
+      onSearch({ query, searchType, priceMin, priceMax, sortBy, selectedTags, selectedStore })
     }
   }
 
@@ -179,7 +195,7 @@ export default function SearchBar({
                       onClick={() => {
                         setSearchType('products');
                         if (onSearch) {
-                          onSearch({ query, searchType: 'products', priceMin, priceMax, sortBy, selectedTags });
+                          onSearch({ query, searchType: 'products', priceMin, priceMax, sortBy, selectedTags, selectedStore });
                         }
                       }}
                       className={`px-3 py-1 rounded-full text-sm font-medium ${searchType === 'products' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'}`}
@@ -191,7 +207,7 @@ export default function SearchBar({
                       onClick={() => {
                         setSearchType('stores');
                         if (onSearch) {
-                          onSearch({ query, searchType: 'stores', priceMin, priceMax, sortBy, selectedTags });
+                          onSearch({ query, searchType: 'stores', priceMin, priceMax, sortBy, selectedTags, selectedStore });
                         }
                       }}
                       className={`px-3 py-1 rounded-full text-sm font-medium ${searchType === 'stores' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'}`}
@@ -200,6 +216,30 @@ export default function SearchBar({
                     </button>
                   </div>
                 </div>
+                
+                {/* Store Filter - Only show for products */}
+                {searchType === 'products' && (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Store</label>
+                    <select
+                      value={selectedStore}
+                      onChange={(e) => {
+                        setSelectedStore(e.target.value);
+                        if (onSearch) {
+                          onSearch({ query, searchType, priceMin, priceMax, sortBy, selectedTags, selectedStore: e.target.value });
+                        }
+                      }}
+                      className="w-full border border-gray-300 dark:border-gray-600 px-2 py-1 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    >
+                      <option value="">All Stores</option>
+                      {stores.map((store) => (
+                        <option key={store.id} value={store.id}>
+                          {store.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
                 
                 {/* Tag Filter */}
                 <TagFilter
@@ -220,7 +260,7 @@ export default function SearchBar({
                         onChange={(e) => {
                           setPriceMin(Number(e.target.value));
                           if (onSearch) {
-                            onSearch({ query, searchType, priceMin: Number(e.target.value), priceMax, sortBy, selectedTags });
+                            onSearch({ query, searchType, priceMin: Number(e.target.value), priceMax, sortBy, selectedTags, selectedStore });
                           }
                         }}
                         className="w-full border border-gray-300 dark:border-gray-600 px-2 py-1 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
@@ -235,7 +275,7 @@ export default function SearchBar({
                         onChange={(e) => {
                           setPriceMax(Number(e.target.value));
                           if (onSearch) {
-                            onSearch({ query, searchType, priceMin, priceMax: Number(e.target.value), sortBy, selectedTags });
+                            onSearch({ query, searchType, priceMin, priceMax: Number(e.target.value), sortBy, selectedTags, selectedStore });
                           }
                         }}
                         className="w-full border border-gray-300 dark:border-gray-600 px-2 py-1 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
@@ -270,7 +310,7 @@ export default function SearchBar({
                     onSelect={() => {
                       setSortBy(value);
                       if (onSearch) {
-                        onSearch({ query, searchType, priceMin, priceMax, sortBy: value, selectedTags });
+                        onSearch({ query, searchType, priceMin, priceMax, sortBy: value, selectedTags, selectedStore });
                       }
                     }}
                   >

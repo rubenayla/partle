@@ -42,16 +42,23 @@ export default function Home() {
       
       if (currentSearchParams.searchType === "products") {
         console.log('fetchData: Sending product query', currentSearchParams.query);
+        const productParams = {
+          q: currentSearchParams.query,
+          min_price: currentSearchParams.priceMin,
+          max_price: currentSearchParams.priceMax,
+          sort_by: currentSearchParams.sortBy,
+          tags: currentSearchParams.selectedTags.join(","),
+          limit: 20,
+          offset: offsetToUse,
+        };
+        
+        // Add store_id filter if selectedStore is provided
+        if (currentSearchParams.selectedStore) {
+          productParams.store_id = currentSearchParams.selectedStore;
+        }
+        
         response = await api.get("/v1/products/", {
-          params: {
-            q: currentSearchParams.query,
-            min_price: currentSearchParams.priceMin,
-            max_price: currentSearchParams.priceMax,
-            sort_by: currentSearchParams.sortBy,
-            tags: currentSearchParams.selectedTags.join(","),
-            limit: 20,
-            offset: offsetToUse,
-          },
+          params: productParams,
         });
         
         console.log('fetchData: Product API response', response.data);
