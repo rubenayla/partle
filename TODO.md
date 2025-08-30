@@ -1,3 +1,10 @@
+Now i'd like to be able to filter based on the store. You will have to update the frontend filters in the search bar, and
+
+- so now, chatgpt should be able to read info from this server by using the mcp server? How could he do it?
+
+Why am i getting "Existing account – log in instead" in our unified register/login page?
+
+- in product page, a clear "Back" button that goes to the previous page
 - How to modify product. If you are the user, when you click a product to see it, allow editing? Or do it in other way
 - In add product, add capability to add tags like #tag1 
 - Add buttons to get feedback from users, and form page to receive it. The buttons will link to that page.
