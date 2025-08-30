@@ -51,3 +51,5 @@ dist/
 dist-ssr/
 *.local
 .env
+backend/partle_backup.sql
+backend/app/scraper/crawls/
