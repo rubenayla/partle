@@ -186,6 +186,8 @@ export default function AddProduct() {
                         src={form.image_url} 
                         alt="Product preview" 
                         className="w-32 h-32 object-cover rounded-lg border border-gray-200 dark:border-gray-700"
+                        referrerPolicy="no-referrer"
+                        crossOrigin="anonymous"
                         onError={(e) => {
                           e.currentTarget.style.display = 'none';
                         }}

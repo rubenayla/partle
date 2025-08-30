@@ -19,6 +19,15 @@ export default function ListView({ items }) {
               src={item.image_url}
               alt={item.name}
               className="w-full h-32 object-cover rounded mb-2"
+              referrerPolicy="no-referrer"
+              crossOrigin="anonymous"
+              onError={(e) => {
+                console.log(`Failed to load image: ${item.image_url}`);
+                e.currentTarget.style.display = 'none';
+              }}
+              onLoad={() => {
+                console.log(`Successfully loaded image: ${item.image_url}`);
+              }}
             />
           )}
           <h3 className="font-semibold mb-1">
