@@ -3,7 +3,6 @@ from collections.abc import Generator
 from sqlalchemy import or_, func
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-import logging
 
 from app.db.models import Product, User, Tag
 from app.schemas import product as schema
@@ -11,9 +10,10 @@ from app.auth.security import get_current_user
 from app.api.deps import get_db
 from app.search.indexing import index_product, delete_product_from_index
 from app.search.client import search_client
+from app.logging_config import get_logger
 
 router = APIRouter()
-logger = logging.getLogger(__name__)
+logger = get_logger("api.products")
 
 
 # ───────────────────────────────────────────
@@ -86,6 +86,11 @@ def create_product(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    logger.info("Creating product", 
+                product_name=payload.name, 
+                user_id=current_user.id, 
+                store_id=payload.store_id)
+    
     if payload.store_id is not None:
         # If product is linked to a store, check for uniqueness by name and store_id
         existing = (
@@ -94,6 +99,9 @@ def create_product(
             .first()
         )
         if existing:
+            logger.warning("Product creation failed - duplicate in store", 
+                          product_name=payload.name, 
+                          store_id=payload.store_id)
             raise HTTPException(409, "Product with this name already exists in this store")
     else:
         # If product is an orphan, check for uniqueness by name and creator_id
@@ -103,6 +111,9 @@ def create_product(
             .first()
         )
         if existing:
+            logger.warning("Product creation failed - duplicate orphan", 
+                          product_name=payload.name, 
+                          creator_id=current_user.id)
             raise HTTPException(409, "You already have an orphan product with this name")
 
     product = Product(
@@ -114,12 +125,20 @@ def create_product(
     db.commit()
     db.refresh(product)
     
+    logger.info("Product created successfully", 
+               product_id=product.id, 
+               product_name=product.name,
+               price=product.price)
+    
     # Index in Elasticsearch if available
     if search_client.is_available():
         try:
             index_product(product)
+            logger.debug("Product indexed in Elasticsearch", product_id=product.id)
         except Exception as e:
-            logger.warning(f"Failed to index product {product.id} in Elasticsearch: {e}")
+            logger.error("Failed to index product in Elasticsearch", 
+                        product_id=product.id, 
+                        error=str(e))
     
     return product
 
