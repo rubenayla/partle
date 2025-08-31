@@ -12,6 +12,11 @@ export default defineConfig({
       'react-dom': path.resolve('./node_modules/react-dom'),
     },
   },
+  optimizeDeps: {
+    // Ensure React is pre-bundled correctly
+    include: ['react', 'react-dom'],
+    force: true, // Force re-optimization
+  },
   build: {
     outDir: 'dist',
   },
