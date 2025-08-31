@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 import { HelmetProvider } from 'react-helmet-async';
-import { AuthProvider } from './hooks/useAuth.jsx';
+import { AuthProvider } from './hooks/useAuth';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <HelmetProvider>

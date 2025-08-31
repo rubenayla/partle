@@ -12,6 +12,16 @@ export default defineConfig({
       'react-dom': path.resolve('./node_modules/react-dom'),
     },
   },
+  optimizeDeps: {
+    // Force ESM resolution for React
+    include: ['react', 'react-dom', 'react/jsx-runtime'],
+    force: true,
+    esbuildOptions: {
+      // Ensure proper ESM transformation
+      format: 'esm',
+      target: 'esnext'
+    }
+  },
   build: {
     outDir: 'dist',
   },

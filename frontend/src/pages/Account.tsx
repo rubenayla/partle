@@ -1,21 +1,56 @@
+/**
+ * @fileoverview Account page component for user account management
+ * @module pages/Account
+ */
 import React, { useState, useEffect } from 'react';
 import { currentUser, changePassword } from '../api/auth';
+import { User } from '../types';
 
+/**
+ * Account Component - User account management page
+ * 
+ * Displays user account information and provides password change functionality.
+ * Requires user authentication to access.
+ * 
+ * Features:
+ * - Display current user email
+ * - Change password form with validation
+ * - Loading states and error handling
+ * - Success/error message display
+ * 
+ * @returns JSX element containing the account management interface
+ * 
+ * @example
+ * ```tsx
+ * // Used in routing
+ * <Route 
+ *   path="/account" 
+ *   element={
+ *     <RequireAuth>
+ *       <Account />
+ *     </RequireAuth>
+ *   } 
+ * />
+ * ```
+ */
 export default function Account() {
-  const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmNewPassword, setConfirmNewPassword] = useState('');
-  const [message, setMessage] = useState('');
+  const [email, setEmail] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentPassword, setCurrentPassword] = useState<string>('');
+  const [newPassword, setNewPassword] = useState<string>('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState<string>('');
+  const [message, setMessage] = useState<string>('');
 
   useEffect(() => {
-    const fetchUserEmail = async () => {
+    /**
+     * Fetch current user's email address
+     */
+    const fetchUserEmail = async (): Promise<void> => {
       try {
-        const user = await currentUser();
+        const user: User = await currentUser();
         setEmail(user.email);
-      } catch (err) {
+      } catch (err: any) {
         setError('Failed to fetch user email.');
         console.error(err);
       } finally {
@@ -26,7 +61,12 @@ export default function Account() {
     fetchUserEmail();
   }, []);
 
-  const handleChangePassword = async (e) => {
+  /**
+   * Handle password change form submission
+   * 
+   * @param e - Form submission event
+   */
+  const handleChangePassword = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     setMessage('');
     setError(null);
@@ -42,7 +82,7 @@ export default function Account() {
       setCurrentPassword('');
       setNewPassword('');
       setConfirmNewPassword('');
-    } catch (err) {
+    } catch (err: any) {
       setError(err.response?.data?.detail || 'Failed to change password.');
     }
   };
@@ -67,12 +107,16 @@ export default function Account() {
     <div className="min-h-screen w-screen flex flex-col items-center justify-center bg-background text-foreground p-8">
       <div className="p-8 bg-surface rounded-xl shadow-lg text-center">
         <h1 className="text-3xl font-bold mb-4">Account Details</h1>
-        <p className="text-lg mb-4">Logged in as: <span className="font-semibold">{email}</span></p>
+        <p className="text-lg mb-4">
+          Logged in as: <span className="font-semibold">{email}</span>
+        </p>
 
         <h2 className="text-2xl font-bold mb-4">Change Password</h2>
         <form onSubmit={handleChangePassword} className="space-y-4">
           <div>
-            <label htmlFor="current-password" className="block text-left text-sm font-medium text-foreground">Current Password</label>
+            <label htmlFor="current-password" className="block text-left text-sm font-medium text-foreground">
+              Current Password
+            </label>
             <input
               type="password"
               id="current-password"
@@ -83,7 +127,9 @@ export default function Account() {
             />
           </div>
           <div>
-            <label htmlFor="new-password" className="block text-left text-sm font-medium text-foreground">New Password</label>
+            <label htmlFor="new-password" className="block text-left text-sm font-medium text-foreground">
+              New Password
+            </label>
             <input
               type="password"
               id="new-password"
@@ -94,7 +140,9 @@ export default function Account() {
             />
           </div>
           <div>
-            <label htmlFor="confirm-new-password" className="block text-left text-sm font-medium text-foreground">Confirm New Password</label>
+            <label htmlFor="confirm-new-password" className="block text-left text-sm font-medium text-foreground">
+              Confirm New Password
+            </label>
             <input
               type="password"
               id="confirm-new-password"
