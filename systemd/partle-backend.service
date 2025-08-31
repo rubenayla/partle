@@ -1,0 +1,30 @@
+[Unit]
+Description=Partle Backend FastAPI Service
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/root/partle/backend
+Environment=PATH=/root/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PYTHONPATH=/root/partle/backend
+ExecStartPre=/usr/bin/poetry check
+ExecStart=/usr/bin/poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=3
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=partle-backend
+
+# Security settings
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/root/partle /var/log/partle /tmp
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
