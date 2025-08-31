@@ -64,15 +64,15 @@ class FerreteriaShopSpider(scrapy.Spider):
                     self.logger.info(f"Found {len(valid_links)} category links with selector: {selector}")
                     break
         
-        # Fallback: try common PrestaShop category URLs
+        # Fallback: try actual ferreteria.shop category URLs
         if not category_links:
-            self.logger.info("No category links found, trying common PrestaShop patterns")
+            self.logger.info("No category links found, using known ferreteria.shop categories")
             category_links = [
-                "/herrajes-armarios/",
-                "/herrajes-cocina/", 
-                "/herrajes-puertas/",
-                "/ferreteria/",
-                "/tiradores-para-muebles/"
+                "/herrajes-armarios",
+                "/herrajes-cocina", 
+                "/herrajes-puertas",
+                "/ferreteria",
+                "/tiradores-para-muebles"
             ]
             
         for link in category_links:
@@ -90,33 +90,35 @@ class FerreteriaShopSpider(scrapy.Spider):
 
         # Extract product links - Ferreteria.shop specific selectors
         product_selectors = [
-            '#product_list li a::attr(href)',
-            '.product-name a::attr(href)',
-            'h5.product-name a::attr(href)',
-            '.product-details a::attr(href)',
-            'li a[href*="/"]::attr(href)',
+            '.product_img_link::attr(href)',
+            '.cbp-product-name::attr(href)',
+            'a.product_img_link::attr(href)',
+            'a.cbp-product-name::attr(href)',
         ]
         
         product_links = []
         for selector in product_selectors:
             links = response.css(selector).getall()
             if links:
-                # Filter to actual product links - be more restrictive
+                # Filter to actual product links
                 filtered_links = [
                     link for link in links 
-                    if link and link.startswith(('http://www.ferreteria.shop/', 'https://www.ferreteria.shop/', '/')) 
+                    if link and (
+                        link.startswith(('http://www.ferreteria.shop/', 'https://www.ferreteria.shop/'))
+                        or link.startswith('/')
+                    ) 
                     and not any(skip in link.lower() for skip in [
                         '/static/', '/media/', '#', 'javascript:', 'mailto:', 'tel:',
-                        '/categoria', '/category', '/cart', '/checkout', '/account',
-                        '/blog', 'youtube.com', 'twitter.com', 'facebook.com', 'instagram.com'
+                        '/cart', '/checkout', '/account', '/login', '/registro',
+                        '/blog', 'youtube.com', 'twitter.com', 'facebook.com', 'instagram.com',
+                        '/contactanos', '/mapa-web', '/pedido-rapido', '/mi-cuenta'
                     ])
-                    and any(product_indicator in link.lower() for product_indicator in [
-                        'pernio', 'bisagra', 'tirador', 'herraje', 'cerradura', 'guia'
-                    ])
+                    and ('/' in link[1:] if link.startswith('/') else '/' in link.split('.shop/')[-1])  # Has path structure
                 ]
                 if filtered_links:
-                    product_links.extend(filtered_links)
-                    self.logger.info(f"Selector '{selector}' found {len(filtered_links)} valid product links")
+                    # Remove duplicates
+                    product_links = list(set(filtered_links))
+                    self.logger.info(f"Selector '{selector}' found {len(product_links)} unique product links")
                     break
         
         # Check for pagination
@@ -173,6 +175,8 @@ class FerreteriaShopSpider(scrapy.Spider):
 
         # Extract price - PrestaShop selectors
         price_selectors = [
+            '#our_price_display::text',
+            '.our_price_display::text',
             '.current-price .price::text',
             '.price::text',
             '.product-price::text',
@@ -204,8 +208,11 @@ class FerreteriaShopSpider(scrapy.Spider):
                 description = desc.strip()
                 break
 
-        # Extract image URL - PrestaShop selectors
+        # Extract image URL - PrestaShop selectors  
         image_selectors = [
+            '#bigpic::attr(src)',
+            '#MagicZoomPlusImageMainImage::attr(src)',
+            'img[src*="large_default"]::attr(src)',
             '.product-cover img::attr(src)',
             '.product-images img::attr(src)',
             '.js-qv-product-cover img::attr(src)',

@@ -205,6 +205,10 @@ class RationalstockSpider(scrapy.Spider):
 
         # Extract image URL
         image_selectors = [
+            'img[src*="cataleg350"]::attr(src)',
+            'img[src*="cataleg150"]::attr(src)', 
+            'img[src*="/img_rational/img/catalog/"]::attr(src)',
+            'img[src*="/img_rational/"]::attr(src)',
             '.product-image img::attr(src)',
             '.producto-imagen img::attr(src)',
             '.main-image img::attr(src)',
