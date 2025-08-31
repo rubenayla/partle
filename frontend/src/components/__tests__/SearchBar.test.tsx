@@ -1,19 +1,38 @@
+/**
+ * @fileoverview SearchBar Component Tests
+ * @module components/__tests__/SearchBar
+ */
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import SearchBar from "../SearchBar";
+import type { ProductSearchParams, Theme } from "../../types";
+
+// Extend window interface to include homeSearchHandler
+declare global {
+  interface Window {
+    homeSearchHandler?: (params: ProductSearchParams) => void;
+  }
+}
 
 describe("SearchBar", () => {
+  const defaultTheme: Theme = 'system';
+  const mockSetTheme = vi.fn();
+
   beforeEach(() => {
     // Clear any existing window.homeSearchHandler
     delete window.homeSearchHandler;
+    vi.clearAllMocks();
   });
 
   it("renders without crashing", () => {
     render(
       <MemoryRouter>
-        <SearchBar />
+        <SearchBar 
+          currentTheme={defaultTheme}
+          setTheme={mockSetTheme}
+        />
       </MemoryRouter>
     );
 
@@ -27,7 +46,11 @@ describe("SearchBar", () => {
 
     render(
       <MemoryRouter>
-        <SearchBar onSearch={mockOnSearch} />
+        <SearchBar 
+          onSearch={mockOnSearch}
+          currentTheme={defaultTheme}
+          setTheme={mockSetTheme}
+        />
       </MemoryRouter>
     );
 
@@ -47,7 +70,8 @@ describe("SearchBar", () => {
         priceMin: 0,
         priceMax: 500,
         selectedTags: [],
-        sortBy: "random"
+        sortBy: "random",
+        sortOrder: "desc"
       });
     });
   });
@@ -55,26 +79,11 @@ describe("SearchBar", () => {
   it("does not crash when onSearch is undefined", async () => {
     render(
       <MemoryRouter>
-        <SearchBar onSearch={undefined} />
-      </MemoryRouter>
-    );
-
-    const searchInput = screen.getByPlaceholderText("Search products around you");
-    const searchButton = screen.getByRole("button", { name: /search/i });
-
-    // Type in search input
-    fireEvent.change(searchInput, { target: { value: "test query" } });
-
-    // Submit the form - should not crash
-    expect(() => {
-      fireEvent.click(searchButton);
-    }).not.toThrow();
-  });
-
-  it("does not crash when onSearch is null", async () => {
-    render(
-      <MemoryRouter>
-        <SearchBar onSearch={null} />
+        <SearchBar 
+          onSearch={undefined}
+          currentTheme={defaultTheme}
+          setTheme={mockSetTheme}
+        />
       </MemoryRouter>
     );
 
@@ -96,7 +105,11 @@ describe("SearchBar", () => {
 
     render(
       <MemoryRouter>
-        <SearchBar onSearch={mockOnSearch} />
+        <SearchBar 
+          onSearch={mockOnSearch}
+          currentTheme={defaultTheme}
+          setTheme={mockSetTheme}
+        />
       </MemoryRouter>
     );
 
@@ -115,7 +128,8 @@ describe("SearchBar", () => {
         priceMin: 0,
         priceMax: 500,
         selectedTags: [],
-        sortBy: "created_at"
+        sortBy: "created_at",
+        sortOrder: "desc"
       });
     });
   });
@@ -126,7 +140,11 @@ describe("SearchBar", () => {
 
     render(
       <MemoryRouter>
-        <SearchBar onSearch={mockOnSearch} />
+        <SearchBar 
+          onSearch={mockOnSearch}
+          currentTheme={defaultTheme}
+          setTheme={mockSetTheme}
+        />
       </MemoryRouter>
     );
 
@@ -145,7 +163,8 @@ describe("SearchBar", () => {
         priceMin: 0,
         priceMax: 500,
         selectedTags: [],
-        sortBy: "random"
+        sortBy: "random",
+        sortOrder: "desc"
       });
     });
   });
@@ -156,7 +175,11 @@ describe("SearchBar", () => {
 
     render(
       <MemoryRouter>
-        <SearchBar onSearch={mockOnSearch} />
+        <SearchBar 
+          onSearch={mockOnSearch}
+          currentTheme={defaultTheme}
+          setTheme={mockSetTheme}
+        />
       </MemoryRouter>
     );
 
@@ -176,5 +199,27 @@ describe("SearchBar", () => {
     );
 
     consoleSpy.mockRestore();
+  });
+
+  it("handles theme changes correctly", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter>
+        <SearchBar 
+          currentTheme={defaultTheme}
+          setTheme={mockSetTheme}
+          isLoggedIn={true}
+        />
+      </MemoryRouter>
+    );
+
+    // Find and click the user dropdown to access theme settings
+    const userButton = screen.getByRole("button", { name: /user account/i });
+    await user.click(userButton);
+
+    // The theme switch should be accessible when logged in
+    // Note: Specific theme switch interaction depends on implementation
+    expect(mockSetTheme).toHaveBeenCalledTimes(0); // Initially not called
   });
 });

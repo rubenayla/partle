@@ -1,7 +1,19 @@
+/**
+ * @fileoverview Layout Component Tests
+ * @module components/__tests__/Layout
+ */
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import Layout from "../Layout";
+import type { ProductSearchParams } from "../../types";
+
+// Extend window interface to include homeSearchHandler
+declare global {
+  interface Window {
+    homeSearchHandler?: (params: ProductSearchParams) => void;
+  }
+}
 
 describe("Layout", () => {
   beforeEach(() => {
@@ -77,7 +89,8 @@ describe("Layout", () => {
         priceMin: 0,
         priceMax: 500,
         selectedTags: [],
-        sortBy: "random"
+        sortBy: "random",
+        sortOrder: "desc"
       });
     });
   });

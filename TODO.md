@@ -1,5 +1,5 @@
 Let's update all js to ts and jsx to tsx
-Add to memory that we want ts and tsx not js and jsx
+Add to memory that we want ts and tsx not js and jsx, to prevent future mistakes
 Make sure there's no CJS left, everything ESM now.
 Let's finish scraping bricodepot
 Let's do the scraper for www.mengual.com/
