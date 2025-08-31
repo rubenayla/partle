@@ -1,49 +1,73 @@
 // frontend/src/hooks/useInfiniteScroll.js
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
-export function useInfiniteScroll(fetchMore, hasMore = true) {
-  // Defensive check - ensure we're in a React component context
-  if (typeof useState !== 'function') {
-    console.error('useInfiniteScroll: React hooks not available');
-    return [false, () => {}];
-  }
-  
+/**
+ * Optimized infinite scroll hook with performance best practices
+ * @param {Function} fetchMore - Function to fetch more data
+ * @param {boolean} hasMore - Whether more data is available
+ * @param {number} threshold - Pixels from bottom to trigger load (default: 1000)
+ * @returns {[boolean]} - [isFetching]
+ */
+export function useInfiniteScroll(fetchMore, hasMore = true, threshold = 1000) {
   const [isFetching, setIsFetching] = useState(false);
-
+  
+  // Use refs to avoid stale closures and unnecessary re-renders
+  const fetchMoreRef = useRef(fetchMore);
+  const hasMoreRef = useRef(hasMore);
+  const isFetchingRef = useRef(isFetching);
+  const thresholdRef = useRef(threshold);
+  
+  // Update refs when props change
+  fetchMoreRef.current = fetchMore;
+  hasMoreRef.current = hasMore;
+  isFetchingRef.current = isFetching;
+  thresholdRef.current = threshold;
+  
+  // Throttled scroll handler for performance
   const handleScroll = useCallback(() => {
-    // Check if we're at the bottom of the page
+    // Use refs to avoid stale closures - no dependency array needed!
     if (
       window.innerHeight + document.documentElement.scrollTop >=
-      document.documentElement.offsetHeight - 1000 // Start loading 1000px before bottom
+      document.documentElement.offsetHeight - thresholdRef.current &&
+      hasMoreRef.current &&
+      !isFetchingRef.current
     ) {
-      if (!isFetching && hasMore) {
-        setIsFetching(true);
-      }
+      setIsFetching(true);
+      
+      // Execute fetch and handle completion
+      Promise.resolve(fetchMoreRef.current())
+        .then(() => setIsFetching(false))
+        .catch((error) => {
+          console.error('Infinite scroll fetch error:', error);
+          setIsFetching(false);
+        });
     }
-  }, [isFetching, hasMore]);
-
+  }, []); // Empty dependency array - uses refs for current values!
+  
+  // Throttled scroll listener for performance
+  const throttledScrollHandler = useRef(null);
+  
   useEffect(() => {
-    if (!isFetching || !hasMore) return;
-    
-    const loadMore = async () => {
-      try {
-        await fetchMore();
-      } catch (error) {
-        console.error('Error fetching more data:', error);
-      } finally {
-        setIsFetching(false);
-      }
+    // Create throttled version (16ms = ~60fps)
+    let timeoutId;
+    throttledScrollHandler.current = () => {
+      if (timeoutId) return; // Already scheduled
+      
+      timeoutId = setTimeout(() => {
+        handleScroll();
+        timeoutId = null;
+      }, 16);
     };
-
-    loadMore();
-  }, [isFetching, fetchMore, hasMore]);
-
-  useEffect(() => {
-    if (!hasMore) return;
     
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [handleScroll, hasMore]);
-
-  return [isFetching, setIsFetching];
+    if (hasMore) {
+      window.addEventListener('scroll', throttledScrollHandler.current, { passive: true });
+    }
+    
+    return () => {
+      window.removeEventListener('scroll', throttledScrollHandler.current);
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [hasMore, handleScroll]); // Only re-run if hasMore changes
+  
+  return [isFetching];
 }
