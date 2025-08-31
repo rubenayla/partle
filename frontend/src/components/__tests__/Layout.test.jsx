@@ -39,7 +39,7 @@ describe("Layout", () => {
       </MemoryRouter>
     );
 
-    const searchInput = screen.getByPlaceholderText("What are you looking for?");
+    const searchInput = screen.getByPlaceholderText("Search products around you");
     const searchButton = screen.getByRole("button", { name: /search/i });
 
     // Should not crash when submitting search on non-home page
@@ -62,7 +62,7 @@ describe("Layout", () => {
       </MemoryRouter>
     );
 
-    const searchInput = screen.getByPlaceholderText("What are you looking for?");
+    const searchInput = screen.getByPlaceholderText("Search products around you");
     const searchButton = screen.getByRole("button", { name: /search/i });
 
     // Submit search form
@@ -94,7 +94,7 @@ describe("Layout", () => {
       </MemoryRouter>
     );
 
-    const searchInput = screen.getByPlaceholderText("What are you looking for?");
+    const searchInput = screen.getByPlaceholderText("Search products around you");
     const searchButton = screen.getByRole("button", { name: /search/i });
 
     // Should not crash even when homeSearchHandler is undefined
@@ -139,7 +139,7 @@ describe("Layout", () => {
     // Check that the main content area has the correct classes for spacing
     const mainElement = screen.getByRole("main");
     expect(mainElement).toHaveClass("mt-[72px]", "pt-6", "max-w-screen-2xl", "mx-auto", "w-full", "px-4");
-    
+
     // Check that the content is inside the main element
     expect(screen.getByTestId("test-content")).toBeInTheDocument();
   });
@@ -190,7 +190,7 @@ describe("Layout", () => {
     // Layout should remain consistent
     expect(screen.getByText("Partle")).toBeInTheDocument();
     expect(screen.getByText("Stores Content")).toBeInTheDocument();
-    
+
     // Main layout structure should be the same
     const mainElement = screen.getByRole("main");
     expect(mainElement).toHaveClass("mt-[72px]", "pt-6", "max-w-screen-2xl", "mx-auto", "w-full", "px-4");

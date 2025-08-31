@@ -91,29 +91,29 @@ export default function SearchBar({
   // Chord-based keyboard shortcuts (Alt+N + second key)
   useEffect(() => {
     const handleKeyDown = (e) => {
-      
+
       // First chord: Alt+N (works even in inputs)
       if (e.altKey && e.key.toLowerCase() === 'n') {
         e.preventDefault()
         setShortcutMode(true)
-        
+
         // Clear any existing timeout
         if (shortcutTimeoutRef.current) {
           clearTimeout(shortcutTimeoutRef.current)
         }
-        
+
         // Reset shortcut mode after 1 second
         shortcutTimeoutRef.current = setTimeout(() => {
           setShortcutMode(false)
         }, 1000)
-        
+
         return
       }
 
       // Second chord: Execute shortcuts when in shortcut mode
       if (shortcutMode) {
         e.preventDefault() // Always prevent default when in shortcut mode
-        
+
         switch (e.key.toLowerCase()) {
           case 'p':
             // Navigate to add product
@@ -137,7 +137,7 @@ export default function SearchBar({
             // Cancel shortcut mode
             break
         }
-        
+
         // Clear timeout and exit shortcut mode
         if (shortcutTimeoutRef.current) {
           clearTimeout(shortcutTimeoutRef.current)
@@ -155,22 +155,22 @@ export default function SearchBar({
     }
   }, [shortcutMode, isLoggedIn, navigate])
 
-  
+
 
   const handleSearch = (event) => {
     event.preventDefault()
     if (onSearch) {
       const { cleanQuery, operators } = parseSearchOperators(query);
-      
+
       // Merge parsed tags with existing selectedTags
       const allTags = [...selectedTags, ...(operators.tags || [])];
-      
-      onSearch({ 
-        query: cleanQuery, 
-        searchType, 
-        priceMin, 
-        priceMax, 
-        sortBy, 
+
+      onSearch({
+        query: cleanQuery,
+        searchType,
+        priceMin,
+        priceMax,
+        sortBy,
         selectedTags: allTags,
         storeName: operators.storeName // Pass store name instead of store ID
       })
@@ -194,7 +194,7 @@ export default function SearchBar({
         >
           <input
             type="search"
-            placeholder="What are you looking for?"
+            placeholder="Search products around you"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="flex-1 h-full bg-transparent placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none"
@@ -244,8 +244,8 @@ export default function SearchBar({
                     </button>
                   </div>
                 </div>
-                
-                
+
+
                 {/* Tag Filter */}
                 <TagFilter
                   selectedTags={selectedTags}
@@ -307,11 +307,10 @@ export default function SearchBar({
                 {Object.entries(sortOptions).map(([value, label]) => (
                   <DropdownMenu.Item
                     key={value}
-                    className={`block w-full text-left px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 ${
-                      sortBy === value
+                    className={`block w-full text-left px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 ${sortBy === value
                         ? 'font-semibold text-gray-900 dark:text-white'
                         : 'text-gray-700 dark:text-gray-300'
-                    }`}
+                      }`}
                     onSelect={() => {
                       setSortBy(value);
                       if (onSearch) {
@@ -326,7 +325,7 @@ export default function SearchBar({
             </DropdownMenu.Portal>
           </DropdownMenu.Root>
 
-          
+
 
           <div className="hidden sm:block h-6 border-l border-gray-300 dark:border-gray-600 mx-1 sm:mx-2 md:mx-3" />
           <button
@@ -437,7 +436,7 @@ export default function SearchBar({
             <DropdownMenu.Trigger className="bg-transparent text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-0 border-0 hover:border-0 p-1 sm:p-2">
               <Info className="h-5 w-5 sm:h-6 sm:w-6" />
             </DropdownMenu.Trigger>
-            
+
             <DropdownMenu.Portal>
               <DropdownMenu.Content
                 className="w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-50 border border-gray-200 dark:border-gray-700"

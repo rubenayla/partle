@@ -24,19 +24,19 @@ describe("SearchBar", () => {
 
   it("calls onSearch when form is submitted", async () => {
     const mockOnSearch = vi.fn();
-    
+
     render(
       <MemoryRouter>
         <SearchBar onSearch={mockOnSearch} />
       </MemoryRouter>
     );
 
-    const searchInput = screen.getByPlaceholderText("What are you looking for?");
+    const searchInput = screen.getByPlaceholderText("Search products around you");
     const searchButton = screen.getByRole("button", { name: /search/i });
 
     // Type in search input
     fireEvent.change(searchInput, { target: { value: "test query" } });
-    
+
     // Submit the form
     fireEvent.click(searchButton);
 
@@ -59,12 +59,12 @@ describe("SearchBar", () => {
       </MemoryRouter>
     );
 
-    const searchInput = screen.getByPlaceholderText("What are you looking for?");
+    const searchInput = screen.getByPlaceholderText("Search products around you");
     const searchButton = screen.getByRole("button", { name: /search/i });
 
     // Type in search input
     fireEvent.change(searchInput, { target: { value: "test query" } });
-    
+
     // Submit the form - should not crash
     expect(() => {
       fireEvent.click(searchButton);
@@ -78,12 +78,12 @@ describe("SearchBar", () => {
       </MemoryRouter>
     );
 
-    const searchInput = screen.getByPlaceholderText("What are you looking for?");
+    const searchInput = screen.getByPlaceholderText("Search products around you");
     const searchButton = screen.getByRole("button", { name: /search/i });
 
     // Type in search input
     fireEvent.change(searchInput, { target: { value: "test query" } });
-    
+
     // Submit the form - should not crash
     expect(() => {
       fireEvent.click(searchButton);
@@ -93,7 +93,7 @@ describe("SearchBar", () => {
   it("calls onSearch when sort option is changed", async () => {
     const user = userEvent.setup();
     const mockOnSearch = vi.fn();
-    
+
     render(
       <MemoryRouter>
         <SearchBar onSearch={mockOnSearch} />
@@ -123,7 +123,7 @@ describe("SearchBar", () => {
   it("calls onSearch when search type is changed to stores", async () => {
     const user = userEvent.setup();
     const mockOnSearch = vi.fn();
-    
+
     render(
       <MemoryRouter>
         <SearchBar onSearch={mockOnSearch} />
@@ -151,17 +151,17 @@ describe("SearchBar", () => {
   });
 
   it("handles state updates correctly without React warnings", async () => {
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
     const mockOnSearch = vi.fn();
-    
+
     render(
       <MemoryRouter>
         <SearchBar onSearch={mockOnSearch} />
       </MemoryRouter>
     );
 
-    const searchInput = screen.getByPlaceholderText("What are you looking for?");
-    
+    const searchInput = screen.getByPlaceholderText("Search products around you");
+
     // Rapidly change input value
     fireEvent.change(searchInput, { target: { value: "test1" } });
     fireEvent.change(searchInput, { target: { value: "test2" } });
@@ -174,7 +174,7 @@ describe("SearchBar", () => {
     expect(consoleSpy).not.toHaveBeenCalledWith(
       expect.stringContaining("useReducer")
     );
-    
+
     consoleSpy.mockRestore();
   });
 });

@@ -1,3 +1,72 @@
+Let's update all js to ts and jsx to tsx
+Add to memory that we want ts and tsx not js and jsx
+Make sure there's no CJS left, everything ESM now.
+Let's finish scraping bricodepot
+Let's do the scraper for www.mengual.com/
+Now to finish, commit cleanly the modifications we've done. mainly js to ts and the scroll hook using modern ES modules.
+
+# accessible mcp servers!
+Instead of running local MCP servers, you could expose your Partle API publicly and integrate ChatGPT directly with your API endpoints. This approach would involve:
+
+  1. Secure Public Deployment: Deploy your FastAPI backend to a cloud provider (AWS, GCP, Heroku) with proper HTTPS and domain setup
+  2. Authentication System: Implement API key authentication or OAuth to secure access - ChatGPT can use API keys in requests
+  3. OpenAPI Integration: Leverage your existing FastAPI OpenAPI/Swagger schema - ChatGPT can read this to understand available endpoints and parameters
+  4. Direct API Calls: Configure ChatGPT's "Actions" or "Custom GPTs" to call your public endpoints directly (e.g., GET /v1/products/search, POST 
+  /v1/analytics/overview)
+  5. Rate Limiting & Monitoring: Add proper rate limiting, logging, and monitoring to handle AI-generated traffic patterns
+
+  This eliminates the need for local MCP servers entirely and provides a more scalable, cloud-native integration. The trade-off is increased complexity in deployment,
+   security, and infrastructure management, but it offers better performance and eliminates the local server dependency.
+
+# problem with hook for scroll
+● Summary of the React Hooks Issue
+
+  After extensive investigation, here's what we've discovered:
+
+  The Problem:
+
+  - Custom hooks in separate files fail with "Cannot read properties of null (reading
+  'useState')"
+  - React's internal context (__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED) is
+  null
+  - Only affects hooks imported from separate files, not inline code
+
+  Root Cause:
+
+  The issue stems from Vite's module resolution combined with React's CommonJS format:
+  1. React ships as CommonJS (module.exports)
+  2. Vite transforms these to ESM for the browser
+  3. Something breaks when hooks are in separate files during this transformation
+
+  Working Solutions:
+
+  1. Inline Implementation (Currently used) ✅
+    - Keeps all hook logic directly in the component
+    - Fast and reliable
+  2. Component Wrapper Pattern (Alternative)
+    - Use InfiniteScrollWrapper component instead of a hook
+    - Avoids the hook context issue entirely
+
+  Failed Attempts:
+
+  - ❌ React.StrictMode removal (helped performance but not the core issue)
+  - ❌ Vite alias configuration
+  - ❌ Force optimization of React deps
+  - ❌ Different import styles
+
+  Recommendation:
+
+  Stick with the inline implementation for now. It's:
+  - Working reliably
+  - Performant
+  - Simple to understand
+
+  The custom hook issue appears to be a deep Vite/React integration bug that would
+  require significant investigation to fully resolve.
+
+---
+
+- can we get rid of plain .js files and use .ts instead?
 - i see a few new markdown files in the docs folder. Should we use mkdocs?
 - Improve the scrapers so they get the image url and place it on the products in my website. I don't need to store the image, just the url. They would look much better.
 - So now that we have an mcp (model context protocol), chatgpt should be able to read info from this server by using the mcp server? How could he do it?
