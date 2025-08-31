@@ -87,19 +87,37 @@ class BricodepotSpider(scrapy.Spider):
                     self.logger.info(f"Found {len(valid_links)} category links with selector: {selector}")
                     break
         
-        # If no category links found, try to find product pages directly
-        if not category_links:
-            self.logger.info("No category links found, trying to find product pages directly")
-            # Try specific category pages that are known to have products
+        # If no category links found, or limit to main productive categories
+        if not category_links or len(category_links) > 50:
+            self.logger.info("Using focused list of main product categories")
+            # Focus on main categories that are most likely to have products
             category_links = [
                 "/decoracion-iluminacion",
-                "/ferreteria", 
-                "/herramientas",
+                "/herramientas", 
+                "/herramientas/herramientas-manuales",
+                "/herramientas/herramientas-electricas",
+                "/herramientas/ofertas-herramientas",
                 "/construccion",
+                "/construccion/bloques-ladrillos",
+                "/construccion/cemento-morteros",
+                "/construccion/aislamiento",
                 "/jardin",
+                "/jardin/casetas-cobertizos",
+                "/jardin/muebles-jardin", 
+                "/jardin/barbacoas-hornos",
                 "/ceramica",
+                "/ceramica/pavimentos",
+                "/ceramica/revestimientos",
                 "/electricidad-domotica",
-                "/pintura-drogueria"
+                "/electricidad-domotica/iluminacion",
+                "/electricidad-domotica/material-electrico",
+                "/pintura-drogueria",
+                "/pintura-drogueria/pinturas",
+                "/pintura-drogueria/herramientas-pintura",
+                "/suelos-revestimientos-pared",
+                "/suelos-revestimientos-pared/suelo-laminado",
+                "/ferreteria/tornilleria",
+                "/ferreteria/adhesivos-selladores"
             ]
         for link in category_links:
             yield scrapy.Request(
@@ -122,27 +140,103 @@ class BricodepotSpider(scrapy.Spider):
     async def parse_category(self, response):
         """
         Parses a category page to extract product links and follows them.
+        Now handles pagination and JavaScript-loaded content.
 
         Args:
             response (scrapy.http.Response): The response object from a category page.
         """
         product_links = []
+        pagination_links = []
         
         try:
             page = response.meta["playwright_page"]
             
-            # Extract product links directly using Playwright before closing the page
-            # This is more reliable than using CSS selectors on the replaced response
+            # Wait for JavaScript to load products (optimized timing)
+            await page.wait_for_timeout(4000)
+            
+            # Try scrolling to trigger any lazy loading
+            await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+            await page.wait_for_timeout(2000)
+            
+            # Look for "Load More" or "Ver más" buttons and click them multiple times
+            load_more_selectors = [
+                'button:has-text("Cargar más")',
+                'button:has-text("Ver más")',
+                'button:has-text("Mostrar más")',
+                '.load-more',
+                '.show-more',
+                '[data-testid="load-more"]',
+                'button[class*="load"]',
+                'a:has-text("Ver todos")',
+            ]
+            
+            for load_more_selector in load_more_selectors:
+                try:
+                    load_more_button = page.locator(load_more_selector).first
+                    attempts = 0
+                    max_attempts = 5  # Try to click "Load More" up to 5 times
+                    
+                    while attempts < max_attempts:
+                        if await load_more_button.count() > 0 and await load_more_button.is_visible():
+                            self.logger.info(f"Clicking load more button (attempt {attempts + 1})")
+                            await load_more_button.click()
+                            await page.wait_for_timeout(3000)  # Wait for new content to load
+                            attempts += 1
+                        else:
+                            break
+                    
+                    if attempts > 0:
+                        self.logger.info(f"Successfully clicked load more {attempts} times")
+                        break
+                        
+                except Exception as e:
+                    self.logger.debug(f"Load more selector '{load_more_selector}' failed: {e}")
+                    continue
+            
+            # Look for pagination links (pages 2, 3, 4, etc.)
+            pagination_selectors = [
+                'a[href*="page="]',
+                'a[href*="p="]',
+                '.pagination a',
+                '.pager a',
+                'a:has-text("2")',
+                'a:has-text("3")',
+                'a:has-text("Siguiente")',
+                'a:has-text(">")',
+            ]
+            
+            for pagination_selector in pagination_selectors:
+                try:
+                    elements = await page.locator(pagination_selector).all()
+                    if elements:
+                        for element in elements:
+                            href = await element.get_attribute('href')
+                            if href and ('page=' in href or 'p=' in href or href.endswith('/2') or href.endswith('/3')):
+                                if href.startswith('/'):
+                                    href = f"https://www.bricodepot.es{href}"
+                                elif not href.startswith('http'):
+                                    href = response.urljoin(href)
+                                if href not in pagination_links:
+                                    pagination_links.append(href)
+                        
+                        if pagination_links:
+                            self.logger.info(f"Found {len(pagination_links)} pagination links with selector: {pagination_selector}")
+                            break
+                            
+                except Exception as e:
+                    self.logger.debug(f"Pagination selector '{pagination_selector}' failed: {e}")
+                    continue
+            
+            # Now extract product links with improved selectors
             product_selectors = [
-                '.product-item a',         # Main product item links (WORKING!)
-                'a[href*="/productos/"]',  # Direct product links
-                'a[href*="/product/"]',    # Alternative product links
-                '.product-item-link',      # Product item links
+                '.product-item a',         # Main product item links
                 '.ais-Hits-item a',        # Algolia InstantSearch hits
                 '.algolia-hit a',          # Algolia hit links
-                '[class*="hit"] a',        # Generic hit containers
                 '[data-objectid] a',       # Algolia object IDs
                 'a[href*=".html"]',        # HTML page links (likely products)
+                '.product-link',           # General product links
+                '.item-link',              # Item links
+                'a[href*="/productos/"]',  # Direct product links
             ]
             
             for selector in product_selectors:
@@ -167,7 +261,7 @@ class BricodepotSpider(scrapy.Spider):
                             if link and not any(skip in link.lower() for skip in [
                                 '/static/', '/media/', '#', 'javascript:', 'mailto:', 'tel:',
                                 '/categoria', '/category', '/promociones', '/ofertas', '/cart',
-                                '/checkout', '/account', '/search', 'identifier_brand'
+                                '/checkout', '/account', '/search', 'identifier_brand', '/page='
                             ]) and (
                                 # Accept product URLs like /espejo-clic-68-x-80-cm-8431949256265
                                 '-' in link and  # Contains hyphens (typical product URLs)
@@ -185,7 +279,7 @@ class BricodepotSpider(scrapy.Spider):
                                     seen.add(link)
                             
                             product_links.extend(unique_links)
-                            self.logger.info(f"Selector '{selector}' found {len(unique_links)} unique product links (using all)")
+                            self.logger.info(f"Selector '{selector}' found {len(unique_links)} unique product links")
                             break
                             
                 except Exception as selector_error:
@@ -197,6 +291,25 @@ class BricodepotSpider(scrapy.Spider):
         except Exception as e:
             self.logger.error(f"Error processing category page {response.url}: {e}")
             return
+
+        # Follow pagination links first (this will get us more categories with products)
+        for pagination_link in pagination_links[:3]:  # Limit to first 3 pages to avoid infinite loops
+            yield scrapy.Request(
+                url=pagination_link,
+                callback=self.parse_category,
+                meta=dict(
+                    playwright=True,
+                    playwright_include_page=True,
+                    playwright_page_goto_kwargs={
+                        'wait_until': 'domcontentloaded',
+                        'timeout': 60000,
+                    },
+                    playwright_page_methods=[
+                        {'method': 'wait_for_selector', 'args': ['body']},
+                        {'method': 'wait_for_timeout', 'args': [5000]},
+                    ],
+                ),
+            )
 
         # If no product links found, skip this page (don't treat category pages as products)
         if not product_links:
@@ -213,11 +326,11 @@ class BricodepotSpider(scrapy.Spider):
                     playwright_include_page=True,
                     playwright_page_goto_kwargs={
                         'wait_until': 'domcontentloaded',
-                        'timeout': 30000,  # Reduced timeout for faster processing
+                        'timeout': 30000,
                     },
                     playwright_page_methods=[
                         {'method': 'wait_for_selector', 'args': ['body']},
-                        {'method': 'wait_for_timeout', 'args': [2000]},  # Reduced wait time
+                        {'method': 'wait_for_timeout', 'args': [2000]},
                     ],
                 ),
             )

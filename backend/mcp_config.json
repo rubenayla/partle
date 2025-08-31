@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "scraper-monitor": {
+      "command": "python",
+      "args": ["/home/rubenayla/repos/partle/backend/mcp_scraper_monitor.py"],
+      "description": "Monitor and manage web scrapers for Partle product database",
+      "capabilities": [
+        "start_scraper",
+        "stop_scraper", 
+        "get_scraper_status",
+        "get_all_scrapers",
+        "get_metrics",
+        "restart_failed_scrapers"
+      ]
+    }
+  }
+}

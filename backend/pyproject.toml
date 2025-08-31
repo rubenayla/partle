@@ -37,6 +37,7 @@ scrapy-playwright = "^0.0.43"
 elasticsearch = "^8.11.0"
 mcp = "^1.13.1"
 apscheduler = "^3.11.0"
+psutil = "^7.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.1"

@@ -3,159 +3,19 @@
   "version": "1.0.0",
   "description": "Partle MCP Servers - Comprehensive access to Partle platform data and intelligence",
   "author": "Rubén Jiménez Mejías",
-  "homepage": "https://github.com/rubenayla/partle",
-  "repository": "https://github.com/rubenayla/partle",
-  "servers": {
-    "partle-products": {
-      "name": "Partle Products",
-      "description": "Search, analyze, and manage products in the Partle marketplace",
-      "version": "1.0.0",
-      "command": [
-        "python",
-        "backend/scripts/run_mcp_products.py"
-      ],
-      "capabilities": [
-        "search_products",
-        "get_product",
-        "get_products_by_store",
-        "search_products_elasticsearch"
-      ],
-      "environment": {
-        "PARTLE_API_URL": "http://localhost:8000"
-      },
-      "tags": ["ecommerce", "products", "search", "marketplace"]
-    },
-    "partle-stores": {
-      "name": "Partle Stores",
-      "description": "Discover and analyze stores, their locations, and market presence",
-      "version": "1.0.0",
-      "command": [
-        "python", 
-        "backend/scripts/run_mcp_stores.py"
-      ],
-      "capabilities": [
-        "search_stores",
-        "get_store",
-        "list_stores_dropdown",
-        "get_store_analytics",
-        "find_stores_by_type",
-        "find_stores_near_location"
-      ],
-      "environment": {
-        "PARTLE_API_URL": "http://localhost:8000"
-      },
-      "tags": ["stores", "location", "business", "retail"]
-    },
-    "partle-analytics": {
-      "name": "Partle Analytics",
-      "description": "Business intelligence and comprehensive platform analytics",
-      "version": "1.0.0",
-      "command": [
-        "python",
-        "backend/scripts/run_mcp_analytics.py"
-      ],
-      "capabilities": [
-        "get_platform_overview",
-        "analyze_products",
-        "analyze_stores", 
-        "get_top_performers",
-        "analyze_tags",
-        "get_market_insights",
-        "compare_stores"
-      ],
-      "environment": {
-        "PARTLE_API_URL": "http://localhost:8000"
-      },
-      "tags": ["analytics", "business-intelligence", "insights", "metrics"]
-    },
-    "partle-price-intelligence": {
-      "name": "Partle Price Intelligence",
-      "description": "Advanced pricing analysis, market positioning, and competitive intelligence",
-      "version": "1.0.0", 
-      "command": [
-        "python",
-        "backend/scripts/run_mcp_price_intelligence.py"
-      ],
-      "capabilities": [
-        "analyze_price_trends",
-        "find_price_outliers",
-        "compare_store_pricing", 
-        "find_similar_products",
-        "get_market_positioning",
-        "identify_pricing_gaps",
-        "generate_pricing_recommendations"
-      ],
-      "environment": {
-        "PARTLE_API_URL": "http://localhost:8000"
-      },
-      "tags": ["pricing", "market-analysis", "competition", "strategy"]
-    },
-    "partle-location-intelligence": {
-      "name": "Partle Location Intelligence",
-      "description": "Geographic analysis, store density, and location-based market intelligence",
-      "version": "1.0.0",
-      "command": [
-        "python",
-        "backend/scripts/run_mcp_location_intelligence.py"
-      ],
-      "capabilities": [
-        "find_nearby_stores",
-        "analyze_store_density",
-        "find_market_gaps",
-        "analyze_coverage_area",
-        "get_location_insights", 
-        "compare_locations",
-        "find_optimal_location"
-      ],
-      "environment": {
-        "PARTLE_API_URL": "http://localhost:8000"
-      },
-      "tags": ["location", "geography", "market-gaps", "expansion"]
-    },
-    "partle-recommendations": {
-      "name": "Partle Recommendations",
-      "description": "Personalized recommendations, product discovery, and shopping optimization",
-      "version": "1.0.0",
-      "command": [
-        "python",
-        "backend/scripts/run_mcp_recommendations.py"
-      ],
-      "capabilities": [
-        "recommend_similar_products",
-        "recommend_products_by_category",
-        "recommend_stores_by_products",
-        "get_trending_products",
-        "recommend_complementary_products",
-        "generate_shopping_list",
-        "recommend_price_alerts"
-      ],
-      "environment": {
-        "PARTLE_API_URL": "http://localhost:8000"
-      },
-      "tags": ["recommendations", "personalization", "discovery", "shopping"]
-    }
-  },
+  "servers": [
+    "partle-products",
+    "partle-stores", 
+    "partle-analytics",
+    "partle-price-intelligence",
+    "partle-location-intelligence",
+    "partle-recommendations",
+    "partle-scraper-monitor"
+  ],
+  "configuration": ".mcp.json",
+  "documentation": "docs/mcp-setup.md",
   "requirements": {
     "python": ">=3.12",
-    "dependencies": [
-      "mcp>=1.13.1",
-      "httpx>=0.27.1",
-      "fastapi>=0.110.0"
-    ]
-  },
-  "configuration": {
-    "api_base_url": {
-      "description": "Base URL for the Partle API",
-      "default": "http://localhost:8000",
-      "env_var": "PARTLE_API_URL"
-    }
-  },
-  "documentation": {
-    "getting_started": "docs/mcp-setup.md",
-    "api_reference": "docs/mcp-api.md",
-    "examples": "docs/mcp-examples.md"
-  },
-  "license": "Proprietary",
-  "created": "2025-08-31",
-  "updated": "2025-08-31"
+    "partle_api": "http://localhost:8000"
+  }
 }

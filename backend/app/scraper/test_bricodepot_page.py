@@ -67,7 +67,7 @@ async def analyze_bricodepot_page():
         
         # Get a sample of the page HTML to understand structure
         print("\n=== Page HTML sample ===")
-        body_html = await page.locator('body').innerHTML()
+        body_html = await page.locator('body').inner_html()
         print(f"Body HTML length: {len(body_html)} characters")
         
         # Look for any form of product listing
