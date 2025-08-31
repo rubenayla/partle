@@ -40,13 +40,16 @@
 - Base URL: `http://localhost:8000` (from VITE_API_BASE in .env.local)
 
 ## TypeScript Standards
-- **ALWAYS use TypeScript** (.ts/.tsx) for new files, never plain JavaScript
+- **ALWAYS use TypeScript** (.ts/.tsx) for ALL new files - NEVER create .js or .jsx files
+- **NO JavaScript files**: Do not create any .js or .jsx files in the src/ directory
+- **Convert on sight**: If you encounter any .js/.jsx files, immediately convert them to .ts/.tsx
 - **Import types explicitly**: `import type { User } from '../types'` for type-only imports
 - **Use proper JSDoc**: Include `@fileoverview`, `@param`, `@returns`, `@example` in all functions
 - **Define interfaces**: Create comprehensive interfaces in `src/types/index.ts` for all data structures
 - **Type API responses**: All API functions must have proper TypeScript return types
 - **Avoid `any`**: Use specific types, `unknown`, or proper generics instead
 - **Export types**: Always export interfaces and types for reuse across the application
+- **Config files exception**: Only vite.config.js, tailwind.config.js, postcss.config.js, eslint.config.js remain as .js
 
 ## TypeScript Code Examples
 - **Hook with proper typing**:

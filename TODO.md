@@ -1,9 +1,7 @@
-Let's update all js to ts and jsx to tsx
-Add to memory that we want ts and tsx not js and jsx, to prevent future mistakes
 Make sure there's no CJS left, everything ESM now.
 Let's finish scraping bricodepot
 Let's do the scraper for www.mengual.com/
-Now to finish, commit cleanly the modifications we've done. mainly js to ts and the scroll hook using modern ES modules.
+✅ COMPLETED: JS to TS migration done - all source files now TypeScript (.ts/.tsx)
 
 # accessible mcp servers!
 Instead of running local MCP servers, you could expose your Partle API publicly and integrate ChatGPT directly with your API endpoints. This approach would involve:
