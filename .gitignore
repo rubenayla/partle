@@ -53,3 +53,7 @@ dist-ssr/
 .env
 backend/partle_backup.sql
 backend/app/scraper/crawls/
+
+# Utility scripts with credentials
+backend/merge_bricodepot_stores.py
+backend/migrate_local_to_remote.py
