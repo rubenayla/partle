@@ -3,8 +3,8 @@ import json
 import os
 from app.main import app
 
-# Set the environment to prevent errors if .env is not found
-os.environ["RAILWAY_ENVIRONMENT"] = "production"
+# Set environment for production mode
+os.environ["PRODUCTION_MODE"] = "true"
 
 # Generate the OpenAPI schema
 openapi_schema = app.openapi()

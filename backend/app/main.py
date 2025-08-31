@@ -12,7 +12,7 @@ configure_logging()
 logger = get_logger("main")
 
 # Load local .env if present (useful for local development)
-if os.getenv("RAILWAY_ENVIRONMENT") is None:
+if os.getenv("PRODUCTION_MODE") is None:
     from dotenv import load_dotenv
 
     load_dotenv()
