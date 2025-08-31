@@ -1,5 +1,5 @@
+we don't use railway. Remove all references.
 Let's do the scraper for www.mengual.com/
-✅ COMPLETED: JS to TS migration done - all source files now TypeScript (.ts/.tsx)
 
 # accessible mcp servers!
 Instead of running local MCP servers, you could expose your Partle API publicly and integrate ChatGPT directly with your API endpoints. This approach would involve:
