@@ -69,18 +69,26 @@ This project uses a **decoupled frontend/backend architecture** with standard in
 - **Purpose**: API endpoints, database operations, image serving
 - **Start Command**: `poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000` (from `/backend` directory)
 
+**Database Server (PostgreSQL):**
+- **Port**: `5432` (PostgreSQL standard)
+- **URL**: `postgresql://[user]:[password]@localhost:5432/partle`
+- **Purpose**: Data storage, product/store/user persistence
+- **Note**: Standard PostgreSQL port used by all clients, tools, and documentation
+
 ### **🔄 How They Connect:**
 - Frontend (`3000`) makes HTTP requests to Backend (`8000`)
+- Backend (`8000`) connects to Database (`5432`)
 - Configuration: `frontend/.env.local` contains `VITE_API_BASE=http://localhost:8000`
 - **Image URLs**: `http://localhost:8000/v1/products/{id}/image`
 - **API Docs**: `http://localhost:8000/docs`
 
 ### **✅ Why This Setup:**
-1. **Industry Standard**: React (3000) + FastAPI (8000) is the expected pattern
+1. **Industry Standard**: React (3000) + FastAPI (8000) + PostgreSQL (5432) is the expected pattern
 2. **Independent Development**: Frontend/backend can be developed separately
-3. **Production Ready**: Can deploy to different services (Vercel + AWS, etc.)
+3. **Production Ready**: Can deploy to different services (Hetzner, AWS, etc.)
 4. **Multiple Clients**: Same API can serve web, mobile, other apps
 5. **Hot Reload**: Frontend changes don't restart API server
+6. **Tool Compatibility**: All PostgreSQL clients expect port 5432
 
 ### **🚨 Port Troubleshooting:**
 - **Frontend not on 3000**: Vite may use 5173 as fallback - always specify `--port 3000`

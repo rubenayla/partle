@@ -12,7 +12,7 @@ openapi_schema = app.openapi()
 # Set the version and servers
 openapi_schema["info"]["version"] = "v1"
 openapi_schema["servers"] = [
-    {"url": "https://partle.vercel.app/api"},
+    {"url": "https://partle.rubenayla.xyz/api"},
     {"url": "http://localhost:8000"},
 ]
 

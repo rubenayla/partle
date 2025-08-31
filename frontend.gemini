@@ -11,15 +11,15 @@ npm run dev
 
 This will typically start the application on `http://localhost:5173` (or another port if 5173 is in use).
 
-### Vercel Deployment
+### Production Deployment
 
-To deploy the frontend to Vercel, navigate to the `frontend/` directory and run:
+To deploy the frontend, build the production version:
 
 ```bash
-npm run deploy
+npm run build
 ```
 
-This script will execute the `vercel` command. Follow the prompts to link your project and deploy.
+This will create a `dist/` directory with the production build that can be served by any web server.
 
 ### Troubleshooting: npm WARN Unknown env config "http-proxy"
 

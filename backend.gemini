@@ -34,4 +34,4 @@ This will start the backend server, typically accessible at `http://localhost:80
 
 ### Backend Deployment
 
-Note that Vercel is primarily used for frontend deployment. The backend typically requires a separate deployment strategy (e.g., to a dedicated server or a cloud function service).
+The backend requires a dedicated server deployment strategy (e.g., to a VPS or cloud service).

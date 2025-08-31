@@ -1,3 +1,5 @@
+Is 5432 a standard port name?
+
 Use the mcp and fix playwright issues so you can scrape lots of products and also get the images.
 
 
@@ -106,8 +108,8 @@ Why am i getting "Existing account – log in instead" in our unified register/l
 - Users report products (illegal etc)
 - Improve unit tests
 - Map toggle (7) – visual polish that sells the idea.
-- add "Forgot password?" via email, need vercel or something
-    - vercel put .env as in the example?
+- add "Forgot password?" via email, need email service
+    - configure .env for email service
 - Hosting partle.rubenayla.xyz
 - Add some color
 - Ok, now i'd like to implement the feature to recover my password. The typical button "Forgot your password?" or "Recover your password with an email" something like that.

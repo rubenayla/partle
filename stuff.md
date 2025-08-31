@@ -373,12 +373,12 @@ def fido_register_finish(
 ```
 
 # 2025-06-21
-First uses of Vercel
+First deployment attempts
 
 ![](stuff/20250621203343.png)
 
 # 2025-06-21--22-23
-Using Vercel for frontend and Railway for backend. I'm on Railway free plan.
+Initially used various hosting services for deployment testing.
 
 
 Thinking about Pieter Levels setup, he'd probably move backend to GCE (Google Compute Engine) VM, gpt says i'd need either docker-compose or tmux to keep FastAPI + PostgreSQL running. Big big apps use Kubernetes but he doesn't use it. Stick to simple.
@@ -396,9 +396,9 @@ Github Actions cool to run script on push code, like run tests and deploy backen
 - 🌐 Replaced dead `fly.dev` backend URL with Railway deployment:
   - `VITE_API_BASE = https://partle-production.up.railway.app`
 - 🛡️ Fixed **CORS policy**:
-  - Added `https://partle.vercel.app` to `allow_origins` in backend `main.py`
+  - Added frontend URL to `allow_origins` in backend `main.py`
 - 🛠️ Resolved TypeScript error (`import.meta.env`) by adding `vite-env.d.ts`
-- 🚀 Redeployed frontend (Vercel) and backend (Railway) to apply fixes
+- 🚀 Redeployed frontend and backend to apply fixes
 
 ##
 ```bash

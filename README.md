@@ -289,8 +289,7 @@ The database file will be created in the `backend` directory. You'll still need 
 
 ## 🌍 Deployed Setup
 
-* **Frontend (React):** hosted on [Vercel](https://vercel.com/)
-  Live: [https://partle.vercel.app](https://partle.vercel.app)
+* **Frontend (React):** hosted on Hetzner server
 * **Backend (FastAPI):** deployment TBD
   Public API base: TBD
 
@@ -298,7 +297,7 @@ Frontend uses `import.meta.env.VITE_API_BASE` to locate the backend.
 This must be:
 
 * Set in `frontend/.env` locally for dev (`VITE_API_BASE=http://localhost:8000`)
-* Set in Vercel project settings for prod (`VITE_API_BASE=https://...`)
+* Set in production environment for prod (`VITE_API_BASE=https://...`)
 
 ---
 

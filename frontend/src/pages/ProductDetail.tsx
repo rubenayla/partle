@@ -183,7 +183,7 @@ export default function ProductDetail(): JSX.Element {
     name: product.name,
     description: product.description || product.name,
     image: getProductImageSrc(product) || product.image_url || '',
-    url: `https://partle.vercel.app/products/${product.id}`,
+    url: `https://partle.rubenayla.xyz/products/${product.id}`,
     offers: {
       '@type': 'Offer',
       priceCurrency: 'EUR',

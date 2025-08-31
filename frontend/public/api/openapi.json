@@ -2266,7 +2266,7 @@
   },
   "servers": [
     {
-      "url": "https://partle.vercel.app/api"
+      "url": "https://partle.rubenayla.xyz/api"
     },
     {
       "url": "http://localhost:8000"
