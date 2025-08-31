@@ -21,15 +21,15 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 
-# Ultra-conservative settings for maximum stability
-CONCURRENT_REQUESTS = 1  
-CONCURRENT_REQUESTS_PER_DOMAIN = 1
-DOWNLOAD_DELAY = 5  # Wait 5 seconds between requests
+# Optimized settings for faster scraping with smart retries
+CONCURRENT_REQUESTS = 2  
+CONCURRENT_REQUESTS_PER_DOMAIN = 2
+DOWNLOAD_DELAY = 2  # Reduced from 5 to 2 seconds
 RANDOMIZE_DOWNLOAD_DELAY = 0.5
 AUTOTHROTTLE_ENABLED = True
-AUTOTHROTTLE_START_DELAY = 5
-AUTOTHROTTLE_MAX_DELAY = 15
-AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
+AUTOTHROTTLE_START_DELAY = 1  # Start faster
+AUTOTHROTTLE_MAX_DELAY = 10   # Reduced max delay
+AUTOTHROTTLE_TARGET_CONCURRENCY = 1.5  # Allow slight burst
 
 JOBDIR = 'crawls/bricodepot_crawl_state'
 
@@ -76,6 +76,7 @@ DOWNLOAD_HANDLERS = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
+    "store_scrapers.pipelines.StoreDeduplicationPipeline": 200,  # Run before database pipeline
     "store_scrapers.pipelines.DatabasePipeline": 300,
 }
 
@@ -114,10 +115,11 @@ PLAYWRIGHT_MAX_PAGES_PER_CONTEXT = 1
 # Close pages immediately after use
 PLAYWRIGHT_CLOSE_PAGES_ON_FINISH = True
 
-# Retry settings
+# Enhanced retry settings with exponential backoff (tenacity-style)
 RETRY_ENABLED = True
-RETRY_TIMES = 2
-RETRY_HTTP_CODES = [500, 502, 503, 504, 408, 429]
+RETRY_TIMES = 5  # More retries
+RETRY_HTTP_CODES = [500, 502, 503, 504, 408, 429, 520, 521, 522, 523, 524]
+RETRY_BACKOFF = True  # Enable exponential backoff
 
 # Memory and resource management
 MEMUSAGE_ENABLED = True

@@ -40,7 +40,6 @@ class BricodepotSpider(scrapy.Spider):
                     {'method': 'wait_for_timeout', 'args': [5000]},  # Wait for Algolia to load products
                 ],
             ),
-            dont_filter=True,  # Ensures the request is not filtered even if it's already visited
         )
 
     async def parse(self, response):
@@ -118,7 +117,6 @@ class BricodepotSpider(scrapy.Spider):
                         {'method': 'wait_for_timeout', 'args': [5000]},  # Wait for Algolia to load products
                     ],
                 ),
-                dont_filter=True,
             )
 
     async def parse_category(self, response):
@@ -128,50 +126,78 @@ class BricodepotSpider(scrapy.Spider):
         Args:
             response (scrapy.http.Response): The response object from a category page.
         """
+        product_links = []
+        
         try:
             page = response.meta["playwright_page"]
-            html_content = await page.content()
+            
+            # Extract product links directly using Playwright before closing the page
+            # This is more reliable than using CSS selectors on the replaced response
+            product_selectors = [
+                '.product-item a',         # Main product item links (WORKING!)
+                'a[href*="/productos/"]',  # Direct product links
+                'a[href*="/product/"]',    # Alternative product links
+                '.product-item-link',      # Product item links
+                '.ais-Hits-item a',        # Algolia InstantSearch hits
+                '.algolia-hit a',          # Algolia hit links
+                '[class*="hit"] a',        # Generic hit containers
+                '[data-objectid] a',       # Algolia object IDs
+                'a[href*=".html"]',        # HTML page links (likely products)
+            ]
+            
+            for selector in product_selectors:
+                try:
+                    elements = await page.locator(selector).all()
+                    if elements:
+                        # Extract hrefs using Playwright
+                        links = []
+                        for element in elements:
+                            href = await element.get_attribute('href')
+                            if href:
+                                # Convert relative URLs to absolute
+                                if href.startswith('/'):
+                                    href = f"https://www.bricodepot.es{href}"
+                                elif not href.startswith('http'):
+                                    href = response.urljoin(href)
+                                links.append(href)
+                        
+                        # Filter to actual product links (not category/static links)
+                        filtered_links = [
+                            link for link in links 
+                            if link and not any(skip in link.lower() for skip in [
+                                '/static/', '/media/', '#', 'javascript:', 'mailto:', 'tel:',
+                                '/categoria', '/category', '/promociones', '/ofertas', '/cart',
+                                '/checkout', '/account', '/search', 'identifier_brand'
+                            ]) and (
+                                # Accept product URLs like /espejo-clic-68-x-80-cm-8431949256265
+                                '-' in link and  # Contains hyphens (typical product URLs)
+                                any(char.isdigit() for char in link)  # Contains digits (often product codes)
+                            )
+                        ]
+                        
+                        if filtered_links:
+                            # Remove duplicates while preserving order
+                            unique_links = []
+                            seen = set()
+                            for link in filtered_links:
+                                if link not in seen:
+                                    unique_links.append(link)
+                                    seen.add(link)
+                            
+                            product_links.extend(unique_links)
+                            self.logger.info(f"Selector '{selector}' found {len(unique_links)} unique product links (using all)")
+                            break
+                            
+                except Exception as selector_error:
+                    self.logger.warning(f"Error with selector '{selector}': {selector_error}")
+                    continue
+            
             await page.close()
-            response = response.replace(body=html_content, encoding='utf-8')
+            
         except Exception as e:
             self.logger.error(f"Error processing category page {response.url}: {e}")
             return
 
-        # Extract product links - Look for various product link patterns
-        product_selectors = [
-            '.product-item a::attr(href)',         # Main product item links (WORKING!)
-            'a[href*="/productos/"]::attr(href)',  # Direct product links
-            'a[href*="/product/"]::attr(href)',    # Alternative product links
-            '.product-item-link::attr(href)',      # Product item links
-            '.ais-Hits-item a::attr(href)',        # Algolia InstantSearch hits
-            '.algolia-hit a::attr(href)',          # Algolia hit links
-            '[class*="hit"] a::attr(href)',        # Generic hit containers
-            '[data-objectid] a::attr(href)',       # Algolia object IDs
-            'a[href*=".html"]::attr(href)',        # HTML page links (likely products)
-        ]
-        
-        product_links = []
-        for selector in product_selectors:
-            links = response.css(selector).getall()
-            if links:
-                # Filter to actual product links (not category/static links)
-                filtered_links = [
-                    link for link in links 
-                    if link and not any(skip in link.lower() for skip in [
-                        '/static/', '/media/', '#', 'javascript:', 'mailto:', 'tel:',
-                        '/categoria', '/category', '/promociones', '/ofertas', '/cart',
-                        '/checkout', '/account', '/search', 'identifier_brand'
-                    ]) and (
-                        # Accept product URLs like /espejo-clic-68-x-80-cm-8431949256265
-                        '-' in link and  # Contains hyphens (typical product URLs)
-                        any(char.isdigit() for char in link)  # Contains digits (often product codes)
-                    )
-                ]
-                if filtered_links:
-                    product_links.extend(filtered_links[:10])  # Limit to first 10 for testing
-                    self.logger.info(f"Selector '{selector}' found {len(filtered_links)} valid product links (using first 10)")
-                    break
-        
         # If no product links found, skip this page (don't treat category pages as products)
         if not product_links:
             self.logger.info(f"No product links found on {response.url}, skipping category page")
@@ -187,14 +213,13 @@ class BricodepotSpider(scrapy.Spider):
                     playwright_include_page=True,
                     playwright_page_goto_kwargs={
                         'wait_until': 'domcontentloaded',
-                        'timeout': 60000,
+                        'timeout': 30000,  # Reduced timeout for faster processing
                     },
                     playwright_page_methods=[
                         {'method': 'wait_for_selector', 'args': ['body']},
-                        {'method': 'wait_for_timeout', 'args': [5000]},  # Wait for Algolia to load products
+                        {'method': 'wait_for_timeout', 'args': [2000]},  # Reduced wait time
                     ],
                 ),
-                dont_filter=True,
             )
 
     async def parse_product(self, response):
@@ -204,85 +229,115 @@ class BricodepotSpider(scrapy.Spider):
         Args:
             response (scrapy.http.Response): The response object from a product page.
         """
+        product_name = None
+        price = None
+        description = None
+        image_url = None
+        
         try:
             page = response.meta["playwright_page"]
-            html_content = await page.content()
+            
+            # Set shorter timeouts for element extraction
+            page.set_default_timeout(5000)  # 5 second timeout for all operations
+            
+            # Extract product name directly using Playwright
+            product_name_selectors = [
+                'h1.product-name',
+                'h1[data-testid="product-title"]',
+                '.product-item-name',
+                '.product-title',
+                'h1',
+                '.page-title span',
+                '[data-ui-id="page-title-wrapper"] h1',
+            ]
+            
+            for selector in product_name_selectors:
+                try:
+                    element = page.locator(selector).first
+                    if await element.count() > 0:
+                        text = await element.text_content(timeout=3000)
+                        if text and text.strip():
+                            product_name = text.strip()
+                            break
+                except Exception as e:
+                    self.logger.debug(f"Selector '{selector}' failed for product name: {e}")
+                    continue
+
+            # Extract price directly using Playwright
+            price_selectors = [
+                'span.price',
+                '.price',
+                '.price-wrapper .price',
+                '[data-price-type="finalPrice"] .price',
+                '.regular-price .price',
+                '.price-container .price',
+            ]
+            
+            for selector in price_selectors:
+                try:
+                    element = page.locator(selector).first
+                    if await element.count() > 0:
+                        price_text = await element.text_content(timeout=3000)
+                        if price_text and price_text.strip():
+                            # Clean price: remove spaces, non-breaking spaces, currency symbols
+                            cleaned_price = price_text.strip().replace('\xa0', '').replace('€', '').replace('$', '').replace(',', '.')
+                            price = cleaned_price
+                            break
+                except Exception as e:
+                    self.logger.debug(f"Selector '{selector}' failed for price: {e}")
+                    continue
+
+            # Extract description directly using Playwright
+            description_selectors = [
+                'div.product-description-content p',
+                '.product-info-description p',
+                '.product-attribute-description',
+                '.product-overview',
+                '.short-description',
+            ]
+            
+            for selector in description_selectors:
+                try:
+                    element = page.locator(selector).first
+                    if await element.count() > 0:
+                        desc_text = await element.text_content(timeout=3000)
+                        if desc_text and desc_text.strip():
+                            description = desc_text.strip()
+                            break
+                except Exception as e:
+                    self.logger.debug(f"Selector '{selector}' failed for description: {e}")
+                    continue
+
+            # Extract image URL directly using Playwright
+            image_selectors = [
+                'img.product-image-photo',
+                '.product-image-main img',
+                '.fotorama__img',
+                '.product-media img',
+            ]
+            
+            for selector in image_selectors:
+                try:
+                    element = page.locator(selector).first
+                    if await element.count() > 0:
+                        src = await element.get_attribute('src', timeout=3000)
+                        if src:
+                            if src.startswith('/'):
+                                image_url = f"https://www.bricodepot.es{src}"
+                            elif not src.startswith('http'):
+                                image_url = response.urljoin(src)
+                            else:
+                                image_url = src
+                            break
+                except Exception as e:
+                    self.logger.debug(f"Selector '{selector}' failed for image: {e}")
+                    continue
+            
             await page.close()
-            response = response.replace(body=html_content, encoding='utf-8')
+            
         except Exception as e:
             self.logger.error(f"Error processing product page {response.url}: {e}")
             return
-
-        # Extract product name - try multiple selectors
-        product_name_selectors = [
-            'h1.product-name::text',
-            'h1[data-testid="product-title"]::text',
-            '.product-item-name::text',
-            '.product-title::text',
-            'h1::text',
-            '.page-title span::text',
-            '[data-ui-id="page-title-wrapper"] h1::text',
-        ]
-        
-        product_name = None
-        for selector in product_name_selectors:
-            name = response.css(selector).get()
-            if name and name.strip():
-                product_name = name.strip()
-                break
-
-        # Extract price - try multiple selectors
-        price_selectors = [
-            'span.price::text',
-            '.price::text',
-            '.price-wrapper .price::text',
-            '[data-price-type="finalPrice"] .price::text',
-            '.regular-price .price::text',
-            '.price-container .price::text',
-        ]
-        
-        price = None
-        for selector in price_selectors:
-            price_text = response.css(selector).get()
-            if price_text and price_text.strip():
-                # Clean price: remove spaces, non-breaking spaces, currency symbols
-                cleaned_price = price_text.strip().replace('\xa0', '').replace('€', '').replace('$', '').replace(',', '.')
-                try:
-                    price = cleaned_price
-                    break
-                except:
-                    continue
-
-        # Extract description - try multiple selectors
-        description_selectors = [
-            'div.product-description-content p::text',
-            '.product-info-description p::text',
-            '.product-attribute-description::text',
-            '.product-overview::text',
-            '.short-description::text',
-        ]
-        
-        description = None
-        for selector in description_selectors:
-            desc = response.css(selector).get()
-            if desc and desc.strip():
-                description = desc.strip()
-                break
-
-        # Extract image URL - try multiple selectors
-        image_selectors = [
-            'img.product-image-photo::attr(src)',
-            '.product-image-main img::attr(src)',
-            '.fotorama__img::attr(src)',
-            '.product-media img::attr(src)',
-        ]
-        
-        image_url = None
-        for selector in image_selectors:
-            img = response.css(selector).get()
-            if img:
-                image_url = response.urljoin(img)
-                break
 
         # Convert price to float if possible
         price_float = None
