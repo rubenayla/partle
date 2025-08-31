@@ -35,6 +35,10 @@ backend/app/scraper/crawls/*/requests.queue/
 backend/app/scraper/crawls/*/requests.seen
 backend/app/scraper/crawls/*/spider.state
 
+# === Database backups ===
+backend/backups/*.sql.gz
+backend/backups/backup.log
+
 # === OS / Editor junk ===
 .DS_Store
 Thumbs.db
