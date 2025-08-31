@@ -1,3 +1,6 @@
+Use the mcp and fix playwright issues so you can scrape lots of products and also get the images.
+
+
 Let's do the scraper for www.mengual.com/
 
 - let's test the use of mcp server with chatgpt

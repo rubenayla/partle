@@ -221,12 +221,12 @@ make dev DATABASE_URL=postgresql://user:pw@host:port/db
 * **Or run separately:**
 
   make backend    # starts FastAPI backend on :8000
-  make frontend   # starts Vite/React frontend on :5173
+  make frontend   # starts Vite/React frontend on :3000
 
 * **Directly:**
 
-  * Backend:  poetry run uvicorn app.main\:app --reload --host 0.0.0.0 --port 8000 --log-level debug
-  * Frontend: npm run dev --prefix frontend
+  * Backend:  poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 --log-level debug
+  * Frontend: npm run dev --prefix frontend -- --port 3000
 
 ---
 
@@ -302,16 +302,38 @@ This must be:
 
 ---
 
+## 🚀 Development Quick Start
+
+### **Standard Port Configuration**
+
+**Frontend (React + Vite):**
+```bash
+cd frontend
+npm run dev -- --port 3000
+```
+→ **http://localhost:3000** (React/Vite standard)
+
+**Backend (FastAPI + Python):**
+```bash
+cd backend
+poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+→ **http://localhost:8000** (FastAPI standard)
+
+### **Architecture Overview**
+```
+Frontend (3000) ──HTTP Requests──→ Backend (8000) ──→ PostgreSQL (Hetzner)
+```
+
 ### Local URLs
 
-* **Frontend:** [http://localhost:5173/](http://localhost:5173/)
-* **Backend:**
-
+* **Frontend:** [http://localhost:3000/](http://localhost:3000/) ⭐
+* **Backend API:** [http://localhost:8000/](http://localhost:8000/)
   * [http://localhost:8000/docs](http://localhost:8000/docs)    (API docs)
   * [http://localhost:8000/redoc](http://localhost:8000/redoc)   (ReDoc docs)
-  * [http://localhost:8000/v1/parts](http://localhost:8000/v1/parts)  (API endpoint)
-  * [http://localhost:8000/v1/stores](http://localhost:8000/v1/stores) (API endpoint)
-  * [http://localhost:8000/docs#/Auth/register_auth_register_post](http://localhost:8000/docs#/Auth/register_auth_register_post)
+  * [http://localhost:8000/v1/products/](http://localhost:8000/v1/products/)  (Products API)
+  * [http://localhost:8000/v1/stores/](http://localhost:8000/v1/stores/) (Stores API)
+  * [http://localhost:8000/v1/products/286/image](http://localhost:8000/v1/products/286/image) (Sample image)
 
 ## DB Structure
 tags

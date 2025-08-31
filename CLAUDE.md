@@ -36,15 +36,64 @@
 - SQLAlchemy models may need app restart after enum changes
 - **NEVER USE localhost:5432 - ONLY HETZNER DATABASE**
 
+## Image Storage System
+- **Storage Method**: Binary data (BYTEA) stored directly in PostgreSQL database
+- **Database Fields**: 
+  - `image_data` (BYTEA): Binary image content
+  - `image_filename` (VARCHAR): Original filename
+  - `image_content_type` (VARCHAR): MIME type (e.g., 'image/jpeg')
+- **API Serving**: `/v1/products/{id}/image` endpoint serves images with proper headers
+- **Scraper Integration**: Scrapy pipeline downloads images and stores in database
+- **Frontend Access**: Uses `getProductImageSrc()` utility to generate API URLs
+
 ## Testing
 - **Backend**: pytest (check for test commands in pyproject.toml)
 - **Frontend**: Vitest (configured in vite.config.js)
 - **Search Engine**: `poetry run python test_search_quick.py` (quick verification)
 - **Search Tests**: `poetry run pytest app/tests/test_search_simple.py -v` (comprehensive)
 
+## Development Server Architecture
+
+### **🏗️ Port Configuration (DO NOT CHANGE)**
+This project uses a **decoupled frontend/backend architecture** with standard industry ports:
+
+**Frontend Development Server:**
+- **Port**: `3000` (React/Vite standard)
+- **URL**: `http://localhost:3000`
+- **Purpose**: Serves React app, hot-reload, development tools
+- **Start Command**: `npm run dev -- --port 3000` (from `/frontend` directory)
+
+**Backend API Server:**
+- **Port**: `8000` (FastAPI standard)
+- **URL**: `http://localhost:8000` 
+- **Purpose**: API endpoints, database operations, image serving
+- **Start Command**: `poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000` (from `/backend` directory)
+
+### **🔄 How They Connect:**
+- Frontend (`3000`) makes HTTP requests to Backend (`8000`)
+- Configuration: `frontend/.env.local` contains `VITE_API_BASE=http://localhost:8000`
+- **Image URLs**: `http://localhost:8000/v1/products/{id}/image`
+- **API Docs**: `http://localhost:8000/docs`
+
+### **✅ Why This Setup:**
+1. **Industry Standard**: React (3000) + FastAPI (8000) is the expected pattern
+2. **Independent Development**: Frontend/backend can be developed separately
+3. **Production Ready**: Can deploy to different services (Vercel + AWS, etc.)
+4. **Multiple Clients**: Same API can serve web, mobile, other apps
+5. **Hot Reload**: Frontend changes don't restart API server
+
+### **🚨 Port Troubleshooting:**
+- **Frontend not on 3000**: Vite may use 5173 as fallback - always specify `--port 3000`
+- **API not on 8000**: Check if port is occupied, use `netstat -tlnp | grep :8000`
+- **CORS Errors**: 
+  - Ensure `VITE_API_BASE` in `.env.local` matches backend URL
+  - Backend CORS allows: `http://localhost:3000`, `http://localhost:5173` 
+  - If changing ports, update CORS origins in `backend/app/main.py`
+
 ## API Standards
 - **ALWAYS use trailing slash** for all API endpoints: `/v1/stores/`, `/v1/products/`, `/v1/auth/`
-- Base URL: `http://localhost:8000` (from VITE_API_BASE in .env.local)
+- **Base URL**: `http://localhost:8000` (from VITE_API_BASE in .env.local)
+- **Image Endpoints**: `/v1/products/{id}/image` serve binary image data from database
 
 ## TypeScript & Module Standards
 - **Use TypeScript** (.ts/.tsx) everywhere, never JavaScript

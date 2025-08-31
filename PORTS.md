@@ -1,13 +1,27 @@
 # Partle Server Port Configuration
 
-## 🔌 **Port Usage Overview**
+## 🔌 **Local Development Ports**
+
+| Service | Port | URL | Purpose |
+|---------|------|-----|---------|
+| **Frontend (React/Vite)** | `3000` | http://localhost:3000 | Development server |
+| **Backend (FastAPI)** | `8000` | http://localhost:8000 | API server |
+| **PostgreSQL** | `5432` | (Hetzner prod) | Database |
+
+## 🚀 **Quick Start Commands**
+
+```bash
+# Frontend
+cd frontend && npm run dev -- --port 3000
+
+# Backend  
+cd backend && poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+## Production Deployment
 
 | Service | Port | Purpose | Access |
 |---------|------|---------|---------|
-| **Frontend (React/Vite)** | 3000 | Development server | Internal only |
-| **Backend (FastAPI)** | 8000 | API server | Internal only |
-| **PostgreSQL** | 5432 | Database | Internal only |
-| **Elasticsearch** | 9200 | Search engine | Internal only |
 | **Nginx** | 80 | Reverse proxy (HTTP) | External via Cloudflare |
 | **Nginx** | 443 | Reverse proxy (HTTPS) | External via Cloudflare |
 
