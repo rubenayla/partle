@@ -1,9 +1,32 @@
-Now i'd like to be able to filter based on the store. You will have to update the frontend filters in the search bar, and
+Is there any store online that includes an MCP (model context protocol)?
+
+Why are there so many different bricodepot stores? variations of the same name
+
+I want to see the pages for the store we're scraping, and see them getting added. They're yet not there. Is the scraping working?
 
 - so now, chatgpt should be able to read info from this server by using the mcp server? How could he do it?
+- Improve the scrapers so they get the image url and place it on the products in my website. I don't need to store the image, just the url.
+
+# mcp for scraping when 5+ scrapers running
+● Honest Assessment: MCP Scraping Agent
+
+✅ PROS:
+- Real examples exist - Firecrawl, Bright Data, crawl4ai MCP servers already working
+- Autonomous monitoring - Can detect stuck scrapers, restart them, analyze logs
+- Site adaptation - Could automatically adjust selectors when sites change
+- Source discovery - Research and test new scraping targets
+- Integration ready - Your Scrapy setup could plug into MCP easily
+
+❌ CONS:
+- Overkill for current scale - You have 2 spiders, not 50
+- Development overhead - Weeks to build vs. minutes to fix spider limits
+- Cost complexity - Need hosting, monitoring infrastructure
+- New failure points - Agent could break scrapers that work fine
+- Security risks - 2025 research shows MCP has prompt injection vulnerabilities
+
+---
 
 Why am i getting "Existing account – log in instead" in our unified register/login page?
-
 - in product page, a clear "Back" button that goes to the previous page
 - How to modify product. If you are the user, when you click a product to see it, allow editing? Or do it in other way
 - In add product, add capability to add tags like #tag1 
@@ -38,8 +61,13 @@ Why am i getting "Existing account – log in instead" in our unified register/l
 - Add some color
 - Ok, now i'd like to implement the feature to recover my password. The typical button "Forgot your password?" or "Recover your password with an email" something like that.
 
-
 ## Not urgent, long term
+- When we got to the end of the page, Use Shopify Storefront API directly:
+  - Public API, no authentication needed for product search
+  - GraphQL for flexible queries
+  - Pagination support for infinite scroll
+  - Product data includes prices, images, descriptions
+- AI search, call chatgpt with search engine to add better product results when doing searches that result in few or no products
 - Mechanism to store searches performed by users so we can know what products are more demanded
 - How to optimize for AI like chatgpt, so they can use my website to search or see the results from my website
     - Think super long term: My AI knows what i have and what i need, and automatically searches for the best products for me. Once one is good enough, it suggests it to me, taking even my calendar into account, when will i need it, time to arrive etc.
@@ -63,4 +91,4 @@ Explore direct public key login (passkeys) so the browser handles authentication
 - Search with regex?
 - Search with free form descriptions and use AI, creating abstractions of the product and the search, and mapping the closest?
     - Or just let chatgpt search using our api
-- 
+- MCP should let my personal AI look around for products that will be actually interesting to me, and that AI, my personal one that might even run locally or with privacy taken into account, with my data safe, it will decide what i probably want, and suggest it to me, instead of letting external AIs spam me with ads. I believe the ad industry is going to change. We can achieve superhuman efficiency letting the AI even do purchases below a certain price threshold. If we happen to be close to a store that has what we want, just notify us and let us know we don't even have to search for it or travel. I there's something i don't want and has value, it might suggest me to sell it, with a client alreay ready to buy. Since the client is an AI, this is not wasting anyone's time. They could be like 'potential' transactions performed by the AI, and when both human parties agree, it's performed with ease.
