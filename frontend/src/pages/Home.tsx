@@ -1,75 +1,112 @@
-// frontend/src/pages/Home.jsx
+/**
+ * @fileoverview Home Component - Main search interface content
+ * @module pages/Home
+ */
+import { useState, useEffect, useCallback } from 'react';
+import api from '../api';
+import ListView from './ListView';
+import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
+import { Product, Store, ProductSearchParams } from '../types';
+
+/**
+ * API response type for paginated data
+ */
+interface ApiResponse<T> {
+  data: T[];
+}
+
 /**
  * Home Component - Main search interface content
  * 
  * This component renders the main product/store search results grid.
  * The SearchBar is provided by the Layout component and is visible on all pages.
  * 
- * Scope:
+ * Features:
  * - Product/Store grid display with infinite scroll
  * - Search state management (receives search params from Layout's SearchBar)
  * - Data fetching and filtering logic
+ * - Automatic loading of more results when scrolling
  * 
  * The Layout component handles:
  * - SearchBar (visible on all pages, functional on home page)
  * - Authentication modal management
  * - Overall page structure and styling
+ * 
+ * @returns JSX element containing the search results grid
+ * 
+ * @example
+ * ```tsx
+ * function App() {
+ *   return (
+ *     <Layout>
+ *       <Routes>
+ *         <Route path="/" element={<Home />} />
+ *       </Routes>
+ *     </Layout>
+ *   );
+ * }
+ * ```
  */
-import { useState, useEffect, useCallback } from "react";
-import api from "../api";
-import ListView from "./ListView";
-import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
-
 export default function Home() {
-  const [products, setProducts] = useState([]);
-  const [stores, setStores] = useState([]);
-  const [hasMore, setHasMore] = useState(true);
-  const [offset, setOffset] = useState(0);
-  const [searchParams, setSearchParams] = useState({
-    query: "",
-    searchType: "products",
+  const [products, setProducts] = useState<Product[]>([]);
+  const [stores, setStores] = useState<Store[]>([]);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [offset, setOffset] = useState<number>(0);
+  const [searchParams, setSearchParams] = useState<ProductSearchParams>({
+    query: '',
+    searchType: 'products',
     priceMin: 0,
     priceMax: 500,
     selectedTags: [],
-    sortBy: "random",
+    sortBy: 'created_at',
+    sortOrder: 'desc'
   });
 
-  const fetchData = useCallback(async (reset = true, currentSearchParams = searchParams, currentOffset = offset) => {
-    // Fetching data with search params
+  /**
+   * Fetch products or stores based on current search parameters
+   * 
+   * @param reset - Whether to reset results (true) or append to existing (false)
+   * @param currentSearchParams - Search parameters to use for the request
+   * @param currentOffset - Pagination offset to use
+   */
+  const fetchData = useCallback(async (
+    reset: boolean = true, 
+    currentSearchParams: ProductSearchParams = searchParams, 
+    currentOffset: number = offset
+  ) => {
     try {
       const offsetToUse = reset ? 0 : currentOffset;
-      let response;
+      let response: ApiResponse<Product | Store>;
       
-      if (currentSearchParams.searchType === "products") {
+      if (currentSearchParams.searchType === 'products') {
         // Searching products
-        const productParams = {
+        const productParams: Record<string, any> = {
           q: currentSearchParams.query,
           min_price: currentSearchParams.priceMin,
           max_price: currentSearchParams.priceMax,
           sort_by: currentSearchParams.sortBy,
-          tags: currentSearchParams.selectedTags.join(","),
+          tags: currentSearchParams.selectedTags.join(','),
           limit: 20,
           offset: offsetToUse,
         };
         
         // Add store_name filter if provided via search operators
-        if (currentSearchParams.storeName) {
-          productParams.store_name = currentSearchParams.storeName;
+        if (currentSearchParams.storeType) {
+          productParams.store_type = currentSearchParams.storeType;
         }
         
-        
-        response = await api.get("/v1/products/", {
+        response = await api.get('/v1/products/', {
           params: productParams,
         });
         
         // Product API response received
         if (reset) {
           // Setting products (reset)
-          setProducts(response.data);
+          setProducts(response.data as Product[]);
         } else {
           setProducts(prev => {
             const existingIds = new Set(prev.map(item => item.id));
-            const newItems = response.data.filter(item => !existingIds.has(item.id));
+            const newItems = (response.data as Product[]).filter(item => !existingIds.has(item.id));
             const updatedProducts = [...prev, ...newItems];
             // Appending products
             return updatedProducts;
@@ -77,11 +114,11 @@ export default function Home() {
         }
       } else {
         console.log('fetchData: Sending store query', currentSearchParams.query);
-        response = await api.get("/v1/stores/", {
+        response = await api.get('/v1/stores/', {
           params: {
             q: currentSearchParams.query,
             sort_by: currentSearchParams.sortBy,
-            tags: currentSearchParams.selectedTags.join(","),
+            tags: currentSearchParams.selectedTags.join(','),
             limit: 20,
             offset: offsetToUse,
           },
@@ -90,11 +127,11 @@ export default function Home() {
         console.log('fetchData: Store API response', response.data);
         if (reset) {
           console.log('fetchData: Setting stores to', response.data);
-          setStores(response.data);
+          setStores(response.data as Store[]);
         } else {
           setStores(prev => {
             const existingIds = new Set(prev.map(item => item.id));
-            const newItems = response.data.filter(item => !existingIds.has(item.id));
+            const newItems = (response.data as Store[]).filter(item => !existingIds.has(item.id));
             const updatedStores = [...prev, ...newItems];
             console.log('fetchData: Appending stores, new total:', updatedStores.length);
             return updatedStores;
@@ -110,17 +147,21 @@ export default function Home() {
         setOffset(prev => prev + 20);
         setHasMore(response.data.length === 20);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(`Error fetching ${currentSearchParams.searchType}:`, error);
       console.error('Error details:', error.response?.data || error.message);
     }
   }, []);
 
-  const fetchMoreData = useCallback(() => {
+  /**
+   * Fetch more data for infinite scroll
+   * Uses current search parameters and offset
+   */
+  const fetchMoreData = useCallback((): Promise<void> => {
     return fetchData(false, searchParams, offset);
   }, [searchParams, offset, fetchData]);
 
-  // Testing ESM-native hook with full React/ESM optimization
+  // Use infinite scroll hook for automatic loading
   const isFetching = useInfiniteScroll(fetchMoreData, hasMore);
 
   useEffect(() => {
@@ -144,26 +185,27 @@ export default function Home() {
     }
   }, [stores]);
 
-  // Expose setSearchParams to parent via useImperativeHandle or props
-  // For now, we'll use a global approach via window object as a quick solution
+  // Expose setSearchParams to parent via global window object
+  // TODO: Replace with proper React context or props drilling
   useEffect(() => {
-    window.homeSearchHandler = (params) => {
-      console.log('Home.jsx: window.homeSearchHandler called with params', params);
+    // Type assertion for global window property
+    (window as any).homeSearchHandler = (params: ProductSearchParams) => {
+      console.log('Home.tsx: window.homeSearchHandler called with params', params);
       setSearchParams(params);
     };
     return () => {
-      delete window.homeSearchHandler;
+      delete (window as any).homeSearchHandler;
     };
   }, []);
 
   return (
     <>
       <h2 className="text-lg font-semibold mb-4">
-        {searchParams.searchType === "products"
-          ? "Latest products"
-          : "Latest stores"}
+        {searchParams.searchType === 'products'
+          ? 'Latest products'
+          : 'Latest stores'}
       </h2>
-      {searchParams.searchType === "products" ? (
+      {searchParams.searchType === 'products' ? (
         <ListView items={products} />
       ) : (
         <ListView items={stores} />
@@ -175,7 +217,7 @@ export default function Home() {
         </div>
       )}
       
-      {!hasMore && (searchParams.searchType === "products" ? products.length > 0 : stores.length > 0) && (
+      {!hasMore && (searchParams.searchType === 'products' ? products.length > 0 : stores.length > 0) && (
         <div className="text-center py-8 text-muted">
           No more {searchParams.searchType} to load
         </div>

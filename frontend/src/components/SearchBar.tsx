@@ -1,45 +1,136 @@
-// frontend/src/components/SearchBar.jsx
-import React, { useState, useRef, useEffect } from 'react'
-import { Search, User, Info, Plus } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+/**
+ * @fileoverview SearchBar Component - Main navigation and search interface
+ * @module components/SearchBar
+ */
+import React, { useState, useRef, useEffect } from 'react';
+import { Search, User, Info, Plus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { deleteAccount } from '../api/auth';
-import Tooltip from './Tooltip'
-import TagFilter from './TagFilter'
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
-import api from '../api/index.ts'
+import Tooltip from './Tooltip';
+import TagFilter from './TagFilter';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import api from '../api/index';
+import { Theme, ProductSearchParams } from '../types';
 
+/**
+ * Search operators extracted from query string
+ */
+interface SearchOperators {
+  /** Store name filter */
+  storeName?: string;
+  /** Tag filters */
+  tags?: string[];
+}
+
+/**
+ * Parsed search query with operators separated
+ */
+interface ParsedSearch {
+  /** Clean query without operators */
+  cleanQuery: string;
+  /** Extracted operators */
+  operators: SearchOperators;
+}
+
+/**
+ * Props for the SearchBar component
+ */
+interface SearchBarProps {
+  /** Callback function when search is performed */
+  onSearch?: (params: ProductSearchParams) => void;
+  /** Whether user is logged in */
+  isLoggedIn?: boolean;
+  /** Callback when account button is clicked (when not logged in) */
+  onAccountClick?: () => void;
+  /** Current theme setting */
+  currentTheme: Theme;
+  /** Function to change theme */
+  setTheme: (theme: Theme) => void;
+}
+
+/**
+ * Sort options mapping for display
+ */
+const sortOptions: Record<string, string> = {
+  created_at: 'Newest',
+  created_at_asc: 'Oldest',
+  price_asc: 'Price ↑',
+  price_desc: 'Price ↓',
+  distance: 'Distance',
+  random: 'Random',
+  name_asc: 'Alphabetical Name',
+};
+
+/**
+ * SearchBar Component - Main navigation and search interface
+ * 
+ * Provides the main search functionality with filters, sorting, and user controls.
+ * Features include:
+ * - Text search with operator parsing (store:name, tag:name)
+ * - Advanced filtering (price range, tags, search type)
+ * - Keyboard shortcuts (Alt+N + key)
+ * - User account management
+ * - Theme switching
+ * 
+ * @param props - Component props
+ * @returns JSX element containing the search bar and navigation
+ * 
+ * @example
+ * ```tsx
+ * function Layout() {
+ *   const [theme, setTheme] = useState('system');
+ *   
+ *   return (
+ *     <div>
+ *       <SearchBar 
+ *         onSearch={handleSearch}
+ *         isLoggedIn={!!user}
+ *         onAccountClick={() => setShowAuthModal(true)}
+ *         currentTheme={theme}
+ *         setTheme={setTheme}
+ *       />
+ *       <main>...</main>
+ *     </div>
+ *   );
+ * }
+ * ```
+ */
 export default function SearchBar({
-  onSearch = () => { },
+  onSearch = () => {},
   isLoggedIn = false,
-  onAccountClick = () => { },
-  currentTheme, // New prop
-  setTheme,     // New prop
-}) {
-  const [query, setQuery] = useState('')
-  const [searchType, setSearchType] = useState('products')
-  const [priceMin, setPriceMin] = useState(0)
-  const [priceMax, setPriceMax] = useState(500)
-  const [selectedTags, setSelectedTags] = useState([])
-  const [sortBy, setSortBy] = useState('random')
-  const [shortcutMode, setShortcutMode] = useState(false)
-  const shortcutTimeoutRef = useRef(null)
+  onAccountClick = () => {},
+  currentTheme,
+  setTheme,
+}: SearchBarProps) {
+  const [query, setQuery] = useState<string>('');
+  const [searchType, setSearchType] = useState<'products' | 'stores'>('products');
+  const [priceMin, setPriceMin] = useState<number>(0);
+  const [priceMax, setPriceMax] = useState<number>(500);
+  const [selectedTags, setSelectedTags] = useState<number[]>([]);
+  const [sortBy, setSortBy] = useState<string>('random');
+  const [shortcutMode, setShortcutMode] = useState<boolean>(false);
+  const shortcutTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const sortOptions = {
-    created_at: 'Newest',
-    created_at_asc: 'Oldest',
-    price_asc: 'Price ↑',
-    price_desc: 'Price ↓',
-    distance: 'Distance',
-    random: 'Random',
-    name_asc: 'Alphabetical Name',
-  };
+  const navigate = useNavigate();
 
-
-  const navigate = useNavigate()
-
-  // Parse search operators from query
-  const parseSearchOperators = (searchQuery) => {
-    const operators = {};
+  /**
+   * Parse search operators from query string
+   * Supports: store:"store name" and tag:"tag name"
+   * 
+   * @param searchQuery - Raw search query string
+   * @returns Object with clean query and extracted operators
+   * 
+   * @example
+   * ```ts
+   * const result = parseSearchOperators('laptop store:"Best Buy" tag:electronics');
+   * // Returns: {
+   * //   cleanQuery: 'laptop',
+   * //   operators: { storeName: 'Best Buy', tags: ['electronics'] }
+   * // }
+   * ```
+   */
+  const parseSearchOperators = (searchQuery: string): ParsedSearch => {
+    const operators: SearchOperators = {};
     let cleanQuery = searchQuery;
 
     // Parse store:name or store:"name with spaces"
@@ -51,7 +142,7 @@ export default function SearchBar({
 
     // Parse tag:name or tag:"name with spaces"
     const tagMatches = searchQuery.matchAll(/\btag:(['"]?)([^'"\s]+(?:\s+[^'"\s]+)*)\1/gi);
-    const extractedTags = [];
+    const extractedTags: string[] = [];
     for (const match of tagMatches) {
       extractedTags.push(match[2]);
       cleanQuery = cleanQuery.replace(match[0], '').trim();
@@ -66,116 +157,115 @@ export default function SearchBar({
     };
   };
 
-
-  // Remove the local theme state and useEffect for theme management
-  // useEffect(() => {
-  //   const root = document.documentElement
-  //   const applyTheme = (mode) => {
-  //     if (mode === 'dark') root.classList.add('dark')
-  //     else root.classList.remove('dark')
-  //   }
-  //   let media
-  //   if (theme === 'auto') {
-  //     media = window.matchMedia('(prefers-color-scheme: dark)')
-  //     applyTheme(media.matches ? 'dark' : 'light')
-  //     const handler = (e) => applyTheme(e.matches ? 'dark' : 'light')
-  //     media.addEventListener('change', handler)
-  //     return () => media.removeEventListener('change', handler)
-  //   } else {
-  //     applyTheme(theme)
-  //   }
-  //   localStorage.setItem('theme', theme)
-  // }, [theme])
-
-
-  // Chord-based keyboard shortcuts (Alt+N + second key)
+  // Keyboard shortcuts (Alt+N + second key)
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      
+    const handleKeyDown = (e: KeyboardEvent) => {
       // First chord: Alt+N (works even in inputs)
       if (e.altKey && e.key.toLowerCase() === 'n') {
-        e.preventDefault()
-        setShortcutMode(true)
+        e.preventDefault();
+        setShortcutMode(true);
         
         // Clear any existing timeout
         if (shortcutTimeoutRef.current) {
-          clearTimeout(shortcutTimeoutRef.current)
+          clearTimeout(shortcutTimeoutRef.current);
         }
         
         // Reset shortcut mode after 1 second
         shortcutTimeoutRef.current = setTimeout(() => {
-          setShortcutMode(false)
-        }, 1000)
+          setShortcutMode(false);
+        }, 1000);
         
-        return
+        return;
       }
 
       // Second chord: Execute shortcuts when in shortcut mode
       if (shortcutMode) {
-        e.preventDefault() // Always prevent default when in shortcut mode
+        e.preventDefault(); // Always prevent default when in shortcut mode
         
         switch (e.key.toLowerCase()) {
           case 'p':
             // Navigate to add product
-            navigate('/products/new')
-            break
+            navigate('/products/new');
+            break;
           case 's':
             // Navigate to add store
-            navigate('/stores/new')
-            break
+            navigate('/stores/new');
+            break;
           case 'h':
             // Navigate to home
-            navigate('/')
-            break
+            navigate('/');
+            break;
           case 'a':
-            // Navigate to account (since dropdown is now handled by Radix)
+            // Navigate to account
             if (isLoggedIn) {
-              navigate('/account')
+              navigate('/account');
             }
-            break
+            break;
           case 'escape':
             // Cancel shortcut mode
-            break
+            break;
         }
         
         // Clear timeout and exit shortcut mode
         if (shortcutTimeoutRef.current) {
-          clearTimeout(shortcutTimeoutRef.current)
+          clearTimeout(shortcutTimeoutRef.current);
         }
-        setShortcutMode(false)
+        setShortcutMode(false);
       }
-    }
+    };
 
-    document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener('keydown', handleKeyDown);
     return () => {
-      document.removeEventListener('keydown', handleKeyDown)
+      document.removeEventListener('keydown', handleKeyDown);
       if (shortcutTimeoutRef.current) {
-        clearTimeout(shortcutTimeoutRef.current)
+        clearTimeout(shortcutTimeoutRef.current);
       }
-    }
-  }, [shortcutMode, isLoggedIn, navigate])
+    };
+  }, [shortcutMode, isLoggedIn, navigate]);
 
-  
-
-  const handleSearch = (event) => {
-    event.preventDefault()
+  /**
+   * Handle search form submission
+   * Parses operators and calls onSearch callback
+   * 
+   * @param event - Form submission event
+   */
+  const handleSearch = (event: React.FormEvent) => {
+    event.preventDefault();
     if (onSearch) {
       const { cleanQuery, operators } = parseSearchOperators(query);
       
       // Merge parsed tags with existing selectedTags
       const allTags = [...selectedTags, ...(operators.tags || [])];
       
-      onSearch({ 
-        query: cleanQuery, 
-        searchType, 
-        priceMin, 
-        priceMax, 
-        sortBy, 
+      const searchParams: ProductSearchParams = {
+        query: cleanQuery,
+        searchType,
+        priceMin,
+        priceMax,
         selectedTags: allTags,
-        storeName: operators.storeName // Pass store name instead of store ID
-      })
+        sortBy: sortBy as any, // TODO: Fix type assertion
+        sortOrder: 'desc' // TODO: Make configurable
+      };
+      
+      onSearch(searchParams);
     }
-  }
+  };
+
+  /**
+   * Handle forgotten password request
+   */
+  const handleForgot = async (): Promise<void> => {
+    if (!query.includes('@')) {
+      alert('Enter your e-mail in the search box first');
+      return;
+    }
+    try {
+      await api.post('/v1/auth/request-password-reset', { email: query });
+      alert('Check your inbox for a reset link.');
+    } catch {
+      alert('Could not send reset e-mail.');
+    }
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-20 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
@@ -188,6 +278,7 @@ export default function SearchBar({
             Partle
           </a>
         </Tooltip>
+        
         <form
           onSubmit={handleSearch}
           className="flex flex-1 mx-1 sm:mx-2 md:mx-4 lg:mx-6 bg-gray-100 dark:bg-gray-800 rounded-full pl-2 sm:pl-3 md:pl-4 pr-1 sm:pr-2 h-10 sm:h-12 items-center overflow-hidden"
@@ -201,9 +292,9 @@ export default function SearchBar({
             autoFocus
           />
 
-
           <div className="hidden sm:block h-6 border-l border-gray-300 dark:border-gray-600 mx-1 sm:mx-2 md:mx-3" />
-          {/* Filters Section - moved before Sort */}
+          
+          {/* Filters Section */}
           <DropdownMenu.Root>
             <DropdownMenu.Trigger className="hidden sm:block h-full px-1 sm:px-2 md:px-3 text-xs sm:text-sm text-gray-700 dark:text-gray-300 bg-transparent hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-0 border-0 hover:border-0">
               Filters
@@ -223,10 +314,23 @@ export default function SearchBar({
                       onClick={() => {
                         setSearchType('products');
                         if (onSearch) {
-                          onSearch({ query, searchType: 'products', priceMin, priceMax, sortBy, selectedTags });
+                          const params: ProductSearchParams = {
+                            query,
+                            searchType: 'products',
+                            priceMin,
+                            priceMax,
+                            selectedTags,
+                            sortBy: sortBy as any,
+                            sortOrder: 'desc'
+                          };
+                          onSearch(params);
                         }
                       }}
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${searchType === 'products' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'}`}
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${
+                        searchType === 'products' 
+                          ? 'bg-blue-500 text-white' 
+                          : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'
+                      }`}
                     >
                       Products
                     </button>
@@ -235,16 +339,28 @@ export default function SearchBar({
                       onClick={() => {
                         setSearchType('stores');
                         if (onSearch) {
-                          onSearch({ query, searchType: 'stores', priceMin, priceMax, sortBy, selectedTags });
+                          const params: ProductSearchParams = {
+                            query,
+                            searchType: 'stores',
+                            priceMin,
+                            priceMax,
+                            selectedTags,
+                            sortBy: sortBy as any,
+                            sortOrder: 'desc'
+                          };
+                          onSearch(params);
                         }
                       }}
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${searchType === 'stores' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'}`}
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${
+                        searchType === 'stores' 
+                          ? 'bg-blue-500 text-white' 
+                          : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'
+                      }`}
                     >
                       Stores
                     </button>
                   </div>
                 </div>
-                
                 
                 {/* Tag Filter */}
                 <TagFilter
@@ -265,7 +381,16 @@ export default function SearchBar({
                         onChange={(e) => {
                           setPriceMin(Number(e.target.value));
                           if (onSearch) {
-                            onSearch({ query, searchType, priceMin: Number(e.target.value), priceMax, sortBy, selectedTags });
+                            const params: ProductSearchParams = {
+                              query,
+                              searchType,
+                              priceMin: Number(e.target.value),
+                              priceMax,
+                              selectedTags,
+                              sortBy: sortBy as any,
+                              sortOrder: 'desc'
+                            };
+                            onSearch(params);
                           }
                         }}
                         className="w-full border border-gray-300 dark:border-gray-600 px-2 py-1 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
@@ -280,7 +405,16 @@ export default function SearchBar({
                         onChange={(e) => {
                           setPriceMax(Number(e.target.value));
                           if (onSearch) {
-                            onSearch({ query, searchType, priceMin, priceMax: Number(e.target.value), sortBy, selectedTags });
+                            const params: ProductSearchParams = {
+                              query,
+                              searchType,
+                              priceMin,
+                              priceMax: Number(e.target.value),
+                              selectedTags,
+                              sortBy: sortBy as any,
+                              sortOrder: 'desc'
+                            };
+                            onSearch(params);
                           }
                         }}
                         className="w-full border border-gray-300 dark:border-gray-600 px-2 py-1 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
@@ -293,6 +427,8 @@ export default function SearchBar({
           </DropdownMenu.Root>
 
           <div className="hidden sm:block h-6 border-l border-gray-300 dark:border-gray-600 mx-1 sm:mx-2 md:mx-3" />
+          
+          {/* Sort Dropdown */}
           <DropdownMenu.Root>
             <DropdownMenu.Trigger className="hidden md:block h-full px-1 sm:px-2 md:px-3 text-xs sm:text-sm text-gray-700 dark:text-gray-300 bg-transparent hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-0 border-0 hover:border-0 whitespace-nowrap">
               <span className="hidden lg:inline">Sort: </span>{sortOptions[sortBy]}
@@ -315,7 +451,16 @@ export default function SearchBar({
                     onSelect={() => {
                       setSortBy(value);
                       if (onSearch) {
-                        onSearch({ query, searchType, priceMin, priceMax, sortBy: value, selectedTags });
+                        const params: ProductSearchParams = {
+                          query,
+                          searchType,
+                          priceMin,
+                          priceMax,
+                          selectedTags,
+                          sortBy: value as any,
+                          sortOrder: 'desc'
+                        };
+                        onSearch(params);
                       }
                     }}
                   >
@@ -326,9 +471,8 @@ export default function SearchBar({
             </DropdownMenu.Portal>
           </DropdownMenu.Root>
 
-          
-
           <div className="hidden sm:block h-6 border-l border-gray-300 dark:border-gray-600 mx-1 sm:mx-2 md:mx-3" />
+          
           <button
             type="submit"
             aria-label="Search"
@@ -401,8 +545,8 @@ export default function SearchBar({
                   <DropdownMenu.Item
                     className="block w-full bg-transparent text-left px-2 py-1 text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-red-600 dark:text-red-400 hover:font-medium rounded cursor-pointer focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700"
                     onSelect={() => {
-                      localStorage.removeItem('token')
-                      window.location.reload()
+                      localStorage.removeItem('token');
+                      window.location.reload();
                     }}
                   >
                     Log out
@@ -412,11 +556,11 @@ export default function SearchBar({
                     onSelect={async () => {
                       if (confirm('Delete account?')) {
                         try {
-                          await deleteAccount()
-                          localStorage.removeItem('token')
-                          window.location.reload()
+                          await deleteAccount();
+                          localStorage.removeItem('token');
+                          window.location.reload();
                         } catch {
-                          alert('Could not delete account')
+                          alert('Could not delete account');
                         }
                       }
                     }}
@@ -462,12 +606,27 @@ export default function SearchBar({
         </div>
       </div>
     </header>
-  )
+  );
 }
 
-// ─── ThemeSwitch ──────────────────────────────────────────
-function ThemeSwitch({ value, onChange }) {
-  const options = ["light", "system", "dark"];
+/**
+ * Props for ThemeSwitch component
+ */
+interface ThemeSwitchProps {
+  /** Current theme value */
+  value: Theme;
+  /** Callback when theme changes */
+  onChange: (theme: Theme) => void;
+}
+
+/**
+ * ThemeSwitch Component - Toggle between light/system/dark themes
+ * 
+ * @param props - Component props
+ * @returns JSX element containing the theme switch
+ */
+function ThemeSwitch({ value, onChange }: ThemeSwitchProps) {
+  const options: Theme[] = ['light', 'system', 'dark'];
   const index = options.indexOf(value);
 
   const WIDTH = 180; // px
@@ -491,7 +650,7 @@ function ThemeSwitch({ value, onChange }) {
             onClick={() => onChange(mode)}
             style={{ width: `${SEGMENT}px` }}
             className={`relative z-10 h-full flex items-center justify-center text-sm font-medium transition-colors
-              ${index === i ? "text-white dark:text-white" : "text-gray-700 dark:text-gray-300"}
+              ${index === i ? 'text-white dark:text-white' : 'text-gray-700 dark:text-gray-300'}
               focus:outline-none border-none`}
           >
             {mode.charAt(0).toUpperCase() + mode.slice(1)}
