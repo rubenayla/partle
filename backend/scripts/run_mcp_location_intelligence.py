@@ -3,14 +3,16 @@
 import sys
 import os
 import logging
+import asyncio
 
-# Add the backend app directory to the Python path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'app'))
+# Add the backend directory to the Python path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from app.mcp.location_intelligence import mcp_server
+from mcp.server.stdio import stdio_server
 
 
-def main():
+async def main():
     """Run the Partle Location Intelligence MCP server."""
     logging.basicConfig(
         level=logging.INFO,
@@ -21,8 +23,13 @@ def main():
     logger.info('Starting Partle Location Intelligence MCP Server...')
     
     try:
-        # Run the MCP server
-        mcp_server.run()
+        # Run the MCP server using stdio
+        async with stdio_server() as (read_stream, write_stream):
+            await mcp_server.run(
+                read_stream,
+                write_stream,
+                mcp_server.create_initialization_options()
+            )
     except KeyboardInterrupt:
         logger.info('Server stopped by user')
     except Exception as e:
@@ -31,4 +38,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
