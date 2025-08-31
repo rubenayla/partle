@@ -1,11 +1,6 @@
-Is there any store online that includes an MCP (model context protocol)?
-
-Why are there so many different bricodepot stores? variations of the same name
-
-I want to see the pages for the store we're scraping, and see them getting added. They're yet not there. Is the scraping working?
-
-- so now, chatgpt should be able to read info from this server by using the mcp server? How could he do it?
-- Improve the scrapers so they get the image url and place it on the products in my website. I don't need to store the image, just the url.
+- i see a few new markdown files in the docs folder. Should we use mkdocs?
+- Improve the scrapers so they get the image url and place it on the products in my website. I don't need to store the image, just the url. They would look much better.
+- So now that we have an mcp (model context protocol), chatgpt should be able to read info from this server by using the mcp server? How could he do it?
 
 # mcp for scraping when 5+ scrapers running
 ● Honest Assessment: MCP Scraping Agent
