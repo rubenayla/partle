@@ -17,6 +17,8 @@ class ProductIn(BaseModel):
     lon: Optional[float] = None
     description: Optional[str] = None
     image_url: Optional[HttpUrl] = None
+    image_filename: Optional[str] = None
+    image_content_type: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)  # pydantic-v2 replacement for orm_mode
 
@@ -36,5 +38,7 @@ class ProductOut(ProductIn):
     updated_at: datetime
     updated_by_id: Optional[int] = None
     image_url: Optional[HttpUrl] = None
+    image_filename: Optional[str] = None
+    image_content_type: Optional[str] = None
     tags: list[Tag] = []
 

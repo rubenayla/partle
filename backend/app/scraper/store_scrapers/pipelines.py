@@ -5,6 +5,9 @@
 
 import sys
 import os
+import mimetypes
+import requests
+from urllib.parse import urlparse
 from datetime import datetime
 from typing import Optional
 from itemadapter import ItemAdapter
@@ -17,6 +20,90 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
 from app.db.models import Product, Store
 from .config import config
+
+
+class ImageDownloadPipeline:
+    """Pipeline to download images from URLs and store binary data."""
+    
+    def __init__(self):
+        self.session = None
+        
+    def open_spider(self, spider):
+        """Initialize HTTP session for image downloads."""
+        self.session = requests.Session()
+        self.session.headers.update({
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        })
+        spider.logger.info("Image download pipeline initialized")
+        
+    def close_spider(self, spider):
+        """Close HTTP session."""
+        if self.session:
+            self.session.close()
+            spider.logger.info("Image download pipeline closed")
+    
+    def process_item(self, item, spider):
+        """Download image from URL and store binary data in item."""
+        from .items import ProductItem
+        
+        # Only process ProductItem
+        if not isinstance(item, ProductItem):
+            return item
+            
+        adapter = ItemAdapter(item)
+        image_url = adapter.get('image_url')
+        
+        if not image_url:
+            spider.logger.debug(f"No image URL for product: {adapter.get('name', 'Unknown')}")
+            return item
+            
+        try:
+            spider.logger.info(f"Downloading image: {image_url}")
+            
+            # Download the image with timeout
+            response = self.session.get(image_url, timeout=30, stream=True)
+            response.raise_for_status()
+            
+            # Get image data
+            image_data = response.content
+            
+            if not image_data:
+                spider.logger.warning(f"Empty image data from URL: {image_url}")
+                return item
+                
+            # Get content type from response headers
+            content_type = response.headers.get('content-type', 'image/jpeg')
+            
+            # Extract filename from URL
+            parsed_url = urlparse(image_url)
+            filename = os.path.basename(parsed_url.path)
+            
+            # If no filename or extension, generate one based on content type
+            if not filename or '.' not in filename:
+                extension = mimetypes.guess_extension(content_type) or '.jpg'
+                filename = f"image_{abs(hash(image_url)) % 10000}{extension}"
+            
+            # Store image data in item
+            adapter['image_data'] = image_data
+            adapter['image_filename'] = filename
+            adapter['image_content_type'] = content_type
+            
+            spider.logger.info(
+                f"Downloaded image: {filename} ({len(image_data)} bytes, {content_type})"
+            )
+            spider.crawler.stats.inc_value('images_downloaded')
+            
+        except requests.RequestException as e:
+            spider.logger.error(f"Failed to download image {image_url}: {e}")
+            spider.crawler.stats.inc_value('images_download_failed')
+            # Continue without image data - don't fail the entire item
+            
+        except Exception as e:
+            spider.logger.error(f"Unexpected error downloading image {image_url}: {e}")
+            spider.crawler.stats.inc_value('images_download_errors')
+            # Continue without image data - don't fail the entire item
+            
+        return item
 
 
 class DatabasePipeline:
@@ -58,6 +145,9 @@ class DatabasePipeline:
             url = adapter.get('url')
             description = adapter.get('description')
             image_url = adapter.get('image_url')
+            image_data = adapter.get('image_data')
+            image_filename = adapter.get('image_filename')
+            image_content_type = adapter.get('image_content_type')
             store_id = adapter.get('store_id')
             
             # Validate required fields
@@ -110,6 +200,11 @@ class DatabasePipeline:
                 if existing_product.image_url != image_url:
                     existing_product.image_url = image_url
                     updated_fields.append('image_url')
+                if image_data and existing_product.image_data != image_data:
+                    existing_product.image_data = image_data
+                    existing_product.image_filename = image_filename
+                    existing_product.image_content_type = image_content_type
+                    updated_fields.append('image_data')
                 
                 if updated_fields:
                     existing_product.updated_at = datetime.utcnow()
@@ -133,6 +228,9 @@ class DatabasePipeline:
                     url=url,
                     description=description,
                     image_url=image_url,
+                    image_data=image_data,
+                    image_filename=image_filename,
+                    image_content_type=image_content_type,
                     store_id=store_id,
                     creator_id=config.DEFAULT_CREATOR_ID,
                     created_at=datetime.utcnow(),

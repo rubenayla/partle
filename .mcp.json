@@ -2,51 +2,58 @@
   "mcpServers": {
     "partle-products": {
       "command": "poetry",
-      "args": ["run", "python", "backend/scripts/run_mcp_products.py"],
+      "args": ["run", "python", "scripts/run_mcp_products.py"],
+      "cwd": "./backend",
       "env": {
-        "PARTLE_API_URL": "http://localhost:8000"
+        "PARTLE_API_URL": "http://localhost:8001"
       }
     },
     "partle-stores": {
       "command": "poetry", 
-      "args": ["run", "python", "backend/scripts/run_mcp_stores.py"],
+      "args": ["run", "python", "scripts/run_mcp_stores.py"],
+      "cwd": "./backend",
       "env": {
-        "PARTLE_API_URL": "http://localhost:8000"
+        "PARTLE_API_URL": "http://localhost:8001"
       }
     },
     "partle-analytics": {
       "command": "poetry",
-      "args": ["run", "python", "backend/scripts/run_mcp_analytics.py"],
+      "args": ["run", "python", "scripts/run_mcp_analytics.py"],
+      "cwd": "./backend",
       "env": {
-        "PARTLE_API_URL": "http://localhost:8000"
+        "PARTLE_API_URL": "http://localhost:8001"
       }
     },
     "partle-price-intelligence": {
       "command": "poetry",
-      "args": ["run", "python", "backend/scripts/run_mcp_price_intelligence.py"],
+      "args": ["run", "python", "scripts/run_mcp_price_intelligence.py"],
+      "cwd": "./backend",
       "env": {
-        "PARTLE_API_URL": "http://localhost:8000"
+        "PARTLE_API_URL": "http://localhost:8001"
       }
     },
     "partle-location-intelligence": {
       "command": "poetry",
-      "args": ["run", "python", "backend/scripts/run_mcp_location_intelligence.py"],
+      "args": ["run", "python", "scripts/run_mcp_location_intelligence.py"],
+      "cwd": "./backend",
       "env": {
-        "PARTLE_API_URL": "http://localhost:8000"
+        "PARTLE_API_URL": "http://localhost:8001"
       }
     },
     "partle-recommendations": {
       "command": "poetry",
-      "args": ["run", "python", "backend/scripts/run_mcp_recommendations.py"],
+      "args": ["run", "python", "scripts/run_mcp_recommendations.py"],
+      "cwd": "./backend",
       "env": {
-        "PARTLE_API_URL": "http://localhost:8000"
+        "PARTLE_API_URL": "http://localhost:8001"
       }
     },
     "partle-scraper-monitor": {
       "command": "poetry",
-      "args": ["run", "python", "backend/mcp_scraper_monitor.py"],
+      "args": ["run", "python", "mcp_scraper_monitor.py"],
+      "cwd": "./backend",
       "env": {
-        "PARTLE_API_URL": "http://localhost:8000"
+        "PARTLE_API_URL": "http://localhost:8001"
       }
     }
   }

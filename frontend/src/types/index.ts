@@ -77,6 +77,10 @@ export interface Product {
   price?: number;
   /** Product image URL */
   image_url?: string;
+  /** Product image filename (when stored in database) */
+  image_filename?: string;
+  /** Product image content type (when stored in database) */
+  image_content_type?: string;
   /** URL to the product page on the store's website */
   url?: string;
   /** Store where this product is sold */

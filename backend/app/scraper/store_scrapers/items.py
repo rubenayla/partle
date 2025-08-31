@@ -13,6 +13,9 @@ class ProductItem(scrapy.Item):
     url = scrapy.Field()
     description = scrapy.Field()
     image_url = scrapy.Field()
+    image_data = scrapy.Field()  # Binary image data
+    image_filename = scrapy.Field()  # Original filename
+    image_content_type = scrapy.Field()  # MIME type
     store_id = scrapy.Field()
     spec = scrapy.Field()  # Optional specification field
 

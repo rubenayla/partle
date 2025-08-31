@@ -11,10 +11,11 @@ from app.middleware.rate_limit import RateLimitMiddleware
 configure_logging()
 logger = get_logger("main")
 
-# Load .env file
-from dotenv import load_dotenv
-import os
-load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
+# Load local .env if present (useful for local development)
+if os.getenv("PRODUCTION_MODE") is None:
+    from dotenv import load_dotenv
+
+    load_dotenv()
 
 app = FastAPI(
     title="Partle API",

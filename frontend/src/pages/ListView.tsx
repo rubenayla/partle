@@ -4,6 +4,7 @@
  */
 import { Link } from 'react-router-dom';
 import { ListViewItem } from '../types';
+import { getProductImageSrc, hasProductImage } from '../utils/imageUtils';
 
 /**
  * Props for the ListView component
@@ -74,9 +75,9 @@ export default function ListView({ items }: ListViewProps) {
           className="border border-gray-200 dark:border-gray-700 rounded-xl p-4 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
         >
           {/* Item Image */}
-          {item.image_url && (
+          {(isProduct(item) ? hasProductImage(item) : item.image_url) && (
             <img
-              src={item.image_url}
+              src={isProduct(item) ? getProductImageSrc(item) || '' : item.image_url || ''}
               alt={item.name}
               className="w-full h-32 object-cover rounded mb-2"
               referrerPolicy="no-referrer"
