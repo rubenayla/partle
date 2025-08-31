@@ -1,5 +1,5 @@
-Make sure there's no CJS left, everything ESM now.
-Let's finish scraping bricodepot
+
+
 Let's do the scraper for www.mengual.com/
 ✅ COMPLETED: JS to TS migration done - all source files now TypeScript (.ts/.tsx)
 

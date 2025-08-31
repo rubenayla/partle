@@ -39,8 +39,9 @@
 - **ALWAYS use trailing slash** for all API endpoints: `/v1/stores/`, `/v1/products/`, `/v1/auth/`
 - Base URL: `http://localhost:8000` (from VITE_API_BASE in .env.local)
 
-## TypeScript Standards
+## TypeScript & Module Standards
 - **Use TypeScript** (.ts/.tsx) everywhere, never JavaScript
+- **Use ESM only**: Always use ES Modules (import/export), never CommonJS (require/module.exports)
 - **Exception**: Root config files (vite.config.js, tailwind.config.js, postcss.config.js, eslint.config.js)
 - **Import types explicitly**: `import type { User } from '../types'` for type-only imports
 - **Use proper JSDoc**: Include `@fileoverview`, `@param`, `@returns`, `@example` in all functions
