@@ -1,17 +1,6 @@
 Let's do the scraper for www.mengual.com/
 
-# accessible mcp servers!
-Instead of running local MCP servers, you could expose your Partle API publicly and integrate ChatGPT directly with your API endpoints. This approach would involve:
-
-  1. Secure Public Deployment: Deploy your FastAPI backend to a cloud provider (AWS, GCP, Heroku) with proper HTTPS and domain setup
-  2. Authentication System: Implement API key authentication or OAuth to secure access - ChatGPT can use API keys in requests
-  3. OpenAPI Integration: Leverage your existing FastAPI OpenAPI/Swagger schema - ChatGPT can read this to understand available endpoints and parameters
-  4. Direct API Calls: Configure ChatGPT's "Actions" or "Custom GPTs" to call your public endpoints directly (e.g., GET /v1/products/search, POST 
-  /v1/analytics/overview)
-  5. Rate Limiting & Monitoring: Add proper rate limiting, logging, and monitoring to handle AI-generated traffic patterns
-
-  This eliminates the need for local MCP servers entirely and provides a more scalable, cloud-native integration. The trade-off is increased complexity in deployment,
-   security, and infrastructure management, but it offers better performance and eliminates the local server dependency.
+- let's use the mcp server with chatgpt
 
 # problem with hook for scroll
 ● Summary of the React Hooks Issue

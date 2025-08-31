@@ -1,7 +1,7 @@
 # backend/app/api/v1/products.py
 from collections.abc import Generator
 from sqlalchemy import or_, func
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 
 from app.db.models import Product, User, Tag
@@ -226,3 +226,23 @@ def add_tag_to_product(
             logger.warning(f"Failed to update product {product.id} tags in Elasticsearch: {e}")
     
     return product
+
+
+@router.get("/{product_id}/image")
+def get_product_image(product_id: int, db: Session = Depends(get_db)):
+    """Get the image data for a product."""
+    product = db.get(Product, product_id)
+    if not product:
+        raise HTTPException(404, "Product not found")
+    
+    if not product.image_data:
+        raise HTTPException(404, "No image data available for this product")
+    
+    # Return the image data with proper content type
+    return Response(
+        content=product.image_data,
+        media_type=product.image_content_type or "image/jpeg",
+        headers={
+            "Content-Disposition": f"inline; filename={product.image_filename or 'image.jpg'}"
+        }
+    )

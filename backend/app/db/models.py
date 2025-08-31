@@ -119,6 +119,9 @@ class Product(Base):
     lon: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     image_url: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    image_data: Mapped[Optional[bytes]] = mapped_column(LargeBinary, nullable=True)
+    image_filename: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    image_content_type: Mapped[Optional[str]] = mapped_column(String, nullable=True)
 
     store_id: Mapped[Optional[int]] = mapped_column(
         ForeignKey("stores.id", ondelete="SET NULL"), nullable=True

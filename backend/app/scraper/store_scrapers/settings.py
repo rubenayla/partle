@@ -76,7 +76,8 @@ DOWNLOAD_HANDLERS = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    "store_scrapers.pipelines.StoreDeduplicationPipeline": 200,  # Run before database pipeline
+    "store_scrapers.pipelines.StoreDeduplicationPipeline": 200,  # Run before other pipelines
+    "store_scrapers.pipelines.ImageDownloadPipeline": 250,  # Download images before saving to database
     "store_scrapers.pipelines.DatabasePipeline": 300,
 }
 
@@ -104,7 +105,7 @@ PLAYWRIGHT_LAUNCH_OPTIONS = {
         '--single-process',
         '--disable-extensions',
         '--disable-plugins',
-        '--disable-images',  # Don't load images for faster processing
+        # '--disable-images',  # Images enabled for download
         # JavaScript re-enabled - needed for product listings
         '--memory-pressure-off'
     ]
