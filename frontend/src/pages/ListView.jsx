@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
  * – Uses static mock data if no `items` prop is passed.
  */
 export default function ListView({ items }) {
-  console.log('ListView: Received items:', items?.length || 0, 'items');
+  // ListView rendering with items count: ${items?.length || 0}
   
   if (!Array.isArray(items)) {
     return <p className="text-red-600 dark:text-red-400">ListView: items must be an array</p>;
@@ -24,11 +24,11 @@ export default function ListView({ items }) {
               referrerPolicy="no-referrer"
               crossOrigin="anonymous"
               onError={(e) => {
-                console.log(`Failed to load image: ${item.image_url}`);
+                // Hide failed images (CORS/404 errors)
                 e.currentTarget.style.display = 'none';
               }}
               onLoad={() => {
-                console.log(`Successfully loaded image: ${item.image_url}`);
+                // Image loaded successfully - no action needed
               }}
             />
           )}

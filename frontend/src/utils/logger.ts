@@ -113,6 +113,13 @@ class Logger {
   }
   
   private async sendToBackend(entry: LogEntry): Promise<void> {
+    // TODO: Enable when backend /api/v1/logs endpoint is implemented
+    // Temporarily disabled to prevent 404 errors
+    if (import.meta.env.DEV) {
+      console.debug('Logger: Would send to backend:', entry);
+      return;
+    }
+    
     try {
       await fetch(`${this.apiUrl}/v1/logs`, {
         method: 'POST',
@@ -126,7 +133,10 @@ class Logger {
         }),
       });
     } catch (error) {
-      console.error('Failed to send log to backend:', error);
+      // Silently fail in production to avoid console spam
+      if (import.meta.env.DEV) {
+        console.error('Failed to send log to backend:', error);
+      }
     }
   }
   
@@ -168,6 +178,13 @@ class Logger {
   }
   
   private async sendPerformanceMetric(metric: PerformanceMetric): Promise<void> {
+    // TODO: Enable when backend /api/v1/metrics endpoint is implemented
+    // Temporarily disabled to prevent 404 errors
+    if (import.meta.env.DEV) {
+      console.debug('Logger: Would send performance metric:', metric);
+      return;
+    }
+    
     try {
       await fetch(`${this.apiUrl}/v1/metrics`, {
         method: 'POST',
@@ -181,7 +198,10 @@ class Logger {
         }),
       });
     } catch (error) {
-      console.error('Failed to send performance metric:', error);
+      // Silently fail in production to avoid console spam
+      if (import.meta.env.DEV) {
+        console.error('Failed to send performance metric:', error);
+      }
     }
   }
   

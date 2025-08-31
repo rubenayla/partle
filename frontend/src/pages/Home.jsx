@@ -35,13 +35,13 @@ export default function Home() {
   });
 
   const fetchData = useCallback(async (reset = true, currentSearchParams = searchParams, currentOffset = offset) => {
-    console.log('fetchData: currentSearchParams', currentSearchParams);
+    // Fetching data with search params
     try {
       const offsetToUse = reset ? 0 : currentOffset;
       let response;
       
       if (currentSearchParams.searchType === "products") {
-        console.log('fetchData: Sending product query', currentSearchParams.query);
+        // Searching products
         const productParams = {
           q: currentSearchParams.query,
           min_price: currentSearchParams.priceMin,
@@ -62,16 +62,16 @@ export default function Home() {
           params: productParams,
         });
         
-        console.log('fetchData: Product API response', response.data);
+        // Product API response received
         if (reset) {
-          console.log('fetchData: Setting products to', response.data);
+          // Setting products (reset)
           setProducts(response.data);
         } else {
           setProducts(prev => {
             const existingIds = new Set(prev.map(item => item.id));
             const newItems = response.data.filter(item => !existingIds.has(item.id));
             const updatedProducts = [...prev, ...newItems];
-            console.log('fetchData: Appending products, new total:', updatedProducts.length);
+            // Appending products
             return updatedProducts;
           });
         }
@@ -123,20 +123,23 @@ export default function Home() {
   const [isFetching] = useInfiniteScroll(fetchMoreData, hasMore);
 
   useEffect(() => {
-    console.log('Home.jsx: searchParams changed', searchParams);
+    // Search params changed, resetting results
     setOffset(0);
     setHasMore(true);
     fetchData(true, searchParams, 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
-  // Debug: Log when products/stores state actually changes
+  // Debug: Track state changes in development
   useEffect(() => {
-    console.log('Home.jsx: Products state updated, count:', products.length);
+    if (import.meta.env.DEV) {
+      console.debug('Products updated:', products.length);
+    }
   }, [products]);
 
   useEffect(() => {
-    console.log('Home.jsx: Stores state updated, count:', stores.length);
+    if (import.meta.env.DEV) {
+      console.debug('Stores updated:', stores.length);
   }, [stores]);
 
   // Expose setSearchParams to parent via useImperativeHandle or props

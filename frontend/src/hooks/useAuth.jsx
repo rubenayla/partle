@@ -9,10 +9,10 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    console.log("AuthProvider: Initializing auth state");
+    // Initializing auth state
     const token = localStorage.getItem("token");
     if (!token) {
-      console.log("AuthProvider: No token found, user not logged in");
+      // No token found, user not logged in
       setUser(null);
       setIsLoading(false);
       return;
