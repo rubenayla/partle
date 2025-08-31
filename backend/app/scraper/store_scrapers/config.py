@@ -28,6 +28,7 @@ class ScraperConfig:
         "leroy_merlin": int(os.getenv("LEROY_MERLIN_STORE_ID", "4067")),
         "ferreterias": int(os.getenv("FERRETERIAS_STORE_ID", "4068")),
         "ferreteria_shop": int(os.getenv("FERRETERIA_SHOP_STORE_ID", "4069")),
+        "mengual": int(os.getenv("MENGUAL_STORE_ID", "4070")),  # Spanish hardware store
     }
     
     # Scraping behavior
