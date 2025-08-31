@@ -11,11 +11,10 @@ from app.middleware.rate_limit import RateLimitMiddleware
 configure_logging()
 logger = get_logger("main")
 
-# Load local .env if present (useful for local development)
-if os.getenv("RAILWAY_ENVIRONMENT") is None:
-    from dotenv import load_dotenv
-
-    load_dotenv()
+# Load .env file
+from dotenv import load_dotenv
+import os
+load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
 
 app = FastAPI(
     title="Partle API",

@@ -150,6 +150,17 @@ export default function Home() {
     } catch (error: any) {
       console.error(`Error fetching ${currentSearchParams.searchType}:`, error);
       console.error('Error details:', error.response?.data || error.message);
+      
+      // Ensure state remains as arrays even on error
+      if (reset) {
+        if (currentSearchParams.searchType === 'products') {
+          setProducts([]);
+        } else {
+          setStores([]);
+        }
+        setOffset(0);
+        setHasMore(false);
+      }
     }
   }, []);
 
