@@ -40,8 +40,8 @@
 - Base URL: `http://localhost:8000` (from VITE_API_BASE in .env.local)
 
 ## TypeScript Standards
-- **Use TypeScript** (.ts/.tsx) for all files in `frontend/src/` directory
-- **Frontend config files stay .js**: vite.config.js, tailwind.config.js, postcss.config.js, eslint.config.js
+- **Use TypeScript** (.ts/.tsx) everywhere, never JavaScript
+- **Exception**: Root config files (vite.config.js, tailwind.config.js, postcss.config.js, eslint.config.js)
 - **Import types explicitly**: `import type { User } from '../types'` for type-only imports
 - **Use proper JSDoc**: Include `@fileoverview`, `@param`, `@returns`, `@example` in all functions
 - **Define interfaces**: Create comprehensive interfaces in `src/types/index.ts` for all data structures
