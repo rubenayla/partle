@@ -6,6 +6,11 @@ Create multiple test stores for bulk product generation
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 import sys
+from dotenv import load_dotenv
+import os
+
+# Load environment variables
+load_dotenv(override=True)
 
 # Add the backend directory to Python path
 sys.path.insert(0, '/home/rubenayla/repos/partle/backend')
@@ -17,7 +22,10 @@ except ImportError:
     sys.exit(1)
 
 def main():
-    DATABASE_URL = "postgresql://postgres:partl3p4ss@localhost:5432/partle"
+    DATABASE_URL = os.getenv("DATABASE_URL")
+    if not DATABASE_URL:
+        print("Error: DATABASE_URL environment variable is required")
+        sys.exit(1)
     engine = create_engine(DATABASE_URL)
     SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
     db = SessionLocal()

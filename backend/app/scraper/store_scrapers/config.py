@@ -3,16 +3,20 @@ Configuration management for the scraper.
 """
 import os
 from typing import Optional
+from dotenv import load_dotenv
+
+# Load environment variables from backend .env file with override
+backend_env_path = os.path.join(os.path.dirname(__file__), '..', '..', '..', '.env')
+load_dotenv(backend_env_path, override=True)
 
 
 class ScraperConfig:
     """Configuration class for scraper settings."""
     
-    # Database settings
-    DATABASE_URL: str = os.getenv(
-        "DATABASE_URL", 
-        "postgresql://user:password@localhost/partle"
-    )
+    # Database settings - Load from .env file
+    DATABASE_URL: str = os.getenv("DATABASE_URL")
+    if not DATABASE_URL:
+        raise ValueError("DATABASE_URL environment variable is required")
     
     # API settings (fallback for testing)
     API_BASE_URL: str = os.getenv("API_BASE_URL", "http://localhost:8000")

@@ -10,6 +10,10 @@ from urllib.parse import urlparse
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from app.db.models import Product
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 def download_image(image_url):
     """Download an image and return binary data, filename, and content type."""
@@ -34,8 +38,11 @@ def download_image(image_url):
         return None, None, None
 
 def main():
-    # Connect to Hetzner database
-    DATABASE_URL = "postgresql://partle_user:v4zxTX7VN2Ljynlhon1fLg==@91.98.68.236:5432/partle"
+    # Connect to database from environment
+    DATABASE_URL = os.getenv("DATABASE_URL")
+    if not DATABASE_URL:
+        print("Error: DATABASE_URL environment variable is required")
+        return
     engine = create_engine(DATABASE_URL)
     SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
     db = SessionLocal()

@@ -9,6 +9,7 @@ import json
 import subprocess
 import psutil
 import time
+import os
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Any
@@ -18,6 +19,10 @@ import mcp.types as types
 from mcp.server.models import InitializationOptions
 from mcp.server import NotificationOptions, Server
 from mcp.server.stdio import stdio_server
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 
 @dataclass
@@ -52,7 +57,9 @@ class ScraperMonitor:
     
     def __init__(self):
         self.scrapers: Dict[str, ScraperStatus] = {}
-        self.db_url = "postgresql://postgres:partl3p4ss@localhost:5432/partle"
+        self.db_url = os.getenv("DATABASE_URL")
+        if not self.db_url:
+            raise ValueError("DATABASE_URL environment variable is required")
         self.engine = create_engine(self.db_url)
         self.scraper_processes: Dict[str, subprocess.Popen] = {}
         

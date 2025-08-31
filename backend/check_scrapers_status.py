@@ -7,6 +7,10 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, func
 import sys
 import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Add the backend directory to Python path
 sys.path.insert(0, '/home/rubenayla/repos/partle/backend')
@@ -18,8 +22,11 @@ except ImportError:
     sys.exit(1)
 
 def main():
-    # Use the same database URL as the scraper
-    DATABASE_URL = "postgresql://postgres:partl3p4ss@localhost:5432/partle"
+    # Use database URL from environment
+    DATABASE_URL = os.getenv("DATABASE_URL")
+    if not DATABASE_URL:
+        print("Error: DATABASE_URL environment variable is required")
+        sys.exit(1)
     engine = create_engine(DATABASE_URL)
     SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
     db = SessionLocal()
