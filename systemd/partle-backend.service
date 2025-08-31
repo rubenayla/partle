@@ -5,13 +5,13 @@ Wants=postgresql.service
 
 [Service]
 Type=simple
-User=root
-Group=root
-WorkingDirectory=/root/partle/backend
-Environment=PATH=/root/.local/bin:/usr/local/bin:/usr/bin:/bin
-Environment=PYTHONPATH=/root/partle/backend
-ExecStartPre=/usr/bin/poetry check
-ExecStart=/usr/bin/poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
+User=deploy
+Group=deploy
+WorkingDirectory=/srv/partle/backend
+Environment=PATH=/home/deploy/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PYTHONPATH=/srv/partle/backend
+ExecStartPre=/home/deploy/.local/bin/poetry check
+ExecStart=/home/deploy/.local/bin/poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=always
 RestartSec=3
@@ -23,7 +23,7 @@ SyslogIdentifier=partle-backend
 NoNewPrivileges=true
 ProtectSystem=strict
 ProtectHome=true
-ReadWritePaths=/root/partle /var/log/partle /tmp
+ReadWritePaths=/srv/partle /var/log/partle /tmp
 PrivateTmp=true
 
 [Install]

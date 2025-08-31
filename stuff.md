@@ -561,4 +561,29 @@ OpenStreetMap
   5. Multiple similar issues: API config problems masked the main timing bug
 
 
+# 2025-08-31 Production Deployment Issue
+## Problem: Website showing default Vite template instead of Partle app
+
+**Root causes discovered:**
+1. **Database misconfiguration**: `DATABASE_URL` was pointing to `localhost` instead of Hetzner server (`91.98.68.236:5432`)
+2. **Missing backend service**: `partle-backend.service` wasn't installed/running properly 
+3. **Wrong service paths**: Systemd service files had `/root/partle` paths instead of `/srv/partle`
+4. **Missing directories**: `/var/log/partle` didn't exist
+5. **Incorrect poetry paths**: Service used `/usr/bin/poetry` instead of `/home/deploy/.local/bin/poetry`
+6. **Frontend serving mismatch**: Nginx configured for static files from `dist/` but frontend was running in dev mode
+
+**Fixes applied:**
+- ✅ Updated `.env` to point to Hetzner database: `postgresql://partle_user:v4zxTX7VN2Ljynlhon1fLg==@91.98.68.236:5432/partle`
+- ✅ Fixed systemd service file paths: `/srv/partle` and `deploy` user
+- ✅ Created missing log directory: `sudo mkdir -p /var/log/partle && sudo chown deploy:deploy /var/log/partle`
+- ✅ Updated poetry paths in service files
+- ✅ Built frontend for production: `npm run build`
+- ✅ Started backend manually (systemd issues remain)
+- ✅ Updated frontend title from "Vite + React" to "Partle"
+
+**Final result**: Website now loads properly at https://partle.rubenayla.xyz/
+
+**Auto-fix consideration**: Could create health check scripts, but manual intervention is probably better to avoid masking underlying issues.
+
+
 
