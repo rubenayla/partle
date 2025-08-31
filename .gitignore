@@ -34,6 +34,9 @@ lerna-debug.log*
 backend/app/scraper/crawls/*/requests.queue/
 backend/app/scraper/crawls/*/requests.seen
 backend/app/scraper/crawls/*/spider.state
+backend/app/scraper/store_scrapers/crawls/*/requests.queue/
+backend/app/scraper/store_scrapers/crawls/*/requests.seen
+backend/app/scraper/store_scrapers/crawls/*/spider.state
 
 # === Database backups ===
 backend/backups/*.sql.gz

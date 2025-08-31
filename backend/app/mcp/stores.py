@@ -97,7 +97,7 @@ async def list_tools() -> List[Tool]:
                 },
                 'required': ['store_id']
             }
-        },
+        ),
         Tool(
             name='find_stores_by_type',
             description='Find stores by their type (physical, online, or chain)',
@@ -117,7 +117,7 @@ async def list_tools() -> List[Tool]:
                 },
                 'required': ['store_type']
             }
-        },
+        ),
         Tool(
             name='find_stores_near_location',
             description='Find physical stores near a specific location (requires stores to have lat/lon coordinates)',

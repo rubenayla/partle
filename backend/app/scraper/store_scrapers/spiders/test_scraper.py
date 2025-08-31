@@ -14,79 +14,77 @@ class TestScraperSpider(scrapy.Spider):
     name = "test_scraper"
     store_id = 4066  # Using existing store ID from database
     
-    # Test products with real images
-    test_products = [
-        {
-            'name': 'Professional Hammer',
-            'price': 29.99,
-            'description': 'Heavy duty construction hammer',
-            'image_url': 'https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?w=600&h=600&fit=crop',
-            'url': 'https://example.com/hammer'
-        },
-        {
-            'name': 'Electric Drill Set',
-            'price': 89.99,
-            'description': 'Cordless drill with battery pack',
-            'image_url': 'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=600&h=600&fit=crop',
-            'url': 'https://example.com/drill'
-        },
-        {
-            'name': 'Tool Box Professional',
-            'price': 45.99,
-            'description': 'Multi-compartment tool storage box',
-            'image_url': 'https://images.unsplash.com/photo-1602080958523-4c60a7b10c83?w=600&h=600&fit=crop',
-            'url': 'https://example.com/toolbox'
-        },
-        {
-            'name': 'Safety Goggles Pro',
-            'price': 12.99,
-            'description': 'Professional safety eyewear',
-            'image_url': 'https://images.unsplash.com/photo-1609205807490-e143f86fb41f?w=600&h=600&fit=crop',
-            'url': 'https://example.com/goggles'
-        },
-        {
-            'name': 'Work Gloves Heavy Duty',
-            'price': 15.99,
-            'description': 'Reinforced construction gloves',
-            'image_url': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=600&fit=crop',
-            'url': 'https://example.com/gloves'
-        },
-        {
-            'name': 'Circular Saw',
-            'price': 129.99,
-            'description': '7-1/4 inch circular saw with laser guide',
-            'image_url': 'https://images.unsplash.com/photo-1581244277943-fe4a9c777189?w=600&h=600&fit=crop',
-            'url': 'https://example.com/saw'
-        },
-        {
-            'name': 'Screwdriver Set',
-            'price': 34.99,
-            'description': '20-piece precision screwdriver set',
-            'image_url': 'https://images.unsplash.com/photo-1530116586217-4d40b9d8b99d?w=600&h=600&fit=crop',
-            'url': 'https://example.com/screwdrivers'
-        },
-        {
-            'name': 'Level Professional',
-            'price': 19.99,
-            'description': '24-inch aluminum construction level',
-            'image_url': 'https://images.unsplash.com/photo-1572981779307-38b8cabb2407?w=600&h=600&fit=crop',
-            'url': 'https://example.com/level'
-        },
-        {
-            'name': 'Tape Measure',
-            'price': 8.99,
-            'description': '25-foot steel measuring tape',
-            'image_url': 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=600&h=600&fit=crop',
-            'url': 'https://example.com/tape'
-        },
-        {
-            'name': 'Wrench Set',
-            'price': 42.99,
-            'description': 'Combination wrench set 8-19mm',
-            'image_url': 'https://images.unsplash.com/photo-1581335922225-e3ef0fdc54ba?w=600&h=600&fit=crop',
-            'url': 'https://example.com/wrenches'
-        }
-    ]
+    # Generate hundreds of test products with variations
+    def generate_test_products(self):
+        """Generate hundreds of test products programmatically."""
+        import random
+        
+        base_products = [
+            ('Hammer', 'Construction and demolition hammer'),
+            ('Drill', 'Electric drill for various materials'),
+            ('Saw', 'Cutting tool for wood and metal'),
+            ('Wrench', 'Adjustable wrench for bolts and nuts'),
+            ('Screwdriver', 'Precision screwdriver set'),
+            ('Pliers', 'Grip and bend tool'),
+            ('Level', 'Bubble level for accurate measurements'),
+            ('Tape Measure', 'Measuring tape for distances'),
+            ('Chisel', 'Wood and metal cutting chisel'),
+            ('File', 'Metal smoothing file'),
+            ('Sandpaper', 'Abrasive paper for smoothing'),
+            ('Glue', 'Strong adhesive for repairs'),
+            ('Nails', 'Construction fastening nails'),
+            ('Screws', 'Threaded fasteners'),
+            ('Bolts', 'Heavy duty fasteners'),
+            ('Washers', 'Flat rings for fasteners'),
+            ('Nuts', 'Threaded fastener companions'),
+            ('Anchors', 'Wall mounting hardware'),
+            ('Brackets', 'Support and mounting brackets'),
+            ('Hinges', 'Door and cabinet hinges'),
+        ]
+        
+        materials = ['Steel', 'Aluminum', 'Plastic', 'Wood', 'Composite', 'Carbon Fiber', 'Titanium', 'Brass']
+        brands = ['ProTool', 'MasterCraft', 'PowerMax', 'PrecisionPro', 'DuraBuild', 'SpeedWork', 'UltraTech', 'MaxForce']
+        sizes = ['Mini', 'Small', 'Medium', 'Large', 'XL', 'Professional', 'Industrial', 'Heavy Duty']
+        
+        products = []
+        image_urls = [
+            'https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?w=600&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=600&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1602080958523-4c60a7b10c83?w=600&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1609205807490-e143f86fb41f?w=600&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1581244277943-fe4a9c777189?w=600&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1530116586217-4d40b9d8b99d?w=600&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1572981779307-38b8cabb2407?w=600&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=600&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1581335922225-e3ef0fdc54ba?w=600&h=600&fit=crop',
+        ]
+        
+        for i, (product_base, description_base) in enumerate(base_products):
+            # Generate 50 variations of each base product
+            for j in range(50):
+                material = random.choice(materials)
+                brand = random.choice(brands)
+                size = random.choice(sizes)
+                
+                name = f"{brand} {size} {material} {product_base}"
+                price = round(random.uniform(5.99, 299.99), 2)
+                description = f"{size} {material.lower()} {description_base.lower()} from {brand}"
+                image_url = random.choice(image_urls)
+                
+                products.append({
+                    'name': name,
+                    'price': price,
+                    'description': description,
+                    'image_url': image_url,
+                    'url': f'https://example.com/product-{i * 50 + j}'
+                })
+        
+        return products
+    
+    @property
+    def test_products(self):
+        return self.generate_test_products()
     
     def start_requests(self):
         """Generate requests for test products"""
