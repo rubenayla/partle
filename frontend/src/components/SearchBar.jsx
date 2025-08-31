@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Search, User, Info, Plus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { deleteAccount } from '../api/auth'
+import { deleteAccount } from '../api/auth';
 import Tooltip from './Tooltip'
 import TagFilter from './TagFilter'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'

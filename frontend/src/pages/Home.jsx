@@ -120,25 +120,8 @@ export default function Home() {
     return fetchData(false, searchParams, offset);
   }, [searchParams, offset, fetchData]);
 
-  // PERMANENT FIX: Inline implementation works, custom hook fails
-  const [isFetching, setIsFetching] = useState(false);
-  
-  useEffect(() => {
-    const handleScroll = () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop >=
-        document.documentElement.offsetHeight - 1000 && 
-        hasMore && 
-        !isFetching
-      ) {
-        setIsFetching(true);
-        fetchMoreData().finally(() => setIsFetching(false));
-      }
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [hasMore, isFetching, fetchMoreData]);
+  // Testing ESM-native hook with full React/ESM optimization
+  const isFetching = useInfiniteScroll(fetchMoreData, hasMore);
 
   useEffect(() => {
     // Search params changed, resetting results

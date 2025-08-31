@@ -39,6 +39,51 @@
 - **ALWAYS use trailing slash** for all API endpoints: `/v1/stores/`, `/v1/products/`, `/v1/auth/`
 - Base URL: `http://localhost:8000` (from VITE_API_BASE in .env.local)
 
+## TypeScript Standards
+- **ALWAYS use TypeScript** (.ts/.tsx) for new files, never plain JavaScript
+- **Import types explicitly**: `import type { User } from '../types'` for type-only imports
+- **Use proper JSDoc**: Include `@fileoverview`, `@param`, `@returns`, `@example` in all functions
+- **Define interfaces**: Create comprehensive interfaces in `src/types/index.ts` for all data structures
+- **Type API responses**: All API functions must have proper TypeScript return types
+- **Avoid `any`**: Use specific types, `unknown`, or proper generics instead
+- **Export types**: Always export interfaces and types for reuse across the application
+
+## TypeScript Code Examples
+- **Hook with proper typing**:
+```tsx
+import type { User } from '../types';
+
+export function useAuth(): {
+  user: User | null;
+  isLoading: boolean;
+  login: (email: string, password: string) => Promise<void>;
+} {
+  // Implementation
+}
+```
+
+- **API function with types**:
+```tsx
+import type { Product, PaginatedResponse } from '../types';
+
+export async function getProducts(params: ProductSearchParams): Promise<PaginatedResponse<Product>> {
+  // Implementation
+}
+```
+
+- **Component props interface**:
+```tsx
+interface ProductCardProps {
+  product: Product;
+  onEdit?: (product: Product) => void;
+  className?: string;
+}
+
+export function ProductCard({ product, onEdit, className }: ProductCardProps) {
+  // Implementation
+}
+```
+
 ## Search Engine
 - **Elasticsearch** for scalable search (millions of products)
 - **Setup**: `docker compose up -d elasticsearch && poetry run python manage_search.py setup`

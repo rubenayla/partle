@@ -13,9 +13,14 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    // Ensure React is pre-bundled correctly
-    include: ['react', 'react-dom'],
-    force: true, // Force re-optimization
+    // Force ESM resolution for React
+    include: ['react', 'react-dom', 'react/jsx-runtime'],
+    force: true,
+    esbuildOptions: {
+      // Ensure proper ESM transformation
+      format: 'esm',
+      target: 'esnext'
+    }
   },
   build: {
     outDir: 'dist',

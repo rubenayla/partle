@@ -1,5 +1,5 @@
 // tailwind.config.js
-module.exports = {
+export default {
   darkMode: 'class',          // html.dark enables dark palette
   content: [
     './index.html',

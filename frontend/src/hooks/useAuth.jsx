@@ -1,6 +1,6 @@
 // src/hooks/useAuth.js
 import { useState, useEffect, createContext, useContext } from "react";
-import { currentUser, login, register } from "../api/auth";
+import { currentUser, login, register } from '../api/auth';
 
 const AuthCtx = createContext(null);
 
