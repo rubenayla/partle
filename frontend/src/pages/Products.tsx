@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../api/index';
 import { Product } from '../types';
+import { getProductImageSrc, hasProductImage } from '../utils/imageUtils';
 
 /**
  * Form data interface for new product creation
@@ -115,9 +116,9 @@ export default function Products(): JSX.Element {
         {products.map((product) => (
           <li key={product.id} className="border p-3 rounded">
             <div className="flex items-center gap-4">
-              {product.image_url && (
+              {hasProductImage(product) && (
                 <img
-                  src={product.image_url}
+                  src={getProductImageSrc(product) || ''}
                   alt={product.name}
                   className="w-16 h-16 object-cover rounded"
                   onError={(e) => {

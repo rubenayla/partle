@@ -8,6 +8,7 @@ import api from '../api/index';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../hooks/useAuth';
 import { Product, Store, User } from '../types';
+import { getProductImageSrc, hasProductImage } from '../utils/imageUtils';
 
 /**
  * Form data interface for product editing
@@ -181,7 +182,7 @@ export default function ProductDetail(): JSX.Element {
     '@type': 'Product',
     name: product.name,
     description: product.description || product.name,
-    image: product.image_url || '',
+    image: getProductImageSrc(product) || product.image_url || '',
     url: `https://partle.vercel.app/products/${product.id}`,
     offers: {
       '@type': 'Offer',
@@ -275,9 +276,9 @@ export default function ProductDetail(): JSX.Element {
           )}
         </div>
       ) : (
-        product.image_url && (
+        hasProductImage(product) && (
           <img
-            src={product.image_url}
+            src={getProductImageSrc(product) || ''}
             alt={product.name}
             className="w-full max-w-sm h-auto object-cover rounded mb-4"
           />
