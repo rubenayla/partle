@@ -52,10 +52,11 @@ export default function Home() {
           offset: offsetToUse,
         };
         
-        // Add store_id filter if selectedStore is provided
-        if (currentSearchParams.selectedStore) {
-          productParams.store_id = currentSearchParams.selectedStore;
+        // Add store_name filter if provided via search operators
+        if (currentSearchParams.storeName) {
+          productParams.store_name = currentSearchParams.storeName;
         }
+        
         
         response = await api.get("/v1/products/", {
           params: productParams,

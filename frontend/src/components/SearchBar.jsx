@@ -20,8 +20,6 @@ export default function SearchBar({
   const [priceMin, setPriceMin] = useState(0)
   const [priceMax, setPriceMax] = useState(500)
   const [selectedTags, setSelectedTags] = useState([])
-  const [selectedStore, setSelectedStore] = useState('')
-  const [stores, setStores] = useState([])
   const [sortBy, setSortBy] = useState('random')
   const [shortcutMode, setShortcutMode] = useState(false)
   const shortcutTimeoutRef = useRef(null)
@@ -39,18 +37,35 @@ export default function SearchBar({
 
   const navigate = useNavigate()
 
-  // Load stores for the filter dropdown
-  useEffect(() => {
-    const loadStores = async () => {
-      try {
-        const response = await api.get('/v1/stores/')
-        setStores(response.data || [])
-      } catch (error) {
-        console.error('Failed to load stores:', error)
-      }
+  // Parse search operators from query
+  const parseSearchOperators = (searchQuery) => {
+    const operators = {};
+    let cleanQuery = searchQuery;
+
+    // Parse store:name or store:"name with spaces"
+    const storeMatch = searchQuery.match(/\bstore:(['"]?)([^'"\s]+(?:\s+[^'"\s]+)*)\1/i);
+    if (storeMatch) {
+      operators.storeName = storeMatch[2];
+      cleanQuery = cleanQuery.replace(storeMatch[0], '').trim();
     }
-    loadStores()
-  }, [])
+
+    // Parse tag:name or tag:"name with spaces"
+    const tagMatches = searchQuery.matchAll(/\btag:(['"]?)([^'"\s]+(?:\s+[^'"\s]+)*)\1/gi);
+    const extractedTags = [];
+    for (const match of tagMatches) {
+      extractedTags.push(match[2]);
+      cleanQuery = cleanQuery.replace(match[0], '').trim();
+    }
+    if (extractedTags.length > 0) {
+      operators.tags = extractedTags;
+    }
+
+    return {
+      cleanQuery: cleanQuery.replace(/\s+/g, ' ').trim(),
+      operators
+    };
+  };
+
 
   // Remove the local theme state and useEffect for theme management
   // useEffect(() => {
@@ -145,7 +160,20 @@ export default function SearchBar({
   const handleSearch = (event) => {
     event.preventDefault()
     if (onSearch) {
-      onSearch({ query, searchType, priceMin, priceMax, sortBy, selectedTags, selectedStore })
+      const { cleanQuery, operators } = parseSearchOperators(query);
+      
+      // Merge parsed tags with existing selectedTags
+      const allTags = [...selectedTags, ...(operators.tags || [])];
+      
+      onSearch({ 
+        query: cleanQuery, 
+        searchType, 
+        priceMin, 
+        priceMax, 
+        sortBy, 
+        selectedTags: allTags,
+        storeName: operators.storeName // Pass store name instead of store ID
+      })
     }
   }
 
@@ -195,7 +223,7 @@ export default function SearchBar({
                       onClick={() => {
                         setSearchType('products');
                         if (onSearch) {
-                          onSearch({ query, searchType: 'products', priceMin, priceMax, sortBy, selectedTags, selectedStore });
+                          onSearch({ query, searchType: 'products', priceMin, priceMax, sortBy, selectedTags });
                         }
                       }}
                       className={`px-3 py-1 rounded-full text-sm font-medium ${searchType === 'products' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'}`}
@@ -207,7 +235,7 @@ export default function SearchBar({
                       onClick={() => {
                         setSearchType('stores');
                         if (onSearch) {
-                          onSearch({ query, searchType: 'stores', priceMin, priceMax, sortBy, selectedTags, selectedStore });
+                          onSearch({ query, searchType: 'stores', priceMin, priceMax, sortBy, selectedTags });
                         }
                       }}
                       className={`px-3 py-1 rounded-full text-sm font-medium ${searchType === 'stores' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'}`}
@@ -217,29 +245,6 @@ export default function SearchBar({
                   </div>
                 </div>
                 
-                {/* Store Filter - Only show for products */}
-                {searchType === 'products' && (
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Store</label>
-                    <select
-                      value={selectedStore}
-                      onChange={(e) => {
-                        setSelectedStore(e.target.value);
-                        if (onSearch) {
-                          onSearch({ query, searchType, priceMin, priceMax, sortBy, selectedTags, selectedStore: e.target.value });
-                        }
-                      }}
-                      className="w-full border border-gray-300 dark:border-gray-600 px-2 py-1 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                    >
-                      <option value="">All Stores</option>
-                      {stores.map((store) => (
-                        <option key={store.id} value={store.id}>
-                          {store.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
                 
                 {/* Tag Filter */}
                 <TagFilter
@@ -260,7 +265,7 @@ export default function SearchBar({
                         onChange={(e) => {
                           setPriceMin(Number(e.target.value));
                           if (onSearch) {
-                            onSearch({ query, searchType, priceMin: Number(e.target.value), priceMax, sortBy, selectedTags, selectedStore });
+                            onSearch({ query, searchType, priceMin: Number(e.target.value), priceMax, sortBy, selectedTags });
                           }
                         }}
                         className="w-full border border-gray-300 dark:border-gray-600 px-2 py-1 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
@@ -275,7 +280,7 @@ export default function SearchBar({
                         onChange={(e) => {
                           setPriceMax(Number(e.target.value));
                           if (onSearch) {
-                            onSearch({ query, searchType, priceMin, priceMax: Number(e.target.value), sortBy, selectedTags, selectedStore });
+                            onSearch({ query, searchType, priceMin, priceMax: Number(e.target.value), sortBy, selectedTags });
                           }
                         }}
                         className="w-full border border-gray-300 dark:border-gray-600 px-2 py-1 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
@@ -310,7 +315,7 @@ export default function SearchBar({
                     onSelect={() => {
                       setSortBy(value);
                       if (onSearch) {
-                        onSearch({ query, searchType, priceMin, priceMax, sortBy: value, selectedTags, selectedStore });
+                        onSearch({ query, searchType, priceMin, priceMax, sortBy: value, selectedTags });
                       }
                     }}
                   >
