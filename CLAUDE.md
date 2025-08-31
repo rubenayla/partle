@@ -1,5 +1,10 @@
 # Partle Project - Claude Notes
 
+## 🚨 CRITICAL DATABASE WARNING 🚨
+**ONLY ONE DATABASE EXISTS: Hetzner Production (91.98.68.236:5432/partle)**
+**NEVER CREATE LOCAL DATABASES - USER EXPLICITLY FORBID THIS TWICE**
+**ALWAYS VERIFY DATABASE_URL POINTS TO HETZNER BEFORE ANY DB OPERATION**
+
 ## Project Structure
 - **Backend**: Python FastAPI application using Poetry for dependency management
 - **Frontend**: React/TypeScript application using npm/Node.js
@@ -25,9 +30,11 @@
 - **Frontend config**: `frontend/package.json`
 
 ## Database Notes
+- **PRODUCTION DATABASE ONLY**: postgresql://partle_user:v4zxTX7VN2Ljynlhon1fLg==@91.98.68.236:5432/partle
 - Uses PostgreSQL enums for StoreType: 'physical', 'online', 'chain'
-- Recent migration `8cdfc51661a9` fixed enum update issues by using proper SQL sequence
+- Recent migration `6c21a37be6b8` added image storage fields (image_data, image_filename, image_content_type)
 - SQLAlchemy models may need app restart after enum changes
+- **NEVER USE localhost:5432 - ONLY HETZNER DATABASE**
 
 ## Testing
 - **Backend**: pytest (check for test commands in pyproject.toml)

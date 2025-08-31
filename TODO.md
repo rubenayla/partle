@@ -1,6 +1,6 @@
 Let's do the scraper for www.mengual.com/
 
-- let's use the mcp server with chatgpt
+- let's test the use of mcp server with chatgpt
 
 # problem with hook for scroll
 ● Summary of the React Hooks Issue
