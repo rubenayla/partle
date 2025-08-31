@@ -1,4 +1,3 @@
-we don't use railway. Remove all references.
 Let's do the scraper for www.mengual.com/
 
 # accessible mcp servers!

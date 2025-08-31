@@ -291,8 +291,8 @@ The database file will be created in the `backend` directory. You'll still need 
 
 * **Frontend (React):** hosted on [Vercel](https://vercel.com/)
   Live: [https://partle.vercel.app](https://partle.vercel.app)
-* **Backend (FastAPI):** hosted on [Railway](https://railway.app/) TODO UPDATE, WE DON'T USE RAILWAY.
-  Public API base: [https://partle-production.up.railway.app](https://partle-production.up.railway.app)
+* **Backend (FastAPI):** deployment TBD
+  Public API base: TBD
 
 Frontend uses `import.meta.env.VITE_API_BASE` to locate the backend.
 This must be:
