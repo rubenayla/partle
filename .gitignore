@@ -30,6 +30,11 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# === Scrapy crawler state files ===
+backend/app/scraper/crawls/*/requests.queue/
+backend/app/scraper/crawls/*/requests.seen
+backend/app/scraper/crawls/*/spider.state
+
 # === OS / Editor junk ===
 .DS_Store
 Thumbs.db

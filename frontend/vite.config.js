@@ -8,7 +8,14 @@ export default defineConfig({
     outDir: 'dist',
   },
   server: {
-    historyApiFallback: true,  // (safe, local only)
+    host: true, // Allow external connections
+    allowedHosts: [
+      'partle.rubenayla.xyz',
+      '91.98.68.236',
+      'localhost',
+      '127.0.0.1'
+    ],
+    historyApiFallback: true,
     proxy: {
       '/api': {
         target: 'http://localhost:8000',
