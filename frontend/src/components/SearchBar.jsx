@@ -6,6 +6,7 @@ import { deleteAccount } from '../api/auth'
 import Tooltip from './Tooltip'
 import TagFilter from './TagFilter'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
+import api from '../api/index.ts'
 
 export default function SearchBar({
   onSearch = () => { },
@@ -35,6 +36,36 @@ export default function SearchBar({
 
 
   const navigate = useNavigate()
+
+  // Parse search operators from query
+  const parseSearchOperators = (searchQuery) => {
+    const operators = {};
+    let cleanQuery = searchQuery;
+
+    // Parse store:name or store:"name with spaces"
+    const storeMatch = searchQuery.match(/\bstore:(['"]?)([^'"\s]+(?:\s+[^'"\s]+)*)\1/i);
+    if (storeMatch) {
+      operators.storeName = storeMatch[2];
+      cleanQuery = cleanQuery.replace(storeMatch[0], '').trim();
+    }
+
+    // Parse tag:name or tag:"name with spaces"
+    const tagMatches = searchQuery.matchAll(/\btag:(['"]?)([^'"\s]+(?:\s+[^'"\s]+)*)\1/gi);
+    const extractedTags = [];
+    for (const match of tagMatches) {
+      extractedTags.push(match[2]);
+      cleanQuery = cleanQuery.replace(match[0], '').trim();
+    }
+    if (extractedTags.length > 0) {
+      operators.tags = extractedTags;
+    }
+
+    return {
+      cleanQuery: cleanQuery.replace(/\s+/g, ' ').trim(),
+      operators
+    };
+  };
+
 
   // Remove the local theme state and useEffect for theme management
   // useEffect(() => {
@@ -129,7 +160,20 @@ export default function SearchBar({
   const handleSearch = (event) => {
     event.preventDefault()
     if (onSearch) {
-      onSearch({ query, searchType, priceMin, priceMax, sortBy, selectedTags })
+      const { cleanQuery, operators } = parseSearchOperators(query);
+      
+      // Merge parsed tags with existing selectedTags
+      const allTags = [...selectedTags, ...(operators.tags || [])];
+      
+      onSearch({ 
+        query: cleanQuery, 
+        searchType, 
+        priceMin, 
+        priceMax, 
+        sortBy, 
+        selectedTags: allTags,
+        storeName: operators.storeName // Pass store name instead of store ID
+      })
     }
   }
 
@@ -200,6 +244,7 @@ export default function SearchBar({
                     </button>
                   </div>
                 </div>
+                
                 
                 {/* Tag Filter */}
                 <TagFilter

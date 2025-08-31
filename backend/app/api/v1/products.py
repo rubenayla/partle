@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 @router.get("/", response_model=list[schema.ProductOut])
 def list_products(
     store_id: int | None = None,
+    store_name: str | None = None,
     q: str | None = None,
     min_price: float | None = None,
     max_price: float | None = None,
@@ -35,6 +36,11 @@ def list_products(
 
     if store_id is not None:
         query = query.filter(Product.store_id == store_id)
+
+    if store_name is not None:
+        # Join with Store table to filter by store name (case-insensitive partial match)
+        from app.db.models import Store
+        query = query.join(Store).filter(Store.name.ilike(f"%{store_name}%"))
 
     if q:
         search_term = f"%{q}%"

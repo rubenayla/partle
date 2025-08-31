@@ -90,6 +90,13 @@ def create_store(
     return new_store
 
 
+@router.get("/dropdown", response_model=list[dict])
+def list_stores_for_dropdown(db: Session = Depends(get_db)):
+    """Fast endpoint for dropdown - only returns id and name."""
+    stores = db.query(Store.id, Store.name).all()
+    return [{"id": store.id, "name": store.name} for store in stores]
+
+
 @router.get("/{store_id}", response_model=schema.StoreRead)
 def get_store(store_id: int, db: Session = Depends(get_db)):
     """Retrieve a single store by *id*."""

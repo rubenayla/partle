@@ -168,6 +168,106 @@ class DatabasePipeline:
         return item
 
 
+class StoreDeduplicationPipeline:
+    """Pipeline to prevent store duplicates by name similarity."""
+    
+    def __init__(self):
+        self.engine = None
+        self.SessionLocal = None
+        
+    def open_spider(self, spider):
+        """Initialize database connection when spider starts."""
+        try:
+            self.engine = create_engine(config.DATABASE_URL, echo=False)
+            self.SessionLocal = sessionmaker(bind=self.engine, autocommit=False, autoflush=False)
+            spider.logger.info(f"Store deduplication pipeline initialized")
+        except Exception as e:
+            spider.logger.error(f"Failed to connect to database: {e}")
+            raise
+    
+    def close_spider(self, spider):
+        """Clean up database connection when spider closes."""
+        if self.engine:
+            self.engine.dispose()
+            spider.logger.info("Store deduplication pipeline connection closed")
+    
+    def normalize_store_name(self, name):
+        """Normalize store name for comparison."""
+        if not name:
+            return ""
+        # Convert to lowercase, remove common variations and suffixes
+        normalized = name.lower()
+        normalized = normalized.replace("brico depot", "bricodepot")
+        normalized = normalized.replace("brico dépôt", "bricodepot") 
+        normalized = normalized.replace("brico-depot", "bricodepot")
+        # Remove numbered suffixes like "_1", "_2"
+        import re
+        normalized = re.sub(r'_\d+$', '', normalized)
+        # Remove extra whitespace
+        normalized = ' '.join(normalized.split())
+        return normalized
+    
+    def process_item(self, item, spider):
+        """Process store items and prevent duplicates."""
+        from .items import StoreScrapersItem
+        
+        # Only process StoreScrapersItem (not ProductItem)
+        if not isinstance(item, StoreScrapersItem):
+            return item
+            
+        if not self.SessionLocal:
+            spider.logger.error("No database connection available")
+            return item
+            
+        adapter = ItemAdapter(item)
+        store_name = adapter.get('name')
+        
+        if not store_name:
+            spider.logger.warning("Skipping store item with no name")
+            spider.crawler.stats.inc_value('store_pipeline/items_dropped')
+            return item
+            
+        db = self.SessionLocal()
+        try:
+            normalized_name = self.normalize_store_name(store_name)
+            
+            # Check for existing stores with similar names
+            existing_stores = db.query(Store).all()
+            
+            for existing_store in existing_stores:
+                existing_normalized = self.normalize_store_name(existing_store.name)
+                
+                if normalized_name == existing_normalized:
+                    spider.logger.info(
+                        f"Duplicate store detected: '{store_name}' matches existing '{existing_store.name}' "
+                        f"(ID: {existing_store.id}). Skipping."
+                    )
+                    spider.crawler.stats.inc_value('store_pipeline/duplicates_skipped')
+                    return item
+            
+            # Special case: block Bricodepot variations if canonical store exists
+            if "bricodepot" in normalized_name:
+                canonical_store = db.query(Store).filter(Store.name == "Bricodepot").first()
+                if canonical_store:
+                    spider.logger.info(
+                        f"Bricodepot variation '{store_name}' blocked - canonical store exists "
+                        f"(ID: {canonical_store.id}). Skipping."
+                    )
+                    spider.crawler.stats.inc_value('store_pipeline/bricodepot_blocked')
+                    return item
+            
+            spider.logger.info(f"Store '{store_name}' passed deduplication check")
+            spider.crawler.stats.inc_value('store_pipeline/items_passed')
+            
+        except Exception as e:
+            spider.logger.error(f"Error in store deduplication for '{store_name}': {e}")
+            spider.crawler.stats.inc_value('store_pipeline/errors')
+        finally:
+            db.close()
+            
+        return item
+
+
 class StoreScrapersPipeline:
     """Legacy pipeline - kept for backward compatibility."""
     def process_item(self, item, spider):

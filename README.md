@@ -225,8 +225,8 @@ make dev DATABASE_URL=postgresql://user:pw@host:port/db
 
 * **Directly:**
 
-  * Frontend: npm run dev --prefix frontend
   * Backend:  poetry run uvicorn app.main\:app --reload --host 0.0.0.0 --port 8000 --log-level debug
+  * Frontend: npm run dev --prefix frontend
 
 ---
 

@@ -42,29 +42,39 @@ export default function Home() {
       
       if (currentSearchParams.searchType === "products") {
         console.log('fetchData: Sending product query', currentSearchParams.query);
+        const productParams = {
+          q: currentSearchParams.query,
+          min_price: currentSearchParams.priceMin,
+          max_price: currentSearchParams.priceMax,
+          sort_by: currentSearchParams.sortBy,
+          tags: currentSearchParams.selectedTags.join(","),
+          limit: 20,
+          offset: offsetToUse,
+        };
+        
+        // Add store_name filter if provided via search operators
+        if (currentSearchParams.storeName) {
+          productParams.store_name = currentSearchParams.storeName;
+        }
+        
+        
         response = await api.get("/v1/products/", {
-          params: {
-            q: currentSearchParams.query,
-            min_price: currentSearchParams.priceMin,
-            max_price: currentSearchParams.priceMax,
-            sort_by: currentSearchParams.sortBy,
-            tags: currentSearchParams.selectedTags.join(","),
-            limit: 20,
-            offset: offsetToUse,
-          },
+          params: productParams,
         });
         
         console.log('fetchData: Product API response', response.data);
         if (reset) {
+          console.log('fetchData: Setting products to', response.data);
           setProducts(response.data);
         } else {
           setProducts(prev => {
             const existingIds = new Set(prev.map(item => item.id));
             const newItems = response.data.filter(item => !existingIds.has(item.id));
-            return [...prev, ...newItems];
+            const updatedProducts = [...prev, ...newItems];
+            console.log('fetchData: Appending products, new total:', updatedProducts.length);
+            return updatedProducts;
           });
         }
-        console.log('fetchData: Products state after update', products);
       } else {
         console.log('fetchData: Sending store query', currentSearchParams.query);
         response = await api.get("/v1/stores/", {
@@ -79,15 +89,17 @@ export default function Home() {
         
         console.log('fetchData: Store API response', response.data);
         if (reset) {
+          console.log('fetchData: Setting stores to', response.data);
           setStores(response.data);
         } else {
           setStores(prev => {
             const existingIds = new Set(prev.map(item => item.id));
             const newItems = response.data.filter(item => !existingIds.has(item.id));
-            return [...prev, ...newItems];
+            const updatedStores = [...prev, ...newItems];
+            console.log('fetchData: Appending stores, new total:', updatedStores.length);
+            return updatedStores;
           });
         }
-        console.log('fetchData: Stores state after update', stores);
       }
       
       // Update pagination state
@@ -117,6 +129,15 @@ export default function Home() {
     fetchData(true, searchParams, 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
+
+  // Debug: Log when products/stores state actually changes
+  useEffect(() => {
+    console.log('Home.jsx: Products state updated, count:', products.length);
+  }, [products]);
+
+  useEffect(() => {
+    console.log('Home.jsx: Stores state updated, count:', stores.length);
+  }, [stores]);
 
   // Expose setSearchParams to parent via useImperativeHandle or props
   // For now, we'll use a global approach via window object as a quick solution
