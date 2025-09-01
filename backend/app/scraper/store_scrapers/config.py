@@ -5,9 +5,9 @@ import os
 from typing import Optional
 from dotenv import load_dotenv
 
-# Load environment variables from backend .env file with override
-backend_env_path = os.path.join(os.path.dirname(__file__), '..', '..', '..', '.env')
-load_dotenv(backend_env_path, override=True)
+# Load environment variables from root .env file
+root_env_path = os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..', '.env')
+load_dotenv(root_env_path, override=True)
 
 
 class ScraperConfig:
