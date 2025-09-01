@@ -11,6 +11,7 @@ import Contact from "./pages/Contact"; // Import the new Contact page
 import Terms from "./pages/Terms"; // Import the new Terms page
 import Privacy from "./pages/Privacy"; // Import the new Privacy page
 import About from "./pages/About"; // Import the new About page
+import Documentation from "./pages/Documentation"; // Import the new Documentation page
 import Account from "./pages/Account"; // Import the new Account page
 import ResetPassword from "./pages/ResetPassword"; // Import the new ResetPassword page
 import { useBackendStatus } from './hooks/useBackendStatus'
@@ -51,6 +52,7 @@ export default function App() {
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/about" element={<About />} />
+          <Route path="/documentation" element={<Documentation />} />
           <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* actions that require login */}

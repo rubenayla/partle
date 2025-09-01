@@ -586,6 +586,9 @@ export default function SearchBar({
             sideOffset={8}
           >
             <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700">
+              <a href="/documentation" className="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:font-medium">Documentation</a>
+            </DropdownMenu.Item>
+            <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700">
               <a href="/about" className="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:font-medium">About</a>
             </DropdownMenu.Item>
             <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700">
