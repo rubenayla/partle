@@ -199,7 +199,7 @@ export default function ProductDetail(): JSX.Element {
   };
 
   return (
-    <main className="w-full max-w-screen-2xl mx-auto px-4">
+    <div className="w-full">
       <Helmet>
         <title>{product.name} - Partle</title>
         <meta name="description" content={product.description || product.name} />
@@ -460,6 +460,6 @@ export default function ProductDetail(): JSX.Element {
           )}
         </div>
       </div>
-    </main>
+    </div>
   );
 }
