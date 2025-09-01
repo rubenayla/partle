@@ -221,9 +221,9 @@ export default function ProductDetail(): JSX.Element {
       </button>
 
       {/* Two-column layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
         {/* Image Section - Left Column */}
-        <div className="w-full">
+        <div className="w-full lg:col-span-2">
           {/* Product Image */}
           {isEditing ? (
             <div className="mb-4">
@@ -260,7 +260,7 @@ export default function ProductDetail(): JSX.Element {
         </div>
 
         {/* Info Card - Right Column */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 lg:col-span-3">
           {/* Edit Controls */}
           {isOwner && (
             <div className="flex gap-2 mb-4">
