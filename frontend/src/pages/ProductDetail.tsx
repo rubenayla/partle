@@ -9,6 +9,7 @@ import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../hooks/useAuth';
 import type { Product, Store, User } from '../types';
 import { getProductImageSrc, hasProductImage } from '../utils/imageUtils';
+import { trackProductView, trackExternalLink, trackStoreVisit } from '../utils/analytics';
 
 /**
  * Form data interface for product editing
@@ -105,6 +106,13 @@ export default function ProductDetail(): JSX.Element {
           price: productData.price?.toString() || '',
           url: productData.url || '',
           image_url: productData.image_url || ''
+        });
+
+        // Track product view for analytics
+        trackProductView({
+          id: productData.id,
+          name: productData.name,
+          price: productData.price || undefined
         });
         
         if (productData.store_id) {
@@ -377,6 +385,7 @@ export default function ProductDetail(): JSX.Element {
                   className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors font-medium"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackExternalLink(product.url || '', 'product')}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -432,6 +441,7 @@ export default function ProductDetail(): JSX.Element {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm"
+                      onClick={() => trackExternalLink(`https://maps.google.com/?q=${store.latitude},${store.longitude}`, 'store')}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -447,6 +457,7 @@ export default function ProductDetail(): JSX.Element {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm"
+                      onClick={() => trackExternalLink(store.homepage || '', 'store')}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9" />

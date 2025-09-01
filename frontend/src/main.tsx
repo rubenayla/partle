@@ -4,6 +4,10 @@ import App from './App.tsx'
 import './index.css'
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from './hooks/useAuth';
+import { initGA } from './utils/analytics';
+
+// Initialize Google Analytics
+initGA();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <HelmetProvider>

@@ -1,5 +1,6 @@
 // frontend/src/App.tsx
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import RequireAuth from "./components/RequireAuth"; // only for actions like adding
 import Home from "./pages/Home"; // new home page
 import Stores from "./pages/Stores";
@@ -16,8 +17,19 @@ import Account from "./pages/Account"; // Import the new Account page
 import ResetPassword from "./pages/ResetPassword"; // Import the new ResetPassword page
 import { useBackendStatus } from './hooks/useBackendStatus'
 import { useTheme } from './hooks/useTheme';
+import { trackPageView } from './utils/analytics';
 
 import Layout from "./components/Layout";
+
+function PageTracker() {
+  const location = useLocation();
+  
+  useEffect(() => {
+    trackPageView(location.pathname);
+  }, [location]);
+  
+  return null;
+}
 
 export default function App() {
   const status = useBackendStatus()
@@ -40,6 +52,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <PageTracker />
       {/* Global Layout wrapper - provides SearchBar, spacing, and container for ALL pages */}
       <Layout setTheme={setTheme} currentTheme={theme}>
         <Routes>
