@@ -3,7 +3,7 @@
  * @module pages/ProductDetail
  */
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import api from '../api/index';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../hooks/useAuth';
@@ -71,6 +71,7 @@ interface ProductSchema {
 export default function ProductDetail(): JSX.Element {
   console.log('ProductDetail: Component mounting');
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { user, isLoading: authLoading } = useAuth();
   console.log('ProductDetail: useParams ID:', id, 'authLoading:', authLoading, 'user:', user?.email || 'not logged in');
   
@@ -206,6 +207,18 @@ export default function ProductDetail(): JSX.Element {
           {JSON.stringify(productSchema)}
         </script>
       </Helmet>
+
+      {/* Go Back Button */}
+      <button
+        onClick={() => navigate(-1)}
+        className="mb-4 flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 transition-colors"
+        aria-label="Go back to previous page"
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span>Go Back</span>
+      </button>
 
       <header className="flex justify-between items-start mb-4">
         {isEditing ? (
@@ -356,21 +369,57 @@ export default function ProductDetail(): JSX.Element {
       {/* Store Information */}
       {store && (
         <section className="mt-6 border-t pt-4">
-          <h2 className="font-medium">Store</h2>
-          <p className="mb-1">{store.name}</p>
-          {store.latitude && store.longitude && (
-            <p>
-              {store.latitude}, {store.longitude} –{' '}
-              <a
-                href={`https://maps.google.com/?q=${store.latitude},${store.longitude}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 underline"
-              >
-                View on Google Maps
-              </a>
-            </p>
-          )}
+          <h2 className="font-medium text-lg mb-2">Store Information</h2>
+          <div className="space-y-2">
+            <p className="font-medium">{store.name}</p>
+            
+            {/* Store Type */}
+            {store.type && (
+              <p className="text-sm text-gray-600">
+                Type: <span className="capitalize">{store.type}</span>
+              </p>
+            )}
+            
+            {/* Physical Address */}
+            {store.address && (
+              <div>
+                <p className="text-sm text-gray-600">Address:</p>
+                <p className="text-sm">{store.address}</p>
+              </div>
+            )}
+            
+            {/* Map Link */}
+            {store.latitude && store.longitude && (
+              <div className="mt-2">
+                <a
+                  href={`https://maps.google.com/?q=${store.latitude},${store.longitude}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 text-sm"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  View on Google Maps
+                </a>
+              </div>
+            )}
+            
+            {/* Store Website */}
+            {store.website && (
+              <p className="text-sm">
+                <a
+                  href={store.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-700"
+                >
+                  Visit Store Website
+                </a>
+              </p>
+            )}
+          </div>
         </section>
       )}
     </main>
