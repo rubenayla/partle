@@ -70,64 +70,80 @@ export default function ListView({ items }: ListViewProps) {
   return (
     <ul className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
       {items.map((item) => (
-        <li 
-          key={item.id} 
-          className="border border-gray-200 dark:border-gray-700 rounded-xl p-4 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-        >
-          {/* Item Image */}
-          {(isProduct(item) ? hasProductImage(item) : item.image_url) && (
-            <img
-              src={isProduct(item) ? getProductImageSrc(item) || '' : item.image_url || ''}
-              alt={item.name}
-              className="w-full h-32 object-cover rounded mb-2"
-              referrerPolicy="no-referrer"
-              crossOrigin="anonymous"
-              onError={(e) => {
-                // Hide failed images (CORS/404 errors)
-                e.currentTarget.style.display = 'none';
-              }}
-              onLoad={() => {
-                // Image loaded successfully - no action needed
-              }}
-            />
-          )}
-          
-          {/* Item Name with Link */}
-          <h3 className="font-semibold mb-1">
-            {isProduct(item) ? (
-              <Link 
-                to={`/products/${item.id}`} 
-                className="text-gray-900 dark:text-white hover:underline"
-                onClick={() => 
-                  console.log('ListView: Clicking product link, ID:', item.id, 'URL:', `/products/${item.id}`)
-                }
-              >
+        <li key={item.id} className="h-full">
+          <Link
+            to={isProduct(item) ? `/products/${item.id}` : `/stores/${item.id}`}
+            className="flex flex-col h-full border border-gray-200 dark:border-gray-700 rounded-xl p-4 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
+            onClick={() => 
+              console.log('ListView: Clicking card, ID:', item.id, 'URL:', isProduct(item) ? `/products/${item.id}` : `/stores/${item.id}`)
+            }
+          >
+            {/* Item Image or Placeholder */}
+            <div className="w-full h-32 mb-2">
+              {(isProduct(item) ? hasProductImage(item) : item.image_url) ? (
+                <img
+                  src={isProduct(item) ? getProductImageSrc(item) || '' : item.image_url || ''}
+                  alt={item.name}
+                  className="w-full h-full object-cover rounded"
+                  referrerPolicy="no-referrer"
+                  crossOrigin="anonymous"
+                  onError={(e) => {
+                    // Replace with placeholder on error
+                    e.currentTarget.style.display = 'none';
+                    const parent = e.currentTarget.parentElement;
+                    if (parent) {
+                      parent.classList.add('bg-gray-200', 'dark:bg-gray-700', 'rounded', 'flex', 'items-center', 'justify-center');
+                    }
+                  }}
+                  onLoad={() => {
+                    // Image loaded successfully - no action needed
+                  }}
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center">
+                  <svg className="w-8 h-8 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+              )}
+            </div>
+            
+            {/* Content section with flex-grow to push metadata to bottom */}
+            <div className="flex flex-col flex-grow">
+              {/* Item Name */}
+              <h3 className="font-semibold mb-1 text-gray-900 dark:text-white">
                 {item.name}
-              </Link>
-            ) : (
-              <Link 
-                to={`/stores/${item.id}`} 
-                className="text-gray-900 dark:text-white hover:underline"
-                onClick={() => 
-                  console.log('ListView: Clicking store link, ID:', item.id, 'URL:', `/stores/${item.id}`)
-                }
-              >
-                {item.name}
-              </Link>
-            )}
-          </h3>
-          
-          {/* Item Metadata */}
-          {isProduct(item) ? (
-            <p className="text-sm text-gray-600 dark:text-gray-300">
-              {item.price ? `€${item.price}` : 'Price not set'}
-              {item.store && ` — ${item.store.name}`}
-            </p>
-          ) : (
-            <p className="text-sm text-gray-600 dark:text-gray-300">
-              {item.description || 'No additional info'}
-            </p>
-          )}
+              </h3>
+              
+              {/* Item Description (if available for products) */}
+              {isProduct(item) && item.description && (
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 line-clamp-2">
+                  {item.description}
+                </p>
+              )}
+              
+              {/* Spacer to push metadata to bottom */}
+              <div className="flex-grow"></div>
+              
+              {/* Item Metadata */}
+              {isProduct(item) ? (
+                <p className="text-sm text-gray-600 dark:text-gray-300 mt-auto">
+                  <span className="text-base font-semibold text-gray-900 dark:text-white">
+                    {item.price ? `€${item.price}` : 'Price not set'}
+                  </span>
+                  {item.store && (
+                    <span className="block text-xs mt-1">
+                      {item.store.name}
+                    </span>
+                  )}
+                </p>
+              ) : (
+                <p className="text-sm text-gray-600 dark:text-gray-300 mt-auto">
+                  {item.description || 'No additional info'}
+                </p>
+              )}
+            </div>
+          </Link>
         </li>
       ))}
     </ul>
