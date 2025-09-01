@@ -73,18 +73,18 @@ export default function ListView({ items }: ListViewProps) {
         <li key={item.id} className="h-full">
           <Link
             to={isProduct(item) ? `/products/${item.id}` : `/stores/${item.id}`}
-            className="flex flex-col h-full border border-gray-200 dark:border-gray-700 rounded-xl p-4 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
+            className="flex flex-col h-full border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer overflow-hidden"
             onClick={() => 
               console.log('ListView: Clicking card, ID:', item.id, 'URL:', isProduct(item) ? `/products/${item.id}` : `/stores/${item.id}`)
             }
           >
-            {/* Item Image or Placeholder */}
-            <div className="w-full h-32 mb-2">
+            {/* Item Image or Placeholder - Edge to edge */}
+            <div className="w-full h-32">
               {(isProduct(item) ? hasProductImage(item) : item.image_url) ? (
                 <img
                   src={isProduct(item) ? getProductImageSrc(item) || '' : item.image_url || ''}
                   alt={item.name}
-                  className="w-full h-full object-cover rounded"
+                  className="w-full h-full object-cover"
                   referrerPolicy="no-referrer"
                   crossOrigin="anonymous"
                   onError={(e) => {
@@ -92,7 +92,7 @@ export default function ListView({ items }: ListViewProps) {
                     e.currentTarget.style.display = 'none';
                     const parent = e.currentTarget.parentElement;
                     if (parent) {
-                      parent.classList.add('bg-gray-200', 'dark:bg-gray-700', 'rounded', 'flex', 'items-center', 'justify-center');
+                      parent.classList.add('bg-gray-200', 'dark:bg-gray-700', 'flex', 'items-center', 'justify-center');
                     }
                   }}
                   onLoad={() => {
@@ -100,7 +100,7 @@ export default function ListView({ items }: ListViewProps) {
                   }}
                 />
               ) : (
-                <div className="w-full h-full bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center">
+                <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
                   <svg className="w-8 h-8 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
@@ -108,8 +108,8 @@ export default function ListView({ items }: ListViewProps) {
               )}
             </div>
             
-            {/* Content section with flex-grow to push metadata to bottom */}
-            <div className="flex flex-col flex-grow">
+            {/* Content section with padding - preserves text margins */}
+            <div className="flex flex-col flex-grow p-4">
               {/* Item Name */}
               <h3 className="font-semibold mb-1 text-gray-900 dark:text-white">
                 {item.name}
