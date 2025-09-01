@@ -1,12 +1,12 @@
 """
 Configuration management for the scraper.
 """
-import os
+from pathlib import Path
 from typing import Optional
 from dotenv import load_dotenv
 
 # Load environment variables from root .env file
-root_env_path = os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..', '.env')
+root_env_path = Path(__file__).parents[5] / '.env'
 load_dotenv(root_env_path, override=True)
 
 
