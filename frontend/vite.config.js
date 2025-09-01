@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '../', 'VITE_');
   
   return {
+    envDir: '../', // Tell Vite to look for .env files in parent directory
     plugins: [react()],
     resolve: {
       alias: {
