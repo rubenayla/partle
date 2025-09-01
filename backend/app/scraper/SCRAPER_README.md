@@ -15,7 +15,7 @@ A reliable, resumable web scraper for e-commerce product data using Scrapy.
 
 1. **Set up environment variables:**
    ```bash
-   cp .env.example .env
+   cp ../../../../.env.example ../../../../.env
    # Edit .env with your database credentials and settings
    ```
 
