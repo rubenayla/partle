@@ -87,6 +87,8 @@ export default function ProductDetail(): JSX.Element {
     image_url: ''
   });
   const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [successMessage, setSuccessMessage] = useState<string>('');
 
   useEffect(() => {
     console.log('ProductDetail: Loading product with ID:', id);
@@ -94,6 +96,9 @@ export default function ProductDetail(): JSX.Element {
       console.error('ProductDetail: No product ID provided');
       return;
     }
+    
+    // Scroll to top when component loads
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     
     api.get(`/v1/products/${id}/`)
       .then((res) => {
@@ -135,22 +140,59 @@ export default function ProductDetail(): JSX.Element {
   const handleSave = async (): Promise<void> => {
     if (!id) return;
     
+    // Clear previous messages
+    setErrorMessage('');
+    setSuccessMessage('');
+    
+    // Basic validation
+    if (!editForm.name.trim()) {
+      setErrorMessage('Product name is required');
+      return;
+    }
+    
+    if (editForm.price && (isNaN(parseFloat(editForm.price)) || parseFloat(editForm.price) < 0)) {
+      setErrorMessage('Please enter a valid price');
+      return;
+    }
+    
+    if (editForm.url && !isValidUrl(editForm.url)) {
+      setErrorMessage('Please enter a valid URL');
+      return;
+    }
+    
+    if (editForm.image_url && !isValidUrl(editForm.image_url)) {
+      setErrorMessage('Please enter a valid image URL');
+      return;
+    }
+    
     setIsSaving(true);
     try {
       const updateData: Partial<Product> = {
-        name: editForm.name,
-        description: editForm.description || undefined,
+        name: editForm.name.trim(),
+        description: editForm.description?.trim() || undefined,
         price: editForm.price ? parseFloat(editForm.price) : undefined,
-        url: editForm.url || undefined,
-        image_url: editForm.image_url || undefined
+        url: editForm.url?.trim() || undefined,
+        image_url: editForm.image_url?.trim() || undefined
       };
       
       const response = await api.patch(`/v1/products/${id}/`, updateData);
       setProduct(response.data as Product);
       setIsEditing(false);
+      setSuccessMessage('Product updated successfully!');
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error: any) {
       console.error('Failed to update product:', error);
-      alert('Failed to update product. Please try again.');
+      if (error.response?.status === 403) {
+        setErrorMessage('You can only edit products you created');
+      } else if (error.response?.status === 404) {
+        setErrorMessage('Product not found');
+      } else if (error.response?.data?.detail) {
+        setErrorMessage(error.response.data.detail);
+      } else {
+        setErrorMessage('Failed to update product. Please try again.');
+      }
     } finally {
       setIsSaving(false);
     }
@@ -170,6 +212,10 @@ export default function ProductDetail(): JSX.Element {
       image_url: product.image_url || ''
     });
     setIsEditing(false);
+    setErrorMessage('');
+    setSuccessMessage('');
+    // Scroll to top when exiting edit mode
+    setTimeout(() => window.scrollTo({ top: 0, left: 0, behavior: 'smooth' }), 100);
   };
 
   /**
@@ -177,6 +223,19 @@ export default function ProductDetail(): JSX.Element {
    */
   const handleInputChange = (field: keyof EditForm, value: string): void => {
     setEditForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  /**
+   * Validate URL format
+   */
+  const isValidUrl = (url: string): boolean => {
+    if (!url.trim()) return true; // Empty URLs are valid (optional field)
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
   };
 
   // Check if current user is the product owner
@@ -242,10 +301,17 @@ export default function ProductDetail(): JSX.Element {
                 type="url"
                 value={editForm.image_url}
                 onChange={(e) => handleInputChange('image_url', e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded focus:border-blue-500 focus:outline-none"
-                placeholder="https://example.com/image.jpg"
+                className={`w-full p-2 border rounded focus:outline-none ${
+                  editForm.image_url && !isValidUrl(editForm.image_url)
+                    ? 'border-red-300 focus:border-red-500'
+                    : 'border-gray-300 focus:border-blue-500'
+                }`}
+                placeholder="https://example.com/image.jpg (optional)"
               />
-              {editForm.image_url && (
+              {editForm.image_url && !isValidUrl(editForm.image_url) && (
+                <p className="text-red-500 text-sm mt-1">Please enter a valid image URL</p>
+              )}
+              {editForm.image_url && isValidUrl(editForm.image_url) && (
                 <img
                   src={editForm.image_url}
                   alt="Preview"
@@ -271,31 +337,51 @@ export default function ProductDetail(): JSX.Element {
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 lg:col-span-3">
           {/* Edit Controls */}
           {isOwner && (
-            <div className="flex gap-2 mb-4">
-              {isEditing ? (
-                <>
+            <div className="mb-4">
+              <div className="flex gap-2">
+                {isEditing ? (
+                  <>
+                    <button
+                      onClick={handleSave}
+                      disabled={isSaving || !editForm.name.trim()}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm"
+                    >
+                      {isSaving ? 'Saving...' : 'Save'}
+                    </button>
+                    <button
+                      onClick={handleCancel}
+                      disabled={isSaving}
+                      className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 disabled:opacity-50 text-sm"
+                    >
+                      Cancel
+                    </button>
+                  </>
+                ) : (
                   <button
-                    onClick={handleSave}
-                    disabled={isSaving || !editForm.name.trim()}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm"
+                    onClick={() => {
+                      setIsEditing(true);
+                      // Scroll to top when entering edit mode
+                      setTimeout(() => window.scrollTo({ top: 0, left: 0, behavior: 'smooth' }), 100);
+                    }}
+                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm"
                   >
-                    {isSaving ? 'Saving...' : 'Save'}
+                    Edit
                   </button>
-                  <button
-                    onClick={handleCancel}
-                    disabled={isSaving}
-                    className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 disabled:opacity-50 text-sm"
-                  >
-                    Cancel
-                  </button>
-                </>
-              ) : (
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm"
-                >
-                  Edit
-                </button>
+                )}
+              </div>
+              
+              {/* Success Message */}
+              {successMessage && (
+                <div className="mt-2 p-2 bg-green-100 border border-green-400 text-green-700 rounded text-sm">
+                  {successMessage}
+                </div>
+              )}
+              
+              {/* Error Message */}
+              {errorMessage && (
+                <div className="mt-2 p-2 bg-red-100 border border-red-400 text-red-700 rounded text-sm">
+                  {errorMessage}
+                </div>
               )}
             </div>
           )}
@@ -307,9 +393,14 @@ export default function ProductDetail(): JSX.Element {
                 type="text"
                 value={editForm.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
-                className="text-2xl font-bold bg-transparent border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none w-full pb-2"
-                placeholder="Product name"
+                className={`text-2xl font-bold bg-transparent border-b-2 focus:outline-none w-full pb-2 ${
+                  !editForm.name.trim() ? 'border-red-300 focus:border-red-500' : 'border-gray-300 focus:border-blue-500'
+                }`}
+                placeholder="Product name (required)"
               />
+              {!editForm.name.trim() && (
+                <p className="text-red-500 text-sm mt-1">Product name is required</p>
+              )}
             </div>
           ) : (
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{product.name}</h1>
@@ -348,11 +439,19 @@ export default function ProductDetail(): JSX.Element {
               <input
                 type="number"
                 step="0.01"
+                min="0"
                 value={editForm.price}
                 onChange={(e) => handleInputChange('price', e.target.value)}
-                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:outline-none bg-white dark:bg-gray-700"
-                placeholder="0.00"
+                className={`w-full p-3 border rounded-lg focus:outline-none bg-white dark:bg-gray-700 ${
+                  editForm.price && (isNaN(parseFloat(editForm.price)) || parseFloat(editForm.price) < 0)
+                    ? 'border-red-300 focus:border-red-500 dark:border-red-600'
+                    : 'border-gray-300 dark:border-gray-600 focus:border-blue-500'
+                }`}
+                placeholder="0.00 (optional)"
               />
+              {editForm.price && (isNaN(parseFloat(editForm.price)) || parseFloat(editForm.price) < 0) && (
+                <p className="text-red-500 text-sm mt-1">Please enter a valid price (0 or greater)</p>
+              )}
             </div>
           ) : (
             product.price !== null && product.price !== undefined && (
@@ -373,9 +472,16 @@ export default function ProductDetail(): JSX.Element {
                 type="url"
                 value={editForm.url}
                 onChange={(e) => handleInputChange('url', e.target.value)}
-                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:outline-none bg-white dark:bg-gray-700"
-                placeholder="https://example.com/product"
+                className={`w-full p-3 border rounded-lg focus:outline-none bg-white dark:bg-gray-700 ${
+                  editForm.url && !isValidUrl(editForm.url)
+                    ? 'border-red-300 focus:border-red-500 dark:border-red-600'
+                    : 'border-gray-300 dark:border-gray-600 focus:border-blue-500'
+                }`}
+                placeholder="https://example.com/product (optional)"
               />
+              {editForm.url && !isValidUrl(editForm.url) && (
+                <p className="text-red-500 text-sm mt-1">Please enter a valid URL</p>
+              )}
             </div>
           ) : (
             product.url && (

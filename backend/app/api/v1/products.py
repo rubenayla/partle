@@ -161,6 +161,10 @@ def update_product(
     product = db.get(Product, product_id)
     if not product:
         raise HTTPException(404, "Product not found")
+    
+    # Check ownership - only creator can edit their product
+    if product.creator_id != current_user.id:
+        raise HTTPException(403, "You can only edit products you created")
 
     for field, value in payload.model_dump(exclude_unset=True).items():
         setattr(product, field, value)
