@@ -11,6 +11,7 @@ from app.auth.utils import (
     verify_password,
     create_access_token,
     create_reset_token,
+    verify_reset_token,
     send_reset_email,
 )
 from app.auth.security import get_current_user

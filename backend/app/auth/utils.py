@@ -51,18 +51,23 @@ def verify_reset_token(token: str, max_age: int = 3600) -> str | None:
         return None
 
 
-import smtplib
-from email.message import EmailMessage
+import requests
 
 
 def send_reset_email(to_email: str, token: str) -> None:
-    link = f"https://partle.com/reset?token={token}"
-    msg = EmailMessage()
-    msg["Subject"] = "Reset your Partle password"
-    msg["From"] = os.environ.get("SMTP_USERNAME")
-    msg["To"] = to_email
-    msg.set_content(f"Click here to reset your password:\n{link}")
-
-    with smtplib.SMTP_SSL(os.environ.get("SMTP_HOST"), os.environ.get("SMTP_PORT")) as smtp:
-        smtp.login(os.environ.get("SMTP_USERNAME"), os.environ.get("SMTP_PASSWORD"))
-        smtp.send_message(msg)
+    """Send password reset email via Cloudflare Worker"""
+    worker_url = os.environ.get("CLOUDFLARE_WORKER_URL")
+    worker_api_key = os.environ.get("CLOUDFLARE_WORKER_API_KEY")
+    
+    if not worker_url or not worker_api_key:
+        raise Exception("Missing Cloudflare Worker configuration")
+    
+    payload = {
+        "to_email": to_email,
+        "token": token,
+        "api_key": worker_api_key
+    }
+    
+    response = requests.post(worker_url, json=payload)
+    if response.status_code != 200:
+        raise Exception(f"Failed to send email: {response.text}")

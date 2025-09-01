@@ -1,9 +1,11 @@
-Is 5432 a standard port name?
-
-Use the mcp and fix playwright issues so you can scrape lots of products and also get the images.
+I get that this comes from the os, but what is setting the variable? DATABASE_URL = os.getenv("DATABASE_URL")
 
 
-Let's do the scraper for www.mengual.com/
+Why am i getting "Existing account – log in instead" in our unified register/login page?
+
+- How to modify product. If you are the user, when you click a product to see it, allow editing? Or do it in other way
+
+Why claude /mcp doesn't detect the mcps of the repo. i'd like to see it easily for checking the scrapers
 
 - let's test the use of mcp server with chatgpt
 
@@ -55,7 +57,7 @@ Let's do the scraper for www.mengual.com/
 
 ---
 
-- can we get rid of plain .js files and use .ts instead?
+- take location into account for sorting. Add Closest first option, and ask for location permission if not given yet
 - i see a few new markdown files in the docs folder. Should we use mkdocs?
 - Improve the scrapers so they get the image url and place it on the products in my website. I don't need to store the image, just the url. They would look much better.
 - So now that we have an mcp (model context protocol), chatgpt should be able to read info from this server by using the mcp server? How could he do it?
@@ -79,9 +81,7 @@ Let's do the scraper for www.mengual.com/
 
 ---
 
-Why am i getting "Existing account – log in instead" in our unified register/login page?
 - in product page, a clear "Back" button that goes to the previous page
-- How to modify product. If you are the user, when you click a product to see it, allow editing? Or do it in other way
 - In add product, add capability to add tags like #tag1 
 - Add buttons to get feedback from users, and form page to receive it. The buttons will link to that page.
 - Add several products fast and check they're there.
@@ -113,6 +113,8 @@ Why am i getting "Existing account – log in instead" in our unified register/l
 - Hosting partle.rubenayla.xyz
 - Add some color
 - Ok, now i'd like to implement the feature to recover my password. The typical button "Forgot your password?" or "Recover your password with an email" something like that.
+
+- use uptimerobot
 
 ## Not urgent, long term
 - When we got to the end of the page, Use Shopify Storefront API directly:

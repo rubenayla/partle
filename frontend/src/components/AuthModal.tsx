@@ -7,7 +7,7 @@ interface Props {
   onClose?: () => void;
   onSuccess?: () => void;
 }
-export default function AuthModal({ onClose = () => {}, onSuccess = () => {} }: Props) {
+export default function AuthModal({ onClose = () => { }, onSuccess = () => { } }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -65,7 +65,7 @@ export default function AuthModal({ onClose = () => {}, onSuccess = () => {} }: 
         onSubmit={handleSubmit}
         className="flex flex-col gap-4 bg-surface text-foreground rounded-3xl shadow-2xl w-full max-w-sm p-8"
       >
-        <h1 className="text-2xl font-semibold text-center">Partle Account (Register/Login)</h1>
+        <h1 className="text-2xl font-semibold text-center">Partle Account (Register&Login)</h1>
 
         <input
           className="border border-gray-300 dark:border-gray-600 p-2 rounded bg-background"
