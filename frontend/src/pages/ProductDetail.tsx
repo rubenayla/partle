@@ -7,7 +7,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import api from '../api/index';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../hooks/useAuth';
-import { Product, Store, User } from '../types';
+import type { Product, Store, User } from '../types';
 import { getProductImageSrc, hasProductImage } from '../utils/imageUtils';
 
 /**
@@ -211,7 +211,7 @@ export default function ProductDetail(): JSX.Element {
       {/* Go Back Button */}
       <button
         onClick={() => navigate(-1)}
-        className="mb-4 flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 transition-colors"
+        className="mb-6 flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 transition-colors"
         aria-label="Go back to previous page"
       >
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -220,208 +220,246 @@ export default function ProductDetail(): JSX.Element {
         <span>Go Back</span>
       </button>
 
-      <header className="flex justify-between items-start mb-4">
-        {isEditing ? (
-          <input
-            type="text"
-            value={editForm.name}
-            onChange={(e) => handleInputChange('name', e.target.value)}
-            className="text-2xl font-semibold bg-transparent border-b border-gray-300 focus:border-blue-500 focus:outline-none flex-1 mr-4"
-            placeholder="Product name"
-          />
-        ) : (
-          <h1 className="text-2xl font-semibold">{product.name}</h1>
-        )}
-        
-        {isOwner && (
-          <div className="flex gap-2">
-            {isEditing ? (
-              <>
-                <button
-                  onClick={handleSave}
-                  disabled={isSaving || !editForm.name.trim()}
-                  className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
-                >
-                  {isSaving ? 'Saving...' : 'Save'}
-                </button>
-                <button
-                  onClick={handleCancel}
-                  disabled={isSaving}
-                  className="px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-700 disabled:opacity-50"
-                >
-                  Cancel
-                </button>
-              </>
-            ) : (
-              <button
-                onClick={() => setIsEditing(true)}
-                className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
-              >
-                Edit
-              </button>
-            )}
-          </div>
-        )}
-      </header>
-
-      {/* Image Section */}
-      {isEditing ? (
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Image URL
-          </label>
-          <input
-            type="url"
-            value={editForm.image_url}
-            onChange={(e) => handleInputChange('image_url', e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded focus:border-blue-500 focus:outline-none"
-            placeholder="https://example.com/image.jpg"
-          />
-          {editForm.image_url && (
-            <img
-              src={editForm.image_url}
-              alt="Preview"
-              className="w-full max-w-sm h-auto object-cover rounded mt-2"
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.display = 'none';
-              }}
-            />
+      {/* Two-column layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        {/* Image Section - Left Column */}
+        <div className="w-full">
+          {/* Product Image */}
+          {isEditing ? (
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Image URL
+              </label>
+              <input
+                type="url"
+                value={editForm.image_url}
+                onChange={(e) => handleInputChange('image_url', e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded focus:border-blue-500 focus:outline-none"
+                placeholder="https://example.com/image.jpg"
+              />
+              {editForm.image_url && (
+                <img
+                  src={editForm.image_url}
+                  alt="Preview"
+                  className="w-full max-w-md h-auto object-cover rounded mt-2"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+              )}
+            </div>
+          ) : (
+            hasProductImage(product) && (
+              <img
+                src={getProductImageSrc(product) || ''}
+                alt={product.name}
+                className="w-full h-auto object-cover rounded-lg shadow-lg"
+              />
+            )
           )}
         </div>
-      ) : (
-        hasProductImage(product) && (
-          <img
-            src={getProductImageSrc(product) || ''}
-            alt={product.name}
-            className="w-full max-w-sm h-auto object-cover rounded mb-4"
-          />
-        )
-      )}
 
-      {/* Description Section */}
-      {isEditing ? (
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Description
-          </label>
-          <textarea
-            value={editForm.description}
-            onChange={(e) => handleInputChange('description', e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded focus:border-blue-500 focus:outline-none"
-            rows={3}
-            placeholder="Product description"
-          />
-        </div>
-      ) : (
-        product.description && <p className="mb-3">{product.description}</p>
-      )}
+        {/* Info Card - Right Column */}
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+          {/* Edit Controls */}
+          {isOwner && (
+            <div className="flex gap-2 mb-4">
+              {isEditing ? (
+                <>
+                  <button
+                    onClick={handleSave}
+                    disabled={isSaving || !editForm.name.trim()}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm"
+                  >
+                    {isSaving ? 'Saving...' : 'Save'}
+                  </button>
+                  <button
+                    onClick={handleCancel}
+                    disabled={isSaving}
+                    className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 disabled:opacity-50 text-sm"
+                  >
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm"
+                >
+                  Edit
+                </button>
+              )}
+            </div>
+          )}
 
-      {/* URL Section */}
-      {isEditing ? (
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Product URL
-          </label>
-          <input
-            type="url"
-            value={editForm.url}
-            onChange={(e) => handleInputChange('url', e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded focus:border-blue-500 focus:outline-none"
-            placeholder="https://example.com/product"
-          />
-        </div>
-      ) : (
-        product.url && (
-          <p className="mb-3">
-            <a
-              href={product.url}
-              className="text-blue-600 underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {product.url}
-            </a>
-          </p>
-        )
-      )}
+          {/* Product Title */}
+          {isEditing ? (
+            <div className="mb-4">
+              <input
+                type="text"
+                value={editForm.name}
+                onChange={(e) => handleInputChange('name', e.target.value)}
+                className="text-2xl font-bold bg-transparent border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none w-full pb-2"
+                placeholder="Product name"
+              />
+            </div>
+          ) : (
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{product.name}</h1>
+          )}
 
-      {/* Price Section */}
-      {isEditing ? (
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Price (€)
-          </label>
-          <input
-            type="number"
-            step="0.01"
-            value={editForm.price}
-            onChange={(e) => handleInputChange('price', e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded focus:border-blue-500 focus:outline-none"
-            placeholder="0.00"
-          />
-        </div>
-      ) : (
-        product.price !== null && product.price !== undefined && (
-          <p className="mb-3">Price: €{product.price}</p>
-        )
-      )}
 
-      {/* Store Information */}
-      {store && (
-        <section className="mt-6 border-t pt-4">
-          <h2 className="font-medium text-lg mb-2">Store Information</h2>
-          <div className="space-y-2">
-            <p className="font-medium">{store.name}</p>
-            
-            {/* Store Type */}
-            {store.type && (
-              <p className="text-sm text-gray-600">
-                Type: <span className="capitalize">{store.type}</span>
-              </p>
-            )}
-            
-            {/* Physical Address */}
-            {store.address && (
-              <div>
-                <p className="text-sm text-gray-600">Address:</p>
-                <p className="text-sm">{store.address}</p>
+          {/* Description Section */}
+          {isEditing ? (
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Description
+              </label>
+              <textarea
+                value={editForm.description}
+                onChange={(e) => handleInputChange('description', e.target.value)}
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:outline-none bg-white dark:bg-gray-700"
+                rows={4}
+                placeholder="Product description"
+              />
+            </div>
+          ) : (
+            product.description && (
+              <div className="mb-6">
+                <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-2">Description</h3>
+                <p className="text-gray-800 dark:text-gray-200 leading-relaxed">{product.description}</p>
               </div>
-            )}
-            
-            {/* Map Link */}
-            {store.latitude && store.longitude && (
-              <div className="mt-2">
+            )
+          )}
+
+          {/* Price Section */}
+          {isEditing ? (
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Price (€)
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                value={editForm.price}
+                onChange={(e) => handleInputChange('price', e.target.value)}
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:outline-none bg-white dark:bg-gray-700"
+                placeholder="0.00"
+              />
+            </div>
+          ) : (
+            product.price !== null && product.price !== undefined && (
+              <div className="mb-6">
+                <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-2">Price</h3>
+                <p className="text-3xl font-bold text-green-600 dark:text-green-400">€{product.price}</p>
+              </div>
+            )
+          )}
+
+          {/* URL Section */}
+          {isEditing ? (
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Product URL
+              </label>
+              <input
+                type="url"
+                value={editForm.url}
+                onChange={(e) => handleInputChange('url', e.target.value)}
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:outline-none bg-white dark:bg-gray-700"
+                placeholder="https://example.com/product"
+              />
+            </div>
+          ) : (
+            product.url && (
+              <div className="mb-6">
                 <a
-                  href={`https://maps.google.com/?q=${store.latitude},${store.longitude}`}
+                  href={product.url}
+                  className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors font-medium"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 text-sm"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                   </svg>
-                  View on Google Maps
+                  Visit Product Page
                 </a>
               </div>
-            )}
-            
-            {/* Store Website */}
-            {store.website && (
-              <p className="text-sm">
-                <a
-                  href={store.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-700"
-                >
-                  Visit Store Website
-                </a>
-              </p>
-            )}
-          </div>
-        </section>
-      )}
+            )
+          )}
+
+          {/* Tags Section */}
+          {product.tags && product.tags.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-3">Tags</h3>
+              <div className="flex flex-wrap gap-2">
+                {product.tags.map((tag) => (
+                  <span
+                    key={tag.id}
+                    className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm rounded-full"
+                  >
+                    {tag.name}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Store Information */}
+          {store && (
+            <div className="border-t border-gray-200 dark:border-gray-600 pt-6">
+              <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-3">Store Information</h3>
+              <div className="space-y-3">
+                <div>
+                  <p className="font-semibold text-gray-900 dark:text-white">{store.name}</p>
+                  {store.type && (
+                    <p className="text-sm text-gray-600 dark:text-gray-400 capitalize">{store.type} store</p>
+                  )}
+                </div>
+                
+                {/* Physical Address */}
+                {store.address && (
+                  <div>
+                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Address:</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{store.address}</p>
+                  </div>
+                )}
+                
+                {/* Location Actions */}
+                <div className="flex flex-col gap-2">
+                  {store.latitude && store.longitude && (
+                    <a
+                      href={`https://maps.google.com/?q=${store.latitude},${store.longitude}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      View on Google Maps
+                    </a>
+                  )}
+                  
+                  {store.homepage && (
+                    <a
+                      href={store.homepage}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9" />
+                      </svg>
+                      Visit Store Website
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
     </main>
   );
 }
