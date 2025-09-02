@@ -5,7 +5,7 @@ import path from 'path';
 
 export default defineConfig(({ mode }) => {
   // Load env vars from parent directory
-  const env = loadEnv(mode, '../', 'VITE_');
+  loadEnv(mode, '../', 'VITE_');
   
   return {
     envDir: '../', // Tell Vite to look for .env files in parent directory

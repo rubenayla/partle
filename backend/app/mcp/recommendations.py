@@ -1311,7 +1311,7 @@ async def _recommend_price_alerts(args: Dict[str, Any]) -> List[TextContent]:
         result += '\\n## How to Use These Recommendations\\n'
         result += '1. **Monitor prices** of the recommended products regularly\\n'
         result += '2. **Set price thresholds** based on the analysis provided\\n'
-        result += '3. **Track market trends** in the categories you\\'re interested in\\n'
+        result += '3. **Track market trends** in the categories you are interested in\\n'
         result += '4. **Compare prices** across different stores before purchasing\\n'
         
         return [TextContent(type='text', text=result)]
