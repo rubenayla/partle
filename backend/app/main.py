@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1 import auth, external, health, parts, products, stores, tags, search, logs, public
+from datetime import datetime
 from app.logging_config import configure_logging, LoggingMiddleware, get_logger
 from app.middleware.rate_limit import RateLimitMiddleware
 
@@ -109,6 +110,33 @@ app.include_router(health.router, prefix="/v1")
 def root():
     logger.info("Root endpoint accessed")
     return {"status": "ok", "version": "v1", "docs": "/docs"}
+
+@app.get("/health")
+def health_check():
+    """Comprehensive health check endpoint"""
+    from app.db.session import engine
+    from sqlalchemy import text
+    
+    health_status = {
+        "status": "healthy",
+        "timestamp": datetime.utcnow().isoformat(),
+        "checks": {
+            "api": "ok",
+            "database": "unknown"
+        }
+    }
+    
+    # Check database
+    try:
+        with engine.connect() as conn:
+            result = conn.execute(text("SELECT 1"))
+            health_status["checks"]["database"] = "ok"
+    except Exception as e:
+        health_status["status"] = "degraded"
+        health_status["checks"]["database"] = f"error: {str(e)}"
+        logger.error(f"Database health check failed: {e}")
+    
+    return health_status
 
 @app.get("/mcp-manifest.json")
 def get_mcp_manifest_json():
