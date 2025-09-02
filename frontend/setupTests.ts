@@ -13,3 +13,15 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: vi.fn(),
   })),
 });
+
+// Mock window.scrollTo for jsdom
+Object.defineProperty(window, 'scrollTo', {
+  writable: true,
+  value: vi.fn(),
+});
+
+// Mock window.scroll for jsdom
+Object.defineProperty(window, 'scroll', {
+  writable: true,
+  value: vi.fn(),
+});
