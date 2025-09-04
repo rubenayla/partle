@@ -30,7 +30,7 @@
 - **Frontend config**: `frontend/package.json`
 
 ## Database Notes
-- **PRODUCTION DATABASE ONLY**: postgresql://partle_user:v4zxTX7VN2Ljynlhon1fLg==@91.98.68.236:5432/partle
+- **PRODUCTION DATABASE ONLY**: postgresql://partle_user:[PASSWORD_FROM_ENV]@91.98.68.236:5432/partle
 - Uses PostgreSQL enums for StoreType: 'physical', 'online', 'chain'
 - Recent migration `6c21a37be6b8` added image storage fields (image_data, image_filename, image_content_type)
 - SQLAlchemy models may need app restart after enum changes

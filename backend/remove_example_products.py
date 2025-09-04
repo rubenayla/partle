@@ -8,8 +8,10 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Use Hetzner production database directly
-DATABASE_URL = "postgresql://partle_user:v4zxTX7VN2Ljynlhon1fLg==@91.98.68.236:5432/partle"
+# Use database URL from environment
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL environment variable is required")
 
 def main():
     """Main function to check and remove example.com products."""

@@ -573,7 +573,7 @@ OpenStreetMap
 6. **Frontend serving mismatch**: Nginx configured for static files from `dist/` but frontend was running in dev mode
 
 **Fixes applied:**
-- ✅ Updated `.env` to point to Hetzner database: `postgresql://partle_user:v4zxTX7VN2Ljynlhon1fLg==@91.98.68.236:5432/partle`
+- ✅ Updated `.env` to point to Hetzner database: `postgresql://partle_user:[REDACTED]@91.98.68.236:5432/partle`
 - ✅ Fixed systemd service file paths: `/srv/partle` and `deploy` user
 - ✅ Created missing log directory: `sudo mkdir -p /var/log/partle && sudo chown deploy:deploy /var/log/partle`
 - ✅ Updated poetry paths in service files
