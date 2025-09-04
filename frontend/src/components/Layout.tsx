@@ -16,9 +16,9 @@ interface Props {
  * Individual pages should NOT import or wrap themselves with Layout.
  * 
  * Responsibilities:
- * - Provides fixed SearchBar at top of viewport
+ * - Provides fixed SearchBar (top on desktop, bottom on mobile)
  * - Handles global auth modals and state
- * - Manages consistent spacing (mt-[72px] pt-4) to clear fixed SearchBar
+ * - Manages consistent spacing to clear fixed SearchBar
  * - Contains max-w-width container and horizontal padding for all pages
  * 
  * Usage:
@@ -60,7 +60,7 @@ export default function Layout({ children, setTheme, currentTheme }: Props) {
       )}
 
       {/* Main content area with spacing to clear fixed SearchBar */}
-      <main className="mt-[72px] pt-6 max-w-screen-2xl mx-auto w-full px-4">
+      <main className="mt-0 sm:mt-[72px] pt-6 pb-[72px] sm:pb-6 max-w-screen-2xl mx-auto w-full px-4">
         {children}
       </main>
     </div>

@@ -268,7 +268,7 @@ export default function SearchBar({
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-20 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+    <header className="fixed sm:top-0 sm:bottom-auto bottom-0 left-0 right-0 z-20 bg-white dark:bg-gray-900 sm:border-b border-t sm:border-t-0 border-gray-200 dark:border-gray-700">
       <div className="w-full max-w-screen-2xl mx-auto flex items-center justify-between px-2 sm:px-4 py-3 overflow-x-hidden">
         <Tooltip text="Go home (Alt+N, H)">
           <a

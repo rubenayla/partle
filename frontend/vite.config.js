@@ -4,11 +4,10 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig(({ mode }) => {
-  // Load env vars from parent directory
-  loadEnv(mode, '../', 'VITE_');
+  // Load env vars from current directory (frontend)
+  const env = loadEnv(mode, '.', 'VITE_');
   
   return {
-    envDir: '../', // Tell Vite to look for .env files in parent directory
     plugins: [react()],
     resolve: {
       alias: {
