@@ -151,7 +151,7 @@ describe("Layout", () => {
 
     // Check that the main content area has the correct classes for spacing
     const mainElement = screen.getByRole("main");
-    expect(mainElement).toHaveClass("mt-[72px]", "pt-6", "max-w-screen-2xl", "mx-auto", "w-full", "px-4");
+    expect(mainElement).toHaveClass("mt-0", "sm:mt-[72px]", "pt-6", "pb-[72px]", "sm:pb-6", "max-w-screen-2xl", "mx-auto", "w-full", "px-4");
 
     // Check that the content is inside the main element
     expect(screen.getByTestId("test-content")).toBeInTheDocument();
@@ -206,6 +206,6 @@ describe("Layout", () => {
 
     // Main layout structure should be the same
     const mainElement = screen.getByRole("main");
-    expect(mainElement).toHaveClass("mt-[72px]", "pt-6", "max-w-screen-2xl", "mx-auto", "w-full", "px-4");
+    expect(mainElement).toHaveClass("mt-0", "sm:mt-[72px]", "pt-6", "pb-[72px]", "sm:pb-6", "max-w-screen-2xl", "mx-auto", "w-full", "px-4");
   });
 });
