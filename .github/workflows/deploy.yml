@@ -65,7 +65,19 @@ jobs:
     - name: Build frontend
       run: |
         cd frontend
+        # Verify environment variables are set
+        if grep -q "VITE_API_BASE=" .env; then
+          echo "✓ VITE_API_BASE found in .env"
+        else
+          echo "✗ VITE_API_BASE missing from .env"
+          exit 1
+        fi
         npm run build
+        # Verify build output contains no undefined environment variables
+        if grep -r "undefined" dist/; then
+          echo "✗ Build contains undefined values - check for missing environment variables"
+          exit 1
+        fi
 
   deploy:
     needs: test
