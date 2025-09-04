@@ -1,5 +1,4 @@
-I get that this comes from the os, but what is setting the variable? DATABASE_URL = os.getenv("DATABASE_URL")
-
+- check "forgot password" functionality
 
 Why am i getting "Existing account – log in instead" in our unified register/login page?
 
