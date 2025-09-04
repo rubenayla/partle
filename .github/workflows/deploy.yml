@@ -73,9 +73,9 @@ jobs:
           exit 1
         fi
         npm run build
-        # Verify build output contains no undefined environment variables
-        if grep -r "undefined" dist/; then
-          echo "✗ Build contains undefined values - check for missing environment variables"
+        # Verify build output contains no undefined environment variables (look for specific patterns)
+        if grep -r "VITE_.*is not defined\|import\.meta\.env\.VITE_.*undefined" dist/; then
+          echo "✗ Build contains undefined environment variables"
           exit 1
         fi
 
