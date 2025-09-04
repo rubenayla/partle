@@ -69,6 +69,11 @@ def list_products(
         query = query.order_by(Product.name.asc())
     elif sort_by == "random":
         query = query.order_by(func.random())
+    elif sort_by == "created_at":
+        query = query.order_by(Product.created_at.desc())
+    else:
+        # Default sort by creation date if no valid sort_by specified
+        query = query.order_by(Product.created_at.desc())
 
     return query.offset(offset).limit(limit).all()
 

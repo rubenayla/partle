@@ -1,4 +1,5 @@
 .env
+.env.test
 *.gitignore.*
 
 
@@ -41,6 +42,9 @@ backend/app/scraper/store_scrapers/crawls/*/spider.state
 # === Database backups ===
 backend/backups/*.sql.gz
 backend/backups/backup.log
+
+# === Deployment backups ===
+backups/
 
 # === OS / Editor junk ===
 .DS_Store

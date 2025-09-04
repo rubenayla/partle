@@ -30,11 +30,23 @@
 - **Frontend config**: `frontend/package.json`
 
 ## Database Notes
-- **PRODUCTION DATABASE ONLY**: postgresql://partle_user:v4zxTX7VN2Ljynlhon1fLg==@91.98.68.236:5432/partle
+- **PRODUCTION DATABASE ONLY**: postgresql://partle_user:[PASSWORD_FROM_ENV]@91.98.68.236:5432/partle
 - Uses PostgreSQL enums for StoreType: 'physical', 'online', 'chain'
 - Recent migration `6c21a37be6b8` added image storage fields (image_data, image_filename, image_content_type)
 - SQLAlchemy models may need app restart after enum changes
 - **NEVER USE localhost:5432 - ONLY HETZNER DATABASE**
+
+## 🔐 Secrets Management
+- **Environment Files**: Store secrets in `.env` (root), `backend/.env`, `frontend/.env.local`
+- **Never Commit**: All `.env*` files are gitignored - NEVER commit credentials to git
+- **Required Secrets**:
+  - `DATABASE_URL`: PostgreSQL connection string with rotated password
+  - `SECRET_KEY`: Backend JWT/session signing key (rotate regularly)
+  - `CLOUDFLARE_WORKER_API_KEY`: Email service authentication
+- **Local Testing**: Use `.env.test` for test database credentials (also gitignored)
+- **Credential Rotation**: When rotating secrets, update ALL environment files and restart services
+- **Leak Response**: If credentials are leaked, immediately rotate ALL affected secrets
+- **Validation**: Always verify `DATABASE_URL` points to Hetzner before DB operations
 
 ## Image Storage System
 - **Storage Method**: Binary data (BYTEA) stored directly in PostgreSQL database
