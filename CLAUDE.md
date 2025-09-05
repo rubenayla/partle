@@ -47,8 +47,14 @@
 - **Deploy Process**: `git pull` then `supervisorctl restart partle`
 
 ## 🔐 Secrets Management
-- **Environment Files**: Store secrets in `.env` (root), `backend/.env`, `frontend/.env.local`
-- **Never Commit**: All `.env*` files are gitignored - NEVER commit credentials to git
+- **Production Environment Files**: 
+  - `frontend/.env`: Production settings (tracked in git, no secrets)
+  - `backend/.env`: Backend secrets (gitignored)
+  - Root `.env`: Database credentials (gitignored)
+- **Local Development**: 
+  - `frontend/.env.local`: Local overrides (gitignored, takes precedence over .env)
+  - **IMPORTANT**: Never create `.env.local` on production server
+- **Never Commit**: All `.env*` and `*.local` files are gitignored - NEVER commit credentials to git
 - **Required Secrets**:
   - `DATABASE_URL`: PostgreSQL connection string with rotated password
   - `SECRET_KEY`: Backend JWT/session signing key (rotate regularly)
