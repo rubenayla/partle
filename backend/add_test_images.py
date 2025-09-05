@@ -7,13 +7,15 @@ import requests
 import mimetypes
 import os
 from urllib.parse import urlparse
+from pathlib import Path
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from app.db.models import Product
 from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
+# Load environment variables from root .env
+root_env = Path(__file__).parent.parent / '.env'
+load_dotenv(root_env)
 
 def download_image(image_url):
     """Download an image and return binary data, filename, and content type."""

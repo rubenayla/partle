@@ -14,9 +14,12 @@ logger = get_logger("main")
 
 # Load local .env if present (useful for local development)
 if os.getenv("PRODUCTION_MODE") is None:
+    from pathlib import Path
     from dotenv import load_dotenv
 
-    load_dotenv()
+    # Load from root .env file
+    root_env = Path(__file__).parents[2] / '.env'
+    load_dotenv(root_env)
 
 app = FastAPI(
     title="Partle API",
