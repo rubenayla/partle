@@ -109,7 +109,8 @@ jobs:
           poetry install --no-interaction
           
           echo "🔄 Restarting backend service..."
-          pkill -f 'uvicorn app.main:app' || true
+          # Kill existing backend processes (use exact match to avoid killing this script)
+          pgrep -f "python.*uvicorn.*main:app" | xargs -r kill || true
           sleep 2
           poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4 > /tmp/partle.log 2>&1 &
           echo "Backend started with PID $!"
