@@ -12,13 +12,13 @@ from app.middleware.rate_limit import RateLimitMiddleware
 configure_logging()
 logger = get_logger("main")
 
-# Load local .env if present (useful for local development)
-if os.getenv("PRODUCTION_MODE") is None:
-    from pathlib import Path
-    from dotenv import load_dotenv
+# Always load .env file if it exists
+from pathlib import Path
+from dotenv import load_dotenv
 
-    # Load from root .env file
-    root_env = Path(__file__).parents[2] / '.env'
+# Load from root .env file
+root_env = Path(__file__).parents[2] / '.env'
+if root_env.exists():
     load_dotenv(root_env)
 
 app = FastAPI(

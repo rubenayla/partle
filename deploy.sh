@@ -9,11 +9,8 @@ cd /srv/partle
 echo "🔧 Updating backend..."
 cd /srv/partle/backend
 
-# Load environment variables from /srv/partle/.env
-if [ -f /srv/partle/.env ]; then
-    echo "📋 Loading environment variables from /srv/partle/.env"
-    export $(cat /srv/partle/.env | grep -v '^#' | xargs)
-else
+# Verify .env file exists
+if [ ! -f /srv/partle/.env ]; then
     echo "⚠️  WARNING: /srv/partle/.env file not found!"
     echo "Please create /srv/partle/.env with required environment variables"
 fi
