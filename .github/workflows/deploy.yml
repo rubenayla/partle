@@ -96,6 +96,8 @@ jobs:
         command_timeout: 20m
         script: |
           cd /srv/partle
+          git reset --hard
+          git clean -fd
           git pull origin main
           chmod +x deploy.sh
           ./deploy.sh
