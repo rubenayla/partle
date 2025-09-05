@@ -8,6 +8,12 @@ cd /srv/partle
 
 echo "🔧 Updating backend..."
 cd /srv/partle/backend
+
+# Ensure .env file exists
+if [ ! -f .env ]; then
+    echo "⚠️  WARNING: .env file not found in backend directory!"
+    echo "Please create /srv/partle/backend/.env with required environment variables"
+fi
 poetry install --no-interaction
 
 echo "🔄 Restarting backend service..."

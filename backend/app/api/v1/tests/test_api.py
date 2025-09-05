@@ -216,3 +216,27 @@ def test_delete_store(client, db):
     # verify store is deleted
     get_resp = client.get(f"/v1/stores/{store_id}", headers=headers)
     assert get_resp.status_code == 404
+
+
+def test_password_reset_request_missing_env_vars(client, db, monkeypatch):
+    # Test that missing environment variables are handled gracefully
+    monkeypatch.delenv("CLOUDFLARE_WORKER_URL", raising=False)
+    monkeypatch.delenv("CLOUDFLARE_WORKER_API_KEY", raising=False)
+    
+    # Register a user
+    reg_payload = {"email": "reset@example.com", "password": "oldpassword"}
+    client.post("/v1/auth/register", json=reg_payload)
+    
+    # Request password reset should still return 202 (async processing)
+    reset_resp = client.post(
+        "/v1/auth/request-password-reset",
+        json={"email": "reset@example.com"}
+    )
+    assert reset_resp.status_code == 202
+    
+    # Verify for non-existent user also returns 202 (security: don't leak user existence)
+    reset_resp = client.post(
+        "/v1/auth/request-password-reset",
+        json={"email": "nonexistent@example.com"}
+    )
+    assert reset_resp.status_code == 202
