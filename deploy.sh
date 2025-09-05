@@ -4,9 +4,7 @@ set -e
 # Set up PATH for poetry
 export PATH="/home/deploy/.local/bin:$PATH"
 
-echo "📥 Pulling latest changes..."
 cd /srv/partle
-git pull origin main
 
 echo "🔧 Updating backend..."
 cd /srv/partle/backend
