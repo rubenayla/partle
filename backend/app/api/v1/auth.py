@@ -42,7 +42,7 @@ def register(data: schema.RegisterInput, db: Session = Depends(get_db)):
     return {"status": "ok"}
 
 
-# ─── Login (OAuth2 form) ─────────────────────────────────────────────────────
+# ─── Login (OAuth2 form) - Auto-registers new users ─────────────────────────
 @router.post("/login")
 def login(
     form: OAuth2PasswordRequestForm = Depends(),
@@ -51,10 +51,15 @@ def login(
     user = db.query(User).filter_by(email=form.username).first()
 
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    if not verify_password(form.password, user.password_hash):
-        raise HTTPException(status_code=401, detail="Incorrect email or password")
+        # Auto-register new user with provided password
+        user = User(email=form.username, password_hash=hash_password(form.password))
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+    else:
+        # Existing user - verify password
+        if not verify_password(form.password, user.password_hash):
+            raise HTTPException(status_code=401, detail="Incorrect email or password")
 
     token = create_access_token({"sub": str(user.id)})
     return {"access_token": token, "token_type": "bearer"}

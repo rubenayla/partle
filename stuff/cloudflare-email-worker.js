@@ -9,7 +9,7 @@ export default {
       // Parse the incoming request
       const { to_email, token, api_key } = await request.json();
       
-      // Simple API key validation (you'll set this in environment variables)
+      // Simple API key validation
       if (api_key !== env.API_KEY) {
         return new Response('Unauthorized', { status: 401 });
       }
@@ -19,8 +19,20 @@ export default {
         return new Response('Missing required fields', { status: 400 });
       }
 
+      // Check if Resend API key is configured
+      if (!env.RESEND_API_KEY) {
+        return new Response(JSON.stringify({
+          status: "error",
+          message: "Resend API key not configured",
+          instructions: "1. Sign up at https://resend.com (free)\n2. Add your domain\n3. Get API key\n4. Add RESEND_API_KEY to Worker environment variables"
+        }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" }
+        });
+      }
+
       // Create the password reset email
-      const resetLink = `https://partle.com/reset-password?token=${token}`;
+      const resetLink = `https://partle.rubenayla.xyz/reset-password?token=${token}`;
       const emailContent = `
 Hello,
 
@@ -37,35 +49,53 @@ Best regards,
 Partle Team
 `;
 
-      // Send the email using Cloudflare's email API
-      const message = {
-        from: { email: "noreply@rubenayla.xyz", name: "Partle" },
-        to: [{ email: to_email }],
-        subject: "Reset your Partle password",
-        content: [{
-          type: "text/plain",
-          value: emailContent
-        }]
-      };
-
-      // Use Cloudflare's email sending capability
-      await fetch("https://api.cloudflare.com/client/v4/accounts/" + env.ACCOUNT_ID + "/email/routing/addresses/noreply@rubenayla.xyz/message", {
+      // Send email using Resend API
+      const resendResponse = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
-          "Authorization": "Bearer " + env.EMAIL_API_TOKEN,
+          "Authorization": `Bearer ${env.RESEND_API_KEY}`,
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(message)
+        body: JSON.stringify({
+          from: "Partle <noreply@rubenayla.xyz>",
+          to: [to_email],
+          subject: "Reset your Partle password",
+          text: emailContent
+        })
       });
 
-      return new Response(JSON.stringify({ status: "ok", message: "Email sent successfully" }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" }
-      });
+      const result = await resendResponse.json();
+
+      // Check if email was sent successfully
+      if (resendResponse.ok) {
+        return new Response(JSON.stringify({ 
+          status: "ok", 
+          message: "Email sent successfully",
+          id: result.id
+        }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" }
+        });
+      } else {
+        console.error('Resend error:', resendResponse.status, result);
+        
+        return new Response(JSON.stringify({ 
+          status: "error", 
+          message: "Failed to send email",
+          details: result
+        }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" }
+        });
+      }
 
     } catch (error) {
       console.error('Email sending error:', error);
-      return new Response(JSON.stringify({ status: "error", message: "Failed to send email" }), {
+      return new Response(JSON.stringify({ 
+        status: "error", 
+        message: "Failed to send email",
+        error: error.message 
+      }), {
         status: 500,
         headers: { "Content-Type": "application/json" }
       });

@@ -43,7 +43,7 @@ export default function AuthModal({ onClose = () => { }, onSuccess = () => { } }
     } catch (err: any) {
       // Extract error message from API response
       let errorMessage = "Registration failed";
-      
+
       if (err?.response?.data?.detail) {
         // Check if it's a validation error array
         if (Array.isArray(err.response.data.detail)) {
@@ -54,7 +54,7 @@ export default function AuthModal({ onClose = () => { }, onSuccess = () => { } }
           errorMessage = err.response.data.detail;
         }
       }
-      
+
       setError(errorMessage);
     }
   };
@@ -81,7 +81,7 @@ export default function AuthModal({ onClose = () => { }, onSuccess = () => { } }
         onSubmit={handleSubmit}
         className="flex flex-col gap-4 bg-surface text-foreground rounded-3xl shadow-2xl w-full max-w-sm p-8"
       >
-        <h1 className="text-2xl font-semibold text-center">Partle Account (Register&Login)</h1>
+        <h1 className="text-2xl font-semibold text-center">Partle Account Register&Login</h1>
 
         <input
           className="border border-gray-300 dark:border-gray-600 p-2 rounded bg-background"

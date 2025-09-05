@@ -140,6 +140,17 @@ This project uses a **decoupled frontend/backend architecture** with standard in
   - Backend CORS allows: `http://localhost:3000`, `http://localhost:5173` 
   - If changing ports, update CORS origins in `backend/app/main.py`
 
+## 🚨 CRITICAL: Authentication Design - NO SEPARATE REGISTER/LOGIN 🚨
+- **SINGLE AUTH PAGE ONLY** - No separate register and login pages
+- **One endpoint** `/v1/auth/login` that:
+  - Logs in existing users with correct password
+  - Automatically creates account for new emails
+  - Returns same JWT token response either way
+- **Why**: Having two pages asking for the exact same data (email/password) is absurd UX
+- **Frontend**: Single form, single submit, no "Sign Up" vs "Login" confusion
+- **Backend**: Check if user exists → verify password OR create new account
+- **NEVER suggest "Sign Up first"** - The system handles this automatically
+
 ## API Standards
 - **NO trailing slash** for API endpoints: `/v1/stores`, `/v1/products`, `/v1/auth` (FastAPI standard)
 - **Base URL**: `http://localhost:8000` (from VITE_API_BASE in .env.local)
