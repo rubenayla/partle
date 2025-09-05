@@ -8,10 +8,20 @@ from app.auth.utils import send_reset_email, create_reset_token
 from types import SimpleNamespace
 
 def main():
-    # Set environment variables if needed
-    os.environ.setdefault("CLOUDFLARE_WORKER_URL", "https://partle-email-sender.ruben-jimenezmejias.workers.dev/")
-    os.environ.setdefault("CLOUDFLARE_WORKER_API_KEY", "HXkIE9h3Lc4VfAzBBNHroeWioRmvgx_Gqb0jjK_EcXn")
-    os.environ.setdefault("SECRET_KEY", "YzSWf51IvcYpQ2lznF6lCjhjdl2MVuF0Mo0aB6hFPCc")
+    # Load environment variables from .env file
+    from dotenv import load_dotenv
+    load_dotenv()
+    
+    # Check if required environment variables are set
+    if not os.environ.get("CLOUDFLARE_WORKER_URL"):
+        print("❌ Missing CLOUDFLARE_WORKER_URL in environment")
+        return
+    if not os.environ.get("CLOUDFLARE_WORKER_API_KEY"):
+        print("❌ Missing CLOUDFLARE_WORKER_API_KEY in environment")
+        return
+    if not os.environ.get("SECRET_KEY"):
+        print("❌ Missing SECRET_KEY in environment")
+        return
     
     print("🔍 QUICK EMAIL TEST")
     print("==================")
