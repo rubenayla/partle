@@ -106,7 +106,9 @@ jobs:
           
           # Restart backend service (kill old and start new)
           pkill -f 'uvicorn app.main:app' || true
-          nohup poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4 > /tmp/partle.log 2>&1 &
+          sleep 2
+          poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4 > /tmp/partle.log 2>&1 &
+          disown
           
           # Update frontend
           cd /srv/partle/frontend
