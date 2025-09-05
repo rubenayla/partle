@@ -8,11 +8,13 @@ def test_get_parts_empty(client, db):
 
 
 def test_login_unknown_email(client, db):
+    # With auto-register, unknown emails now get registered automatically
     resp = client.post(
         "/v1/auth/login",
         data={"username": "missing@example.com", "password": "x"},
     )
-    assert resp.status_code == 404
+    assert resp.status_code == 200
+    assert "access_token" in resp.json()
 
 
 def test_login_incorrect_password(client, db):
