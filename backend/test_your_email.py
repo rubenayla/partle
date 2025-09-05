@@ -4,13 +4,15 @@ Quick test script for password reset email
 Run this and enter your email address to test the email system
 """
 import os
+from pathlib import Path
 from app.auth.utils import send_reset_email, create_reset_token
 from types import SimpleNamespace
 
 def main():
-    # Load environment variables from .env file
+    # Load environment variables from root .env
     from dotenv import load_dotenv
-    load_dotenv()
+    root_env = Path(__file__).parent.parent / '.env'
+    load_dotenv(root_env)
     
     # Check if required environment variables are set
     if not os.environ.get("CLOUDFLARE_WORKER_URL"):

@@ -7,14 +7,16 @@ import os
 import sys
 import json
 import requests
+from pathlib import Path
 from dotenv import load_dotenv
 from datetime import datetime
 
 # Add the backend directory to the path
 sys.path.insert(0, '/home/rubenayla/repos/partle/backend')
 
-# Load environment variables
-load_dotenv('/home/rubenayla/repos/partle/backend/.env')
+# Load environment variables from root .env
+root_env = Path(__file__).parent.parent / '.env'
+load_dotenv(root_env)
 
 from app.auth.utils import create_reset_token, verify_reset_token
 from app.db.models import User

@@ -7,7 +7,7 @@ from typing import Optional
 from dotenv import load_dotenv
 
 # Load environment variables from root .env file
-root_env_path = Path(__file__).parents[5] / '.env'
+root_env_path = Path(__file__).parents[4] / '.env'
 load_dotenv(root_env_path, override=True)
 
 

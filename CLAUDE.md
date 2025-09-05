@@ -53,8 +53,14 @@
 - **CLOUDFLARE_WORKER_API_KEY**: Email service authentication
 
 ### Storage Rules
-- **Environment Files**: Store secrets ONLY in `.env` (root), `backend/.env`, `frontend/.env.local`
-- **All `.env*` files are gitignored** - these files must never be tracked by Git
+- **Production Environment Files**: 
+  - `frontend/.env`: Production settings (tracked in git, no secrets)
+  - `backend/.env`: Backend secrets (gitignored)
+  - Root `.env`: Database credentials (gitignored)
+- **Local Development**: 
+  - `frontend/.env.local`: Local overrides (gitignored, takes precedence over .env)
+  - **IMPORTANT**: Never create `.env.local` on production server
+- **All `.env*` and `*.local` files are gitignored** - these files must never be tracked by Git
 - **Local Testing**: Use `.env.test` for test database credentials (also gitignored)
 - **Validation**: Always verify `DATABASE_URL` points to Hetzner before DB operations
 

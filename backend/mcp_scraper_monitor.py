@@ -21,8 +21,9 @@ from mcp.server import NotificationOptions, Server
 from mcp.server.stdio import stdio_server
 from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
+# Load environment variables from root .env
+root_env = Path(__file__).parent.parent / '.env'
+load_dotenv(root_env)
 
 
 @dataclass

@@ -7,10 +7,12 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, func
 import sys
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
+# Load environment variables from root .env
+root_env = Path(__file__).parent.parent / '.env'
+load_dotenv(root_env)
 
 # Add the backend directory to Python path
 sys.path.insert(0, '/home/rubenayla/repos/partle/backend')

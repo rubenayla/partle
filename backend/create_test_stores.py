@@ -6,11 +6,13 @@ Create multiple test stores for bulk product generation
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 import sys
+from pathlib import Path
 from dotenv import load_dotenv
 import os
 
-# Load environment variables
-load_dotenv(override=True)
+# Load environment variables from root .env
+root_env = Path(__file__).parent.parent / '.env'
+load_dotenv(root_env, override=True)
 
 # Add the backend directory to Python path
 sys.path.insert(0, '/home/rubenayla/repos/partle/backend')

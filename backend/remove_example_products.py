@@ -2,11 +2,13 @@
 """Remove all products with example.com URLs from the database."""
 
 import os
+from pathlib import Path
 from sqlalchemy import create_engine, text
 from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
+# Load environment variables from root .env
+root_env = Path(__file__).parent.parent / '.env'
+load_dotenv(root_env)
 
 # Use database URL from environment
 DATABASE_URL = os.getenv("DATABASE_URL")
