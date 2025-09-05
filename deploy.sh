@@ -9,10 +9,16 @@ cd /srv/partle
 echo "🔧 Updating backend..."
 cd /srv/partle/backend
 
+# Copy .env file from parent directory if it exists there
+if [ -f /srv/partle/.env ] && [ ! -f .env ]; then
+    echo "📋 Copying .env from /srv/partle to /srv/partle/backend"
+    cp /srv/partle/.env .env
+fi
+
 # Ensure .env file exists
 if [ ! -f .env ]; then
-    echo "⚠️  WARNING: .env file not found in backend directory!"
-    echo "Please create /srv/partle/backend/.env with required environment variables"
+    echo "⚠️  WARNING: .env file not found!"
+    echo "Please create /srv/partle/.env or /srv/partle/backend/.env with required environment variables"
 fi
 poetry install --no-interaction
 
