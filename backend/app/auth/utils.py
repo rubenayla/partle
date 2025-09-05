@@ -52,6 +52,10 @@ def verify_reset_token(token: str, max_age: int = 3600) -> str | None:
 
 
 import requests
+import logging
+
+# Set up logging
+logger = logging.getLogger(__name__)
 
 
 def send_reset_email(to_email: str, token: str) -> None:
@@ -60,6 +64,7 @@ def send_reset_email(to_email: str, token: str) -> None:
     worker_api_key = os.environ.get("CLOUDFLARE_WORKER_API_KEY")
     
     if not worker_url or not worker_api_key:
+        logger.error("Missing Cloudflare Worker configuration")
         raise Exception("Missing Cloudflare Worker configuration")
     
     payload = {
@@ -68,6 +73,27 @@ def send_reset_email(to_email: str, token: str) -> None:
         "api_key": worker_api_key
     }
     
-    response = requests.post(worker_url, json=payload)
-    if response.status_code != 200:
-        raise Exception(f"Failed to send email: {response.text}")
+    logger.info(f"Sending password reset email to: {to_email}")
+    logger.debug(f"Worker URL: {worker_url}")
+    logger.debug(f"Token (first 20 chars): {token[:20]}...")
+    
+    try:
+        response = requests.post(worker_url, json=payload, timeout=10)
+        logger.info(f"Cloudflare Worker response: {response.status_code}")
+        logger.debug(f"Response body: {response.text}")
+        
+        if response.status_code != 200:
+            logger.error(f"Failed to send email. Status: {response.status_code}, Body: {response.text}")
+            raise Exception(f"Failed to send email: {response.text}")
+        
+        logger.info(f"Password reset email sent successfully to {to_email}")
+        
+    except requests.exceptions.Timeout:
+        logger.error(f"Timeout sending email to {to_email} - Cloudflare Worker didn't respond in 10s")
+        raise Exception("Email service timeout - please try again")
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Network error sending email to {to_email}: {e}")
+        raise Exception(f"Network error sending email: {str(e)}")
+    except Exception as e:
+        logger.error(f"Unexpected error sending email to {to_email}: {e}")
+        raise

@@ -111,9 +111,10 @@ This project uses a **decoupled frontend/backend architecture** with standard in
   - If changing ports, update CORS origins in `backend/app/main.py`
 
 ## API Standards
-- **ALWAYS use trailing slash** for all API endpoints: `/v1/stores/`, `/v1/products/`, `/v1/auth/`
+- **NO trailing slash** for API endpoints: `/v1/stores`, `/v1/products`, `/v1/auth` (FastAPI standard)
 - **Base URL**: `http://localhost:8000` (from VITE_API_BASE in .env.local)
 - **Image Endpoints**: `/v1/products/{id}/image` serve binary image data from database
+- **Note**: Production accepts both `/endpoint` and `/endpoint/` but canonical form is without trailing slash
 
 ## TypeScript & Module Standards
 - **Use TypeScript** (.ts/.tsx) everywhere, never JavaScript

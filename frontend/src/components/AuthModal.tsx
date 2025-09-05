@@ -25,9 +25,11 @@ export default function AuthModal({ onClose = () => { }, onSuccess = () => { } }
       onSuccess();
       onClose();
       return;
-    } catch (err) {
+    } catch (err: any) {
       if (err?.response?.status !== 404) {
-        setError("Invalid credentials");
+        // Show actual error from API
+        const errorMessage = err?.response?.data?.detail || "Invalid credentials";
+        setError(errorMessage);
         return;
       }
     }
@@ -38,8 +40,22 @@ export default function AuthModal({ onClose = () => { }, onSuccess = () => { } }
       localStorage.setItem("token", access_token);
       onSuccess();
       onClose();
-    } catch {
-      setError("Existing account – log in instead");
+    } catch (err: any) {
+      // Extract error message from API response
+      let errorMessage = "Registration failed";
+      
+      if (err?.response?.data?.detail) {
+        // Check if it's a validation error array
+        if (Array.isArray(err.response.data.detail)) {
+          // Extract the first validation error message
+          errorMessage = err.response.data.detail[0]?.msg || "Invalid input";
+        } else {
+          // Simple string error message
+          errorMessage = err.response.data.detail;
+        }
+      }
+      
+      setError(errorMessage);
     }
   };
 

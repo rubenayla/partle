@@ -1,6 +1,6 @@
-.env
-.env.test
-*.gitignore.*
+# === Environment files ===
+*.env*
+!.env.example
 
 
 
@@ -8,14 +8,12 @@
 frontend/node_modules/
 frontend/dist/
 frontend/.vite/
-frontend/.env
 frontend/.DS_Store
 
 # === Python (backend) ===
 __pycache__/
 *.py[cod]
 *.pyd
-backend/.env
 backend/.venv/
 backend/.mypy_cache/
 backend/.pytest_cache/
@@ -66,7 +64,6 @@ Thumbs.db
 dist/
 dist-ssr/
 *.local
-.env
 backend/partle_backup.sql
 backend/app/scraper/crawls/
 
