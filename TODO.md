@@ -1,3 +1,7 @@
+check github actions. It failed, and it shouldn't. Maybe update the code, maybe update the tests.
+
+
+
 - check "forgot password" functionality
 
 Why am i getting "Existing account – log in instead" in our unified register/login page?
