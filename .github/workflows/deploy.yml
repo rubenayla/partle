@@ -93,32 +93,35 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SSH_KEY }}
+        command_timeout: 20m
         script: |
+          set -e
+          
           # Set up PATH for poetry
           export PATH="/home/deploy/.local/bin:$PATH"
           
+          echo "📥 Pulling latest changes..."
           cd /srv/partle
           git pull origin main
           
-          # Update backend
+          echo "🔧 Updating backend..."
           cd /srv/partle/backend
           poetry install --no-interaction
           
-          # Restart backend service (kill old and start new)
+          echo "🔄 Restarting backend service..."
           pkill -f 'uvicorn app.main:app' || true
           sleep 2
-          poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4 > /tmp/partle.log 2>&1 &
-          disown
+          nohup poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4 > /tmp/partle.log 2>&1 &
           
-          # Update frontend
+          echo "📦 Updating frontend..."
           cd /srv/partle/frontend
           npm ci
           npm run build
           
-          # Reload nginx
+          echo "🔄 Reloading nginx..."
           sudo nginx -t && sudo systemctl reload nginx
           
-          # Verify deployment
+          echo "✅ Verifying deployment..."
           sleep 10
           curl -f http://localhost:8000/health || exit 1
           echo "🚀 Deployment completed successfully!"
