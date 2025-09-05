@@ -36,6 +36,16 @@
 - SQLAlchemy models may need app restart after enum changes
 - **NEVER USE localhost:5432 - ONLY HETZNER DATABASE**
 
+## Production Server Access
+- **Server IP**: 91.98.68.236 (Hetzner)
+- **SSH User**: `deploy` (NOT ruben)
+- **Application Path**: `/srv/partle/`
+- **Backend Path**: `/srv/partle/backend/`
+- **Frontend Path**: `/srv/partle/frontend/`
+- **Environment Files**: `/srv/partle/backend/.env`
+- **SSH Command**: `ssh deploy@91.98.68.236`
+- **Deploy Process**: `git pull` then `supervisorctl restart partle`
+
 ## 🔐 Secrets Management
 - **Environment Files**: Store secrets in `.env` (root), `backend/.env`, `frontend/.env.local`
 - **Never Commit**: All `.env*` files are gitignored - NEVER commit credentials to git
@@ -47,6 +57,18 @@
 - **Credential Rotation**: When rotating secrets, update ALL environment files and restart services
 - **Leak Response**: If credentials are leaked, immediately rotate ALL affected secrets
 - **Validation**: Always verify `DATABASE_URL` points to Hetzner before DB operations
+
+## 🚨 CRITICAL SECURITY RULES 🚨
+**NEVER HARDCODE CREDENTIALS IN ANY FILE**
+- **NEVER** put actual passwords, API keys, or SECRET_KEYs in Python files
+- **NEVER** use os.environ.setdefault() with real credential values
+- **ALWAYS** load credentials from .env files using python-dotenv
+- **ALWAYS** check for hardcoded credentials before committing
+- **Test scripts** must read from environment, not have embedded credentials
+- **Example files** should use placeholders like "your-api-key-here"
+- **Before every commit**: grep for known credential patterns
+- **If credentials are exposed**: Rotate immediately and notify user
+- **This applies to ALL assistants** (Opus, Sonnet, Haiku) - no exceptions
 
 ## Image Storage System
 - **Storage Method**: Binary data (BYTEA) stored directly in PostgreSQL database
