@@ -435,39 +435,41 @@ export default function ProductDetail(): JSX.Element {
 
           {/* Price Section */}
           {isEditing ? (
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Price
-              </label>
-              <input
-                type="number"
-                step="0.01"
-                min="0"
-                value={editForm.price}
-                onChange={(e) => handleInputChange('price', e.target.value)}
-                className={`w-full p-3 border rounded-lg focus:outline-none bg-white dark:bg-gray-700 ${
-                  editForm.price && (isNaN(parseFloat(editForm.price)) || parseFloat(editForm.price) < 0)
-                    ? 'border-red-300 focus:border-red-500 dark:border-red-600'
-                    : 'border-gray-300 dark:border-gray-600 focus:border-blue-500'
-                }`}
-                placeholder="0.00 (optional)"
-              />
-              {editForm.price && (isNaN(parseFloat(editForm.price)) || parseFloat(editForm.price) < 0) && (
-                <p className="text-red-500 text-sm mt-1">Please enter a valid price (0 or greater)</p>
-              )}
-            </div>
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Currency
-              </label>
-              <input
-                type="text"
-                value={editForm.currency}
-                onChange={(e) => handleInputChange('currency', e.target.value)}
-                className="w-full p-3 border rounded-lg focus:outline-none bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:border-blue-500"
-                placeholder="€, $, BTC, gold oz..."
-              />
-            </div>
+            <>
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Price
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={editForm.price}
+                  onChange={(e) => handleInputChange('price', e.target.value)}
+                  className={`w-full p-3 border rounded-lg focus:outline-none bg-white dark:bg-gray-700 ${
+                    editForm.price && (isNaN(parseFloat(editForm.price)) || parseFloat(editForm.price) < 0)
+                      ? 'border-red-300 focus:border-red-500 dark:border-red-600'
+                      : 'border-gray-300 dark:border-gray-600 focus:border-blue-500'
+                  }`}
+                  placeholder="0.00 (optional)"
+                />
+                {editForm.price && (isNaN(parseFloat(editForm.price)) || parseFloat(editForm.price) < 0) && (
+                  <p className="text-red-500 text-sm mt-1">Please enter a valid price (0 or greater)</p>
+                )}
+              </div>
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Currency
+                </label>
+                <input
+                  type="text"
+                  value={editForm.currency}
+                  onChange={(e) => handleInputChange('currency', e.target.value)}
+                  className="w-full p-3 border rounded-lg focus:outline-none bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:border-blue-500"
+                  placeholder="€, $, BTC, gold oz..."
+                />
+              </div>
+            </>
           ) : (
             product.price !== null && product.price !== undefined && (
               <div className="mb-6">
