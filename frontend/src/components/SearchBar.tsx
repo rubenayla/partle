@@ -273,7 +273,7 @@ export default function SearchBar({
         <Tooltip text="Go home (Alt+N, H)">
           <a
             href="/"
-            className="text-2xl font-semibold text-gray-900 dark:text-white"
+            className="text-2xl font-bold text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 transition-colors"
           >
             Partle
           </a>
@@ -476,7 +476,7 @@ export default function SearchBar({
           <button
             type="submit"
             aria-label="Search"
-            className="p-2 rounded-full bg-transparent text-gray-600 dark:text-gray-400 hover:text-white hover:bg-blue-500 focus:outline-none focus:ring-0 border-0 hover:border-0"
+            className="p-2 rounded-full bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors"
           >
             <Search className="h-5 w-5" />
           </button>
