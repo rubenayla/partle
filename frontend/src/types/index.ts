@@ -75,6 +75,8 @@ export interface Product {
   description?: string;
   /** Product price in cents (to avoid floating point issues) */
   price?: number;
+  /** Currency for the price (free text, defaults to €) */
+  currency?: string;
   /** Product image URL */
   image_url?: string;
   /** Product image filename (when stored in database) */

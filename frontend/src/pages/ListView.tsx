@@ -129,7 +129,7 @@ export default function ListView({ items }: ListViewProps) {
               {isProduct(item) ? (
                 <p className="text-sm text-gray-600 dark:text-gray-300 mt-auto">
                   <span className="text-base font-semibold text-gray-900 dark:text-white">
-                    {item.price ? `€${item.price}` : 'Price not set'}
+                    {item.price ? `${item.currency || '€'}${item.price}` : 'Price not set'}
                   </span>
                   {item.store && (
                     <span className="block text-xs mt-1">

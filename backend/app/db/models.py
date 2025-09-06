@@ -114,6 +114,7 @@ class Product(Base):
     name: Mapped[str] = mapped_column(String)
     spec: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     price: Mapped[Optional[float]] = mapped_column(Numeric(10, 2), nullable=True)
+    currency: Mapped[Optional[str]] = mapped_column(String(10), nullable=True, default='€')
     url: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     lat: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     lon: Mapped[Optional[float]] = mapped_column(Float, nullable=True)

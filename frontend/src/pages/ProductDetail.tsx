@@ -18,6 +18,7 @@ interface EditForm {
   name: string;
   description: string;
   price: string;
+  currency: string;
   url: string;
   image_url: string;
 }
@@ -109,6 +110,7 @@ export default function ProductDetail(): JSX.Element {
           name: productData.name || '',
           description: productData.description || '',
           price: productData.price?.toString() || '',
+          currency: productData.currency || '€',
           url: productData.url || '',
           image_url: productData.image_url || ''
         });
@@ -171,6 +173,7 @@ export default function ProductDetail(): JSX.Element {
         name: editForm.name.trim(),
         description: editForm.description?.trim() || undefined,
         price: editForm.price ? parseFloat(editForm.price) : undefined,
+        currency: editForm.currency?.trim() || '€',
         url: editForm.url?.trim() || undefined,
         image_url: editForm.image_url?.trim() || undefined
       };
@@ -434,7 +437,7 @@ export default function ProductDetail(): JSX.Element {
           {isEditing ? (
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Price (€)
+                Price
               </label>
               <input
                 type="number"
@@ -453,11 +456,23 @@ export default function ProductDetail(): JSX.Element {
                 <p className="text-red-500 text-sm mt-1">Please enter a valid price (0 or greater)</p>
               )}
             </div>
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Currency
+              </label>
+              <input
+                type="text"
+                value={editForm.currency}
+                onChange={(e) => handleInputChange('currency', e.target.value)}
+                className="w-full p-3 border rounded-lg focus:outline-none bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:border-blue-500"
+                placeholder="€, $, BTC, gold oz..."
+              />
+            </div>
           ) : (
             product.price !== null && product.price !== undefined && (
               <div className="mb-6">
                 <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-2">Price</h3>
-                <p className="text-3xl font-bold text-green-600 dark:text-green-400">€{product.price}</p>
+                <p className="text-3xl font-bold text-green-600 dark:text-green-400">{product.currency || '€'}{product.price}</p>
               </div>
             )
           )}

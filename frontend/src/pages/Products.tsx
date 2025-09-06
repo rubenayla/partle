@@ -136,7 +136,7 @@ export default function Products(): JSX.Element {
                 {' — '}
                 {product.description || '–'}
                 {' — '}
-                €{product.price ?? '?'}
+                {product.currency || '€'}{product.price ?? '?'}
               </div>
             </div>
           </li>

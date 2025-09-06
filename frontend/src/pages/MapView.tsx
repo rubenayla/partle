@@ -117,7 +117,7 @@ export default function MapView({ results, highlights = [] }: MapViewProps): JSX
                 <div className="font-semibold">{item.storeName}</div>
                 <div className="text-gray-600">{item.name}</div>
                 <div className="mt-1">
-                  €{item.price.toFixed(2)} • {item.qty} in stock
+                  {item.currency || '€'}{item.price.toFixed(2)} • {item.qty} in stock
                 </div>
               </div>
             </Popup>

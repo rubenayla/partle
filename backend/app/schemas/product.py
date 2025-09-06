@@ -12,6 +12,7 @@ class ProductIn(BaseModel):
     name: str
     spec: Optional[str] = None
     price: Optional[Decimal] = None       # Decimal ↔ SQLAlchemy Numeric
+    currency: Optional[str] = '€'         # Free text currency field, defaults to €
     url: Optional[HttpUrl] = None
     lat: Optional[float] = None
     lon: Optional[float] = None

@@ -8,6 +8,7 @@ interface FormState {
   name: string;
   spec: string;
   price: number;
+  currency: string;
   url: string;
   description: string;
   image_url: string;
@@ -21,6 +22,7 @@ export default function AddProduct() {
     name: '',
     spec: '',
     price: 0,
+    currency: '€',
     url: '',
     description: '',
     image_url: '',
@@ -70,6 +72,7 @@ export default function AddProduct() {
         name: form.name.trim(),
         spec: form.spec.trim() || null,
         price: form.price ? Number(form.price) : null,
+        currency: form.currency.trim() || '€',
         url: form.url.trim() || null,
         description: form.description.trim() || null,
         image_url: form.image_url.trim() || null,
@@ -249,20 +252,32 @@ export default function AddProduct() {
                     <label htmlFor="price" className="block text-sm font-medium text-secondary mb-1">
                       Price
                     </label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">$</span>
-                      <input
-                        id="price"
-                        name="price"
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={form.price}
-                        onChange={change}
-                        placeholder="0.00"
-                        className="w-full pl-8 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-background focus:ring-2 focus:ring-accent focus:border-transparent transition-colors"
-                      />
-                    </div>
+                    <input
+                      id="price"
+                      name="price"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={form.price}
+                      onChange={change}
+                      placeholder="0.00"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-background focus:ring-2 focus:ring-accent focus:border-transparent transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="currency" className="block text-sm font-medium text-secondary mb-1">
+                      Currency
+                    </label>
+                    <input
+                      id="currency"
+                      name="currency"
+                      type="text"
+                      value={form.currency}
+                      onChange={change}
+                      placeholder="€, $, BTC, gold oz..."
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-background focus:ring-2 focus:ring-accent focus:border-transparent transition-colors"
+                    />
                   </div>
                 </div>
               </div>
