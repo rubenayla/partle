@@ -150,7 +150,12 @@ def create_product(
 
 @router.get("/{product_id}", response_model=schema.ProductOut)
 def get_product(product_id: int, db: Session = Depends(get_db)):
-    product = db.get(Product, product_id)
+    # Use query with joinedload to include creator information
+    from sqlalchemy.orm import joinedload
+    product = db.query(Product).options(
+        joinedload(Product.creator),
+        joinedload(Product.store)
+    ).filter(Product.id == product_id).first()
     if not product:
         raise HTTPException(404, "Product not found")
     return product

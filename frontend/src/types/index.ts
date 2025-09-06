@@ -97,6 +97,11 @@ export interface Product {
   updated_at?: string;
   /** ID of the user who created this product */
   creator_id?: number;
+  /** Creator information (populated via join) */
+  creator?: {
+    id: number;
+    email: string;
+  };
 }
 
 /**
