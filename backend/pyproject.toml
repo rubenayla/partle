@@ -48,10 +48,18 @@ pytest-dotenv = "^0.5.2"
 
 
 
+[tool.pytest.ini_options]
+testpaths = ["app"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+norecursedirs = ["scripts", "stuff", "alembic", "*.egg", ".git", "__pycache__"]
+
 [tool.ruff]
 line-length = 120
 exclude = [
-    "stuff/" # Assuming you might have a similar 'stuff' directory in backend
+    "stuff/", # Assuming you might have a similar 'stuff' directory in backend
+    "scripts/" # Exclude debug scripts from linting
 ]
 
 [tool.ruff.lint]
