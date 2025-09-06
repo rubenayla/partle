@@ -6,7 +6,8 @@ import { useState, useEffect, useCallback } from 'react';
 import api from '../api';
 import ListView from './ListView';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
-import { Product, Store, ProductSearchParams } from '../types';
+import { getTags } from '../api/tags';
+import { Product, Store, ProductSearchParams, Tag } from '../types';
 
 /**
  * API response type for paginated data
@@ -52,6 +53,7 @@ export default function Home() {
   const [stores, setStores] = useState<Store[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [offset, setOffset] = useState<number>(0);
+  const [tags, setTags] = useState<Tag[]>([]);
   const [searchParams, setSearchParams] = useState<ProductSearchParams>({
     query: '',
     searchType: 'products',
@@ -61,6 +63,11 @@ export default function Home() {
     sortBy: 'created_at',
     sortOrder: 'desc'
   });
+
+  // Fetch tags on mount
+  useEffect(() => {
+    getTags().then(setTags).catch(console.error);
+  }, []);
 
   /**
    * Fetch products or stores based on current search parameters
@@ -79,13 +86,19 @@ export default function Home() {
       let response: ApiResponse<Product | Store>;
       
       if (currentSearchParams.searchType === 'products') {
+        // Convert tag IDs to tag names for the API
+        const selectedTagNames = currentSearchParams.selectedTags
+          .map(tagId => tags.find(tag => tag.id === tagId)?.name)
+          .filter(Boolean)
+          .join(',');
+        
         // Searching products
         const productParams: Record<string, any> = {
           q: currentSearchParams.query,
           min_price: currentSearchParams.priceMin,
           max_price: currentSearchParams.priceMax,
           sort_by: currentSearchParams.sortBy,
-          tags: currentSearchParams.selectedTags.join(','),
+          tags: selectedTagNames,
           limit: 20,
           offset: offsetToUse,
         };
@@ -113,12 +126,18 @@ export default function Home() {
           });
         }
       } else {
+        // Convert tag IDs to tag names for the API
+        const selectedTagNames = currentSearchParams.selectedTags
+          .map(tagId => tags.find(tag => tag.id === tagId)?.name)
+          .filter(Boolean)
+          .join(',');
+        
         console.log('fetchData: Sending store query', currentSearchParams.query);
         response = await api.get('/v1/stores/', {
           params: {
             q: currentSearchParams.query,
             sort_by: currentSearchParams.sortBy,
-            tags: currentSearchParams.selectedTags.join(','),
+            tags: selectedTagNames,
             limit: 20,
             offset: offsetToUse,
           },
@@ -162,7 +181,7 @@ export default function Home() {
         setHasMore(false);
       }
     }
-  }, []);
+  }, [tags]);
 
   /**
    * Fetch more data for infinite scroll

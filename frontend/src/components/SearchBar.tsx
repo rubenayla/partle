@@ -361,10 +361,13 @@ export default function SearchBar({
                 </div>
 
   {/* Tag Filter */ }
-  <TagFilter
-    selectedTags={selectedTags}
-    onTagChange={setSelectedTags}
-  />
+  <div className="space-y-2">
+    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Tags</label>
+    <TagFilter
+      selectedTags={selectedTags}
+      onTagChange={setSelectedTags}
+    />
+  </div>
 
   {/* Price Range Filter */ }
   <div className="space-y-2">

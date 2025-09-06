@@ -79,12 +79,12 @@ export default function AuthModal({ onClose = () => { }, onSuccess = () => { } }
     >
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-4 bg-surface text-foreground rounded-3xl shadow-2xl w-full max-w-sm p-8"
+        className="flex flex-col gap-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-3xl shadow-2xl w-full max-w-sm p-8"
       >
         <h1 className="text-2xl font-semibold text-center">Partle Account Register&Login</h1>
 
         <input
-          className="border border-gray-300 dark:border-gray-600 p-2 rounded bg-background"
+          className="border border-gray-300 dark:border-gray-600 p-2 rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
           placeholder="Email"
           autoComplete="email"
           value={email}
@@ -92,7 +92,7 @@ export default function AuthModal({ onClose = () => { }, onSuccess = () => { } }
         />
 
         <input
-          className="border border-gray-300 dark:border-gray-600 p-2 rounded bg-background"
+          className="border border-gray-300 dark:border-gray-600 p-2 rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
           type="password"
           placeholder="Password"
           autoComplete="current-password"
@@ -102,14 +102,14 @@ export default function AuthModal({ onClose = () => { }, onSuccess = () => { } }
         <button
           type="button"
           onClick={handleForgot}
-          className="text-sm text-link hover:underline text-left"
+          className="text-sm text-blue-600 dark:text-blue-400 hover:underline text-left"
         >
           Forgot password?
         </button>
 
-        {error && <span className="text-danger text-sm">{error}</span>}
+        {error && <span className="text-red-600 dark:text-red-400 text-sm">{error}</span>}
 
-        <button className="bg-accent text-background py-2 rounded hover:bg-accent-hover">
+        <button className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white py-2 rounded transition-colors">
           Continue
         </button>
       </form>
