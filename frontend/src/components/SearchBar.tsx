@@ -273,7 +273,7 @@ export default function SearchBar({
         <Tooltip text="Go home (Alt+N, H)">
           <a
             href="/"
-            className="text-2xl font-bold text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 transition-colors"
+            className="text-2xl font-bold text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
           >
             Partle
           </a>

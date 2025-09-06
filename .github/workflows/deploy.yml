@@ -68,13 +68,7 @@ jobs:
     - name: Build frontend
       run: |
         cd frontend
-        # Verify environment variables are set
-        if grep -q "VITE_API_BASE=" .env; then
-          echo "✓ VITE_API_BASE found in .env"
-        else
-          echo "✗ VITE_API_BASE missing from .env"
-          exit 1
-        fi
+        # Build with environment variable already set in workflow
         npm run build
         # Verify build output contains no undefined environment variables (look for specific patterns)
         if grep -r "VITE_.*is not defined\|import\.meta\.env\.VITE_.*undefined" dist/; then
