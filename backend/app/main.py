@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 # Load from root .env file
 root_env = Path(__file__).parents[2] / '.env'
 if root_env.exists():
-    load_dotenv(root_env)
+    load_dotenv(root_env, override=True)
 
 app = FastAPI(
     title="Partle API",
