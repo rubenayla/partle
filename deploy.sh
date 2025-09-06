@@ -28,6 +28,15 @@ echo "Backend started with PID $!"
 
 echo "📦 Updating frontend..."
 cd /srv/partle/frontend
+
+# Load environment variables from root .env for the build
+if [ -f /srv/partle/.env ]; then
+    export $(grep -v '^#' /srv/partle/.env | xargs)
+    echo "✓ Loaded environment variables for frontend build"
+else
+    echo "⚠️  WARNING: /srv/partle/.env not found - frontend build may fail!"
+fi
+
 npm ci
 npm run build
 

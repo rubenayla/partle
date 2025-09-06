@@ -70,11 +70,12 @@ jobs:
         cd frontend
         # Build with environment variable already set in workflow
         npm run build
-        # Verify build output contains no undefined environment variables (look for specific patterns)
-        if grep -r "VITE_.*is not defined\|import\.meta\.env\.VITE_.*undefined" dist/; then
-          echo "✗ Build contains undefined environment variables"
+        # Verify build output contains the API base URL
+        if ! grep -q "https://partle.rubenayla.xyz\|http://localhost:8000" dist/assets/*.js; then
+          echo "✗ Build doesn't contain VITE_API_BASE value - environment variable not injected!"
           exit 1
         fi
+        echo "✓ Build contains API base URL"
 
   deploy:
     needs: test
