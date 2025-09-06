@@ -1,9 +1,26 @@
 # Partle Project - Claude Notes
 
+## 🚫 DO NOT ADD WITHOUT PERMISSION
+- **NO new environment variables** without explicit user approval
+- **NO new configuration systems** (no PRODUCTION_MODE, NODE_ENV, etc.)
+- **NO complex environment detection** - keep it simple
+- **NO new abstractions** that make debugging harder
+- **NO new dependencies** without asking first
+
 ## 🚨 CRITICAL DATABASE WARNING 🚨
 **ONLY ONE DATABASE EXISTS: Hetzner Production (91.98.68.236:5432/partle)**
 **NEVER CREATE LOCAL DATABASES - USER EXPLICITLY FORBID THIS TWICE**
 **ALWAYS VERIFY DATABASE_URL POINTS TO HETZNER BEFORE ANY DB OPERATION**
+
+## ✅ ENVIRONMENT VARIABLES (COMPLETE LIST - DO NOT ADD MORE)
+**Location**: `.env` file at `/srv/partle/.env` (on server) or project root (local)
+**Loading**: Simple - if `.env` exists, load it. No complex logic.
+
+**Required variables (these 4 only)**:
+- `DATABASE_URL` - PostgreSQL connection string
+- `SECRET_KEY` - JWT signing key
+- `CLOUDFLARE_WORKER_URL` - Email service endpoint
+- `CLOUDFLARE_WORKER_API_KEY` - Email service authentication
 
 ## Project Structure
 - **Backend**: Python FastAPI application using Poetry for dependency management
