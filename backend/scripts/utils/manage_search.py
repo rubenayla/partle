@@ -8,7 +8,7 @@ import logging
 from sqlalchemy.orm import sessionmaker
 
 # Add the app directory to Python path
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app.api.deps import get_db
 from app.search.indexing import initialize_product_index, reindex_all_products
