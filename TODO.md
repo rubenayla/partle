@@ -1,50 +1,15 @@
-  Option 1: MailChannels with Cloudflare Worker (FREE)
+let's leave the partle logo at the top left black again (or white in dark mode? however it was before). I don't like how it looks blue.
 
-  - MailChannels has a special partnership with Cloudflare
-  - Cloudflare Workers can send emails through MailChannels' API
-  - No API key needed - it automatically works from Workers
-  - This is what your Worker SHOULD be using, not the Email Routing API
+partle add true ratings, user product pair, link a number, note the time, aggregate them with ponderation based on date, somehow. Maybe not the date, but the rating order, so each previous rating is worth r times the later one, where r < 1
 
-  Option 2: Direct SMTP from Python Backend
-
-  - Remove the Worker completely
-  - Use Gmail/Outlook SMTP directly from FastAPI
-  - Simpler architecture: Backend → Email Server
-  - Free for low volume (Gmail: 500/day)
-
-  Why Your Current Setup Doesn't Work:
-
-  Your Worker is calling:
-  /email/routing/addresses/noreply@rubenayla.xyz/message
-
-  This endpoint doesn't exist for sending emails. Email Routing is only for
-  receiving/forwarding. That's why it returns "success" but no email is sent - the API
-  call succeeds but doesn't do what you think.
-
-  The Real Choice:
-
-  1. Fix the Worker to use MailChannels API (keep your current architecture)
-  2. Delete the Worker and send emails directly from Python (simpler)
-
-  Both will actually send emails. Which do you prefer?
-
-> the smtp can use my email @rubenayla.xyz?
-  ⎿  5-hour limit reached ∙ resets 11pm
-     /upgrade to increase your usage limit.
-
-
----
-
-
-- check "forgot password" functionality
-
-Why am i getting "Existing account – log in instead" in our unified register/login page?
 
 - How to modify product. If you are the user, when you click a product to see it, allow editing? Or do it in other way
 
 Why claude /mcp doesn't detect the mcps of the repo. i'd like to see it easily for checking the scrapers
 
 - let's test the use of mcp server with chatgpt
+
+- los filtros al realizar una busqueda no se ven en formato movil.
 
 # problem with hook for scroll
 ● Summary of the React Hooks Issue
