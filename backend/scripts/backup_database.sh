@@ -5,11 +5,27 @@
 
 set -e
 
+# Load environment variables from .env file
+if [ -f "/srv/partle/.env" ]; then
+    export $(grep -v '^#' /srv/partle/.env | xargs)
+fi
+
+# Parse DATABASE_URL to extract components
+# Format: postgresql://user:password@host:port/database
+if [ -z "$DATABASE_URL" ]; then
+    echo "ERROR: DATABASE_URL not found in environment"
+    exit 1
+fi
+
+# Extract components from DATABASE_URL
+DB_USER=$(echo $DATABASE_URL | sed -n 's/.*:\/\/\([^:]*\):.*/\1/p')
+DB_PASSWORD=$(echo $DATABASE_URL | sed -n 's/.*:\/\/[^:]*:\([^@]*\)@.*/\1/p')
+DB_HOST=$(echo $DATABASE_URL | sed -n 's/.*@\([^:]*\):.*/\1/p')
+DB_PORT=$(echo $DATABASE_URL | sed -n 's/.*:\([0-9]*\)\/.*/\1/p')
+DB_NAME=$(echo $DATABASE_URL | sed -n 's/.*\/\([^?]*\).*/\1/p')
+
 # Configuration
 BACKUP_DIR="/srv/partle/backend/backups"
-DB_NAME="partle"
-DB_USER="partle_user"
-DB_HOST="localhost"
 LOG_FILE="$BACKUP_DIR/backup.log"
 KEEP_DAYS=7
 
@@ -28,10 +44,11 @@ log_message() {
 # Start backup
 log_message "Starting PostgreSQL backup..."
 
-# Use .pgpass file for secure authentication (no password in script)
+# Set PGPASSWORD environment variable for pg_dump
+export PGPASSWORD="$DB_PASSWORD"
 
 # Perform backup
-if pg_dump -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" > "$BACKUP_FILE"; then
+if pg_dump -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" > "$BACKUP_FILE"; then
     # Compress the backup
     gzip "$BACKUP_FILE"
     BACKUP_FILE="$BACKUP_FILE.gz"
