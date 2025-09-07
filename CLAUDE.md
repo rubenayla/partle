@@ -14,7 +14,7 @@
 
 ## ✅ ENVIRONMENT VARIABLES (COMPLETE LIST - DO NOT ADD MORE)
 **Location**: `.env` file at `/srv/partle/.env` (on server) or project root (local)
-**Loading**: Simple - if `.env` exists, load it. No complex logic.
+**Loading**: Simple - loads root `.env` with `override=True` to ensure values take precedence over existing environment variables.
 
 **Required variables (these 4 only)**:
 - `DATABASE_URL` - PostgreSQL connection string

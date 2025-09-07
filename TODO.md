@@ -1,4 +1,9 @@
-let's leave the partle logo at the top left black again (or white in dark mode? however it was before). I don't like how it looks blue.
+The account page still looks grey
+
+I think we need a button under the account icon in searchbar, right over "Favourite products" saying "My Products" so I can see them all easily.
+
+I created a product called prueba, i have it opened but don't know how to edit it. I think we need to include the editing function in the UI, just have a button for editing them.
+
 
 partle add true ratings, user product pair, link a number, note the time, aggregate them with ponderation based on date, somehow. Maybe not the date, but the rating order, so each previous rating is worth r times the later one, where r < 1
 

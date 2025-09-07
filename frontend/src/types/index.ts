@@ -126,6 +126,8 @@ export interface User {
   id: number;
   /** User's email address */
   email: string;
+  /** User's unique username (optional until set) */
+  username?: string | null;
   /** Whether the user's email has been verified */
   is_verified?: boolean;
   /** User's display name (optional) */
