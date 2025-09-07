@@ -4,10 +4,10 @@
  */
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getProducts } from '../api/products';
+import api from '../api';
 import { currentUser } from '../api/auth';
 import { Product, User } from '../types';
-import ProductCard from '../components/ProductCard';
+import ListView from './ListView';
 
 /**
  * MyProducts Component - Displays all products created by the current user
@@ -43,13 +43,15 @@ export default function MyProducts() {
         setUser(currentUserData);
 
         // Fetch all products and filter by creator_id
-        const response = await getProducts({ 
-          page: 0, 
-          size: 100 // Get up to 100 products
+        const response = await api.get('/v1/products/', {
+          params: {
+            limit: 100,
+            offset: 0
+          }
         });
         
         // Filter products created by current user
-        const userProducts = response.items.filter(
+        const userProducts = (response.data as Product[]).filter(
           product => product.creator_id === currentUserData.id
         );
         
@@ -113,24 +115,7 @@ export default function MyProducts() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onEdit={() => navigate(`/products/${product.id}`)}
-                onDelete={async () => {
-                  // Refresh the list after deletion
-                  const response = await getProducts({ page: 0, size: 100 });
-                  const userProducts = response.items.filter(
-                    p => p.creator_id === user?.id
-                  );
-                  setProducts(userProducts);
-                }}
-                showEditControls={true}
-              />
-            ))}
-          </div>
+          <ListView items={products} />
         )}
       </div>
     </div>

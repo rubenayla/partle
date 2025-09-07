@@ -27,8 +27,8 @@ export default function CompleteProfile() {
 
     try {
       await api.post('/v1/auth/set-username', { username });
-      // Username set successfully, redirect to home
-      navigate('/');
+      // Username set successfully, refresh the page to update auth context
+      window.location.href = '/';
     } catch (err: any) {
       if (err.response?.status === 409) {
         setError('This username is already taken. Please choose another.');
@@ -75,7 +75,7 @@ export default function CompleteProfile() {
                 onChange={(e) => setUsername(e.target.value)}
                 className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
                 placeholder="john_doe"
-                pattern="[a-zA-Z0-9_-]{3,20}"
+                pattern="[a-zA-Z0-9_\-]{3,20}"
                 title="3-20 characters, letters, numbers, underscore or dash only"
               />
             </div>

@@ -1,4 +1,4 @@
-The account page still looks grey
+what happens if i enter a username that's already been used.
 
 I think we need a button under the account icon in searchbar, right over "Favourite products" saying "My Products" so I can see them all easily.
 

@@ -138,9 +138,12 @@ def set_username(
             detail="Username must be 3-20 characters, alphanumeric, underscore or dash only"
         )
     
-    current_user.username = payload.username
+    # Merge the user into this session to track changes
+    user = db.merge(current_user)
+    user.username = payload.username
     db.commit()
-    return {"status": "ok", "username": current_user.username}
+    db.refresh(user)
+    return {"status": "ok", "username": user.username}
 
 
 @router.delete("/account", status_code=204)
