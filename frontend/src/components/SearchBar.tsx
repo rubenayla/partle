@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { deleteAccount, currentUser } from '../api/auth';
 import Tooltip from './Tooltip';
 import TagFilter from './TagFilter';
+import StoreFilter from './StoreFilter';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import api from '../api/index';
 import { ProductSearchParams, User as UserType, Theme } from '../types';
@@ -39,6 +40,7 @@ export default function SearchBar({
   const [priceMin, setPriceMin] = useState<number>(0);
   const [priceMax, setPriceMax] = useState<number>(500);
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
+  const [selectedStores, setSelectedStores] = useState<number[]>([]);
   const [sortBy, setSortBy] = useState<string>('random');
   const [user, setUser] = useState<UserType | null>(null);
   const navigate = useNavigate();
@@ -63,6 +65,7 @@ export default function SearchBar({
         priceMin,
         priceMax,
         selectedTags,
+        selectedStores,
         sortBy: sortBy as any,
         sortOrder: 'desc'
       };
@@ -79,6 +82,7 @@ export default function SearchBar({
         priceMin,
         priceMax,
         selectedTags,
+        selectedStores,
         sortBy: value as any,
         sortOrder: 'desc'
       };
@@ -187,6 +191,31 @@ export default function SearchBar({
                         priceMin,
                         priceMax,
                         selectedTags: tags,
+                        selectedStores,
+                        sortBy: sortBy as any,
+                        sortOrder: 'desc'
+                      };
+                      onSearch(params);
+                    }
+                  }}
+                />
+              </div>
+
+              {/* Stores */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Stores</label>
+                <StoreFilter
+                  selectedStores={selectedStores}
+                  onStoreChange={(stores) => {
+                    setSelectedStores(stores);
+                    if (onSearch) {
+                      const params: ProductSearchParams = {
+                        query,
+                        searchType,
+                        priceMin,
+                        priceMax,
+                        selectedTags,
+                        selectedStores: stores,
                         sortBy: sortBy as any,
                         sortOrder: 'desc'
                       };
@@ -462,6 +491,31 @@ export default function SearchBar({
                         priceMin,
                         priceMax,
                         selectedTags: tags,
+                        selectedStores,
+                        sortBy: sortBy as any,
+                        sortOrder: 'desc'
+                      };
+                      onSearch(params);
+                    }
+                  }}
+                />
+              </div>
+
+              {/* Stores */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Stores</label>
+                <StoreFilter
+                  selectedStores={selectedStores}
+                  onStoreChange={(stores) => {
+                    setSelectedStores(stores);
+                    if (onSearch) {
+                      const params: ProductSearchParams = {
+                        query,
+                        searchType,
+                        priceMin,
+                        priceMax,
+                        selectedTags,
+                        selectedStores: stores,
                         sortBy: sortBy as any,
                         sortOrder: 'desc'
                       };

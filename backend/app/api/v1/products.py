@@ -22,6 +22,7 @@ logger = get_logger("api.products")
 @router.get("/", response_model=list[schema.ProductOut])
 def list_products(
     store_id: int | None = None,
+    store_ids: str | None = None,  # Comma-separated list of store IDs
     store_name: str | None = None,
     q: str | None = None,
     min_price: float | None = None,
@@ -34,7 +35,17 @@ def list_products(
 ):
     query = db.query(Product)
 
-    if store_id is not None:
+    # Handle multiple store IDs if provided
+    if store_ids is not None:
+        try:
+            store_id_list = [int(sid.strip()) for sid in store_ids.split(',') if sid.strip()]
+            if store_id_list:
+                query = query.filter(Product.store_id.in_(store_id_list))
+        except ValueError:
+            # Invalid store_ids format, ignore the filter
+            pass
+    elif store_id is not None:
+        # Single store_id for backward compatibility
         query = query.filter(Product.store_id == store_id)
 
     if store_name is not None:

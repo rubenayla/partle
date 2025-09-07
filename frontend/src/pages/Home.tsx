@@ -60,6 +60,7 @@ export default function Home() {
     priceMin: 0,
     priceMax: 500,
     selectedTags: [],
+    selectedStores: [],
     sortBy: 'created_at',
     sortOrder: 'desc'
   });
@@ -102,6 +103,11 @@ export default function Home() {
           limit: 20,
           offset: offsetToUse,
         };
+        
+        // Add store_ids filter if stores are selected
+        if (currentSearchParams.selectedStores && currentSearchParams.selectedStores.length > 0) {
+          productParams.store_ids = currentSearchParams.selectedStores.join(',');
+        }
         
         // Add store_name filter if provided via search operators
         if (currentSearchParams.storeType) {

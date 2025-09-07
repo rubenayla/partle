@@ -152,6 +152,8 @@ export interface ProductSearchParams {
   priceMax: number;
   /** Selected tag IDs for filtering */
   selectedTags: number[];
+  /** Selected store IDs for filtering */
+  selectedStores: number[];
   /** Sort field */
   sortBy: ProductSortBy;
   /** Sort order */
