@@ -36,7 +36,7 @@ from typing import TYPE_CHECKING
 class UserBasic(BaseModel):
     """Basic user info for product creator display."""
     id: int
-    email: str
+    username: Optional[str] = None
     
     model_config = ConfigDict(from_attributes=True)
 

@@ -20,9 +20,15 @@ export default function AuthModal({ onClose = () => { }, onSuccess = () => { } }
     e.preventDefault();
     setError("");
     try {
-      const { access_token } = await login(email, password);
-      localStorage.setItem("token", access_token);
-      onSuccess();
+      const response = await login(email, password);
+      localStorage.setItem("token", response.access_token);
+      
+      // Check if user needs to set username
+      if (response.needs_username) {
+        window.location.href = '/complete-profile';
+      } else {
+        onSuccess();
+      }
       onClose();
       return;
     } catch (err: any) {
@@ -36,9 +42,11 @@ export default function AuthModal({ onClose = () => { }, onSuccess = () => { } }
 
     try {
       await register(email, password);
-      const { access_token } = await login(email, password);
-      localStorage.setItem("token", access_token);
-      onSuccess();
+      const response = await login(email, password);
+      localStorage.setItem("token", response.access_token);
+      
+      // New users always need to set username
+      window.location.href = '/complete-profile';
       onClose();
     } catch (err: any) {
       // Extract error message from API response

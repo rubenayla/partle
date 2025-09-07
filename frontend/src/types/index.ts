@@ -100,7 +100,7 @@ export interface Product {
   /** Creator information (populated via join) */
   creator?: {
     id: number;
-    email: string;
+    username: string | null;
   };
 }
 

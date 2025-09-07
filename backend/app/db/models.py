@@ -70,6 +70,7 @@ class User(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(String, unique=True, index=True)
+    username: Mapped[Optional[str]] = mapped_column(String(50), unique=True, index=True, nullable=True)
     password_hash: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     stores: Mapped[list["Store"]] = relationship(back_populates="owner")
     credentials: Mapped[list["Credential"]] = relationship(back_populates="user")

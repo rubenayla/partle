@@ -15,6 +15,7 @@ import About from "./pages/About"; // Import the new About page
 import Documentation from "./pages/Documentation"; // Import the new Documentation page
 import Account from "./pages/Account"; // Import the new Account page
 import ResetPassword from "./pages/ResetPassword"; // Import the new ResetPassword page
+import CompleteProfile from "./pages/CompleteProfile"; // Import the new CompleteProfile page
 import { useBackendStatus } from './hooks/useBackendStatus'
 import { useTheme } from './hooks/useTheme';
 import { trackPageView } from './utils/analytics';
@@ -67,6 +68,7 @@ export default function App() {
           <Route path="/about" element={<About />} />
           <Route path="/documentation" element={<Documentation />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/complete-profile" element={<CompleteProfile />} />
 
           {/* actions that require login */}
           <Route element={<RequireAuth />}>

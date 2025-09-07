@@ -16,6 +16,8 @@ interface LoginResponse {
   token_type: string;
   /** Token expiration time in seconds */
   expires_in?: number;
+  /** Whether the user needs to set a username */
+  needs_username?: boolean;
 }
 
 /**

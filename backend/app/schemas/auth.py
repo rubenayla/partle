@@ -10,6 +10,7 @@ class UserCreate(BaseModel):
 class UserRead(BaseModel):
     id: int
     email: EmailStr
+    username: str | None = None
 
     class Config:
         from_attributes = True
@@ -42,3 +43,7 @@ class PasswordChange(BaseModel):
 class PasswordResetConfirm(BaseModel):
     token: str
     new_password: str
+
+
+class SetUsername(BaseModel):
+    username: str

@@ -62,7 +62,11 @@ def login(
             raise HTTPException(status_code=401, detail="Incorrect email or password")
 
     token = create_access_token({"sub": str(user.id)})
-    return {"access_token": token, "token_type": "bearer"}
+    return {
+        "access_token": token, 
+        "token_type": "bearer",
+        "needs_username": user.username is None
+    }
 
 
 # ─── Password-reset request ──────────────────────────────────────────────────
@@ -109,6 +113,34 @@ def reset_password(
 @router.get("/me", response_model=schema.UserRead)
 def read_current_user(current_user: User = Depends(get_current_user)):
     return current_user
+
+
+@router.post("/set-username")
+def set_username(
+    payload: schema.SetUsername,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Set username for the current user (one-time only)."""
+    if current_user.username is not None:
+        raise HTTPException(status_code=400, detail="Username already set")
+    
+    # Check if username is already taken
+    existing = db.query(User).filter_by(username=payload.username).first()
+    if existing:
+        raise HTTPException(status_code=409, detail="Username already taken")
+    
+    # Validate username (alphanumeric, underscore, dash, 3-20 chars)
+    import re
+    if not re.match(r'^[a-zA-Z0-9_-]{3,20}$', payload.username):
+        raise HTTPException(
+            status_code=400, 
+            detail="Username must be 3-20 characters, alphanumeric, underscore or dash only"
+        )
+    
+    current_user.username = payload.username
+    db.commit()
+    return {"status": "ok", "username": current_user.username}
 
 
 @router.delete("/account", status_code=204)
