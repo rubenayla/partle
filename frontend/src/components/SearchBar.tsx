@@ -10,14 +10,14 @@ import Tooltip from './Tooltip';
 import TagFilter from './TagFilter';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import api from '../api/index';
-import { ProductSearchParams, User as UserType } from '../types';
+import { ProductSearchParams, User as UserType, Theme } from '../types';
 
 interface SearchBarProps {
   onSearch?: (params: ProductSearchParams) => void;
   isLoggedIn?: boolean;
   onAccountClick?: () => void;
-  currentTheme?: string;
-  setTheme?: (theme: string) => void;
+  currentTheme: Theme;
+  setTheme: (theme: Theme) => void;
 }
 
 const sortOptions: Record<string, string> = {
@@ -286,6 +286,10 @@ export default function SearchBar({
                   <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
                     <a href="/account" className="block">Account</a>
                   </DropdownMenu.Item>
+                  <div className="mt-2 px-2 py-1">
+                    <div className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Theme</div>
+                    <ThemeSwitch value={currentTheme} onChange={(mode) => setTheme(mode)} />
+                  </div>
                   <DropdownMenu.Separator className="border-t border-gray-200 dark:border-gray-600 my-2" />
                   <DropdownMenu.Item
                     className="block w-full text-left px-2 py-1 text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer"
@@ -295,6 +299,22 @@ export default function SearchBar({
                     }}
                   >
                     Log out
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item
+                    className="mt-1 block w-full text-left px-2 py-1 text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer"
+                    onSelect={async () => {
+                      if (confirm('Delete account? This action cannot be undone.')) {
+                        try {
+                          await deleteAccount();
+                          localStorage.removeItem('token');
+                          window.location.href = '/';
+                        } catch (error) {
+                          alert('Could not delete account');
+                        }
+                      }
+                    }}
+                  >
+                    Delete account
                   </DropdownMenu.Item>
                 </DropdownMenu.Content>
               </DropdownMenu.Portal>
@@ -312,13 +332,19 @@ export default function SearchBar({
                 sideOffset={8}
               >
                 <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                  <a href="/documentation" className="block">Documentation</a>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
                   <a href="/about" className="block">About</a>
                 </DropdownMenu.Item>
                 <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                  <a href="/docs" className="block">Documentation</a>
+                  <a href="/contact" className="block">Contact</a>
                 </DropdownMenu.Item>
                 <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                  <a href="/api-docs" className="block">API Docs</a>
+                  <a href="/terms" className="block">Terms</a>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                  <a href="/privacy" className="block">Privacy</a>
                 </DropdownMenu.Item>
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
@@ -538,6 +564,10 @@ export default function SearchBar({
                 <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
                   <a href="/account" className="block">Account</a>
                 </DropdownMenu.Item>
+                <div className="mt-2 px-2 py-1">
+                  <div className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Theme</div>
+                  <ThemeSwitch value={currentTheme} onChange={(mode) => setTheme(mode)} />
+                </div>
                 <DropdownMenu.Separator className="border-t border-gray-200 dark:border-gray-600 my-2" />
                 <DropdownMenu.Item
                   className="block w-full text-left px-2 py-1 text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer"
@@ -547,6 +577,22 @@ export default function SearchBar({
                   }}
                 >
                   Log out
+                </DropdownMenu.Item>
+                <DropdownMenu.Item
+                  className="mt-1 block w-full text-left px-2 py-1 text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer"
+                  onSelect={async () => {
+                    if (confirm('Delete account? This action cannot be undone.')) {
+                      try {
+                        await deleteAccount();
+                        localStorage.removeItem('token');
+                        window.location.href = '/';
+                      } catch (error) {
+                        alert('Could not delete account');
+                      }
+                    }
+                  }}
+                >
+                  Delete account
                 </DropdownMenu.Item>
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
@@ -589,5 +635,57 @@ export default function SearchBar({
         <DesktopLayout />
       </div>
     </header>
+  );
+}
+
+/**
+ * Props for ThemeSwitch component
+ */
+interface ThemeSwitchProps {
+  /** Current theme value */
+  value: Theme;
+  /** Callback when theme changes */
+  onChange: (theme: Theme) => void;
+}
+
+/**
+ * ThemeSwitch Component - Toggle between light/system/dark themes
+ * 
+ * @param props - Component props
+ * @returns JSX element containing the theme switch
+ */
+function ThemeSwitch({ value, onChange }: ThemeSwitchProps) {
+  const options: Theme[] = ['light', 'system', 'dark'];
+  const index = options.indexOf(value);
+
+  const WIDTH = 180; // px
+  const SEGMENT = WIDTH / 3;
+
+  return (
+    <div style={{ width: `${WIDTH}px` }} className="h-9">
+      <div className="relative flex h-full rounded-full bg-white dark:bg-gray-800 shadow-inner border border-gray-300 dark:border-gray-600 overflow-hidden">
+        {/* Knob */}
+        <div
+          className="absolute inset-y-0 left-0 rounded-full transition-transform duration-200 z-0 pointer-events-none bg-blue-500"
+          style={{
+            width: `${SEGMENT}px`,
+            transform: `translateX(${index * SEGMENT}px)`
+          }}
+        />
+        {/* Labels */}
+        {options.map((mode, i) => (
+          <button
+            key={mode}
+            onClick={() => onChange(mode)}
+            style={{ width: `${SEGMENT}px` }}
+            className={`relative z-10 h-full flex items-center justify-center text-sm font-medium transition-colors
+              ${index === i ? 'text-white dark:text-white' : 'text-gray-700 dark:text-gray-300'}
+              focus:outline-none border-none`}
+          >
+            {mode.charAt(0).toUpperCase() + mode.slice(1)}
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
