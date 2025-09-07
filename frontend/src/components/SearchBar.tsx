@@ -10,91 +10,23 @@ import Tooltip from './Tooltip';
 import TagFilter from './TagFilter';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import api from '../api/index';
-import { Theme, ProductSearchParams, User as UserType } from '../types';
+import { ProductSearchParams, User as UserType } from '../types';
 
-/**
- * Search operators extracted from query string
- */
-interface SearchOperators {
-  /** Store name filter */
-  storeName?: string;
-  /** Tag filters */
-  tags?: string[];
-}
-
-/**
- * Parsed search query with operators separated
- */
-interface ParsedSearch {
-  /** Clean query without operators */
-  cleanQuery: string;
-  /** Extracted operators */
-  operators: SearchOperators;
-}
-
-/**
- * Props for the SearchBar component
- */
 interface SearchBarProps {
-  /** Callback function when search is performed */
   onSearch?: (params: ProductSearchParams) => void;
-  /** Whether user is logged in */
   isLoggedIn?: boolean;
-  /** Callback when account button is clicked (when not logged in) */
   onAccountClick?: () => void;
-  /** Current theme setting */
-  currentTheme: Theme;
-  /** Function to change theme */
-  setTheme: (theme: Theme) => void;
+  currentTheme?: string;
+  setTheme?: (theme: string) => void;
 }
 
-/**
- * Sort options mapping for display
- */
 const sortOptions: Record<string, string> = {
-  created_at: 'Newest',
-  created_at_asc: 'Oldest',
-  price_asc: 'Price ↑',
-  price_desc: 'Price ↓',
-  distance: 'Distance',
   random: 'Random',
-  name_asc: 'Alphabetical Name',
+  price_desc: 'Price ↓',
+  name_asc: 'Name A-Z',
+  created_at: 'Newest',
 };
 
-/**
- * SearchBar Component - Main navigation and search interface
- * 
- * Provides the main search functionality with filters, sorting, and user controls.
- * Features include:
- * - Text search with operator parsing (store:name, tag:name)
- * - Advanced filtering (price range, tags, search type)
- * - Keyboard shortcuts (Alt+N + key)
- * - User account management
- * - Theme switching
- * 
- * @param props - Component props
- * @returns JSX element containing the search bar and navigation
- * 
- * @example
- * ```tsx
- * function Layout() {
- *   const [theme, setTheme] = useState('system');
- *   
- *   return (
- *     <div>
- *       <SearchBar 
- *         onSearch={handleSearch}
- *         isLoggedIn={!!user}
- *         onAccountClick={() => setShowAuthModal(true)}
- *         currentTheme={theme}
- *         setTheme={setTheme}
- *       />
- *       <main>...</main>
- *     </div>
- *   );
- * }
- * ```
- */
 export default function SearchBar({
   onSearch = () => { },
   isLoggedIn = false,
@@ -108,10 +40,7 @@ export default function SearchBar({
   const [priceMax, setPriceMax] = useState<number>(500);
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
   const [sortBy, setSortBy] = useState<string>('random');
-  const [shortcutMode, setShortcutMode] = useState<boolean>(false);
   const [user, setUser] = useState<UserType | null>(null);
-  const shortcutTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
   const navigate = useNavigate();
 
   // Fetch current user when logged in
@@ -125,564 +54,505 @@ export default function SearchBar({
     }
   }, [isLoggedIn]);
 
-  /**
-   * Parse search operators from query string
-   * Supports: store:"store name" and tag:"tag name"
-   * 
-   * @param searchQuery - Raw search query string
-   * @returns Object with clean query and extracted operators
-   * 
-   * @example
-   * ```ts
-   * const result = parseSearchOperators('laptop store:"Best Buy" tag:electronics');
-   * // Returns: {
-   * //   cleanQuery: 'laptop',
-   * //   operators: { storeName: 'Best Buy', tags: ['electronics'] }
-   * // }
-   * ```
-   */
-  const parseSearchOperators = (searchQuery: string): ParsedSearch => {
-    const operators: SearchOperators = {};
-    let cleanQuery = searchQuery;
-
-    // Parse store:name or store:"name with spaces"
-    const storeMatch = searchQuery.match(/\bstore:(['"]?)([^'"\s]+(?:\s+[^'"\s]+)*)\1/i);
-    if (storeMatch) {
-      operators.storeName = storeMatch[2];
-      cleanQuery = cleanQuery.replace(storeMatch[0], '').trim();
-    }
-
-    // Parse tag:name or tag:"name with spaces"
-    const tagMatches = searchQuery.matchAll(/\btag:(['"]?)([^'"\s]+(?:\s+[^'"\s]+)*)\1/gi);
-    const extractedTags: string[] = [];
-    for (const match of tagMatches) {
-      extractedTags.push(match[2]);
-      cleanQuery = cleanQuery.replace(match[0], '').trim();
-    }
-    if (extractedTags.length > 0) {
-      operators.tags = extractedTags;
-    }
-
-    return {
-      cleanQuery: cleanQuery.replace(/\s+/g, ' ').trim(),
-      operators
-    };
-  };
-
-  // Keyboard shortcuts (Alt+N + second key)
-  useEffect(() => {
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // First chord: Alt+N (works even in inputs)
-      if (e.altKey && e.key.toLowerCase() === 'n') {
-        e.preventDefault();
-        setShortcutMode(true);
-
-        // Clear any existing timeout
-        if (shortcutTimeoutRef.current) {
-          clearTimeout(shortcutTimeoutRef.current);
-        }
-
-        // Reset shortcut mode after 1 second
-        shortcutTimeoutRef.current = setTimeout(() => {
-          setShortcutMode(false);
-        }, 1000);
-
-        return;
-      }
-
-      // Second chord: Execute shortcuts when in shortcut mode
-      if (shortcutMode) {
-        e.preventDefault(); // Always prevent default when in shortcut mode
-        switch (e.key.toLowerCase()) {
-          case 'p':
-            // Navigate to add product
-            navigate('/products/new');
-            break;
-          case 's':
-            // Navigate to add store
-            navigate('/stores/new');
-            break;
-          case 'h':
-            // Navigate to home
-            navigate('/');
-            break;
-          case 'a':
-            // Navigate to account
-            if (isLoggedIn) {
-              navigate('/account');
-            }
-            break;
-          case 'escape':
-            // Cancel shortcut mode
-            break;
-        }
-
-        // Clear timeout and exit shortcut mode
-        if (shortcutTimeoutRef.current) {
-          clearTimeout(shortcutTimeoutRef.current);
-        }
-        setShortcutMode(false);
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      if (shortcutTimeoutRef.current) {
-        clearTimeout(shortcutTimeoutRef.current);
-      }
-    };
-  }, [shortcutMode, isLoggedIn, navigate]);
-
-  /**
-   * Handle search form submission
-   * Parses operators and calls onSearch callback
-   *
-   * @param event - Form submission event
-   */
   const handleSearch = (event: React.FormEvent) => {
     event.preventDefault();
     if (onSearch) {
-      const { cleanQuery, operators } = parseSearchOperators(query);
-
-      // Merge parsed tags with existing selectedTags
-      const allTags = [...selectedTags, ...(operators.tags || [])];
-
       const searchParams: ProductSearchParams = {
-        query: cleanQuery,
+        query,
         searchType,
         priceMin,
         priceMax,
-        selectedTags: allTags,
-        sortBy: sortBy as any, // TODO: Fix type assertion
-        sortOrder: 'desc' // TODO: Make configurable
+        selectedTags,
+        sortBy: sortBy as any,
+        sortOrder: 'desc'
       };
-
       onSearch(searchParams);
     }
   };
 
-  /**
-   * Handle forgotten password request
-   */
-  const handleForgot = async (): Promise<void> => {
-    if (!query.includes('@')) {
-      alert('Enter your e-mail in the search box first');
-      return;
-    }
-    try {
-      await api.post('/v1/auth/request-password-reset', { email: query });
-      alert('Check your inbox for a reset link.');
-    } catch {
-      alert('Could not send reset e-mail.');
+  const handleSortChange = (value: string) => {
+    setSortBy(value);
+    if (onSearch) {
+      const params: ProductSearchParams = {
+        query,
+        searchType,
+        priceMin,
+        priceMax,
+        selectedTags,
+        sortBy: value as any,
+        sortOrder: 'desc'
+      };
+      onSearch(params);
     }
   };
 
-  return (
-    <header className="fixed sm:top-0 sm:bottom-auto bottom-0 left-0 right-0 z-20 bg-white dark:bg-gray-900 sm:border-b border-t sm:border-t-0 border-gray-200 dark:border-gray-700">
-      <div className="w-full max-w-screen-2xl mx-auto flex items-center justify-between px-2 sm:px-4 py-3 overflow-x-hidden">
-        <Tooltip text="Go home (Alt+N, H)">
-          <a
-            href="/"
-            className="text-2xl font-bold text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
-          >
-            Partle
-          </a>
-        </Tooltip>
-
-        <form
-          onSubmit={handleSearch}
-          className="flex flex-1 mx-1 sm:mx-2 md:mx-4 lg:mx-6 bg-gray-100 dark:bg-gray-800 rounded-full pl-2 sm:pl-3 md:pl-4 pr-1 sm:pr-2 h-10 sm:h-12 items-center overflow-hidden"
+  // Mobile Layout (3 rows)
+  const MobileLayout = () => (
+    <div className="flex flex-col px-2 py-2">
+      {/* Row 1: Search bar */}
+      <form onSubmit={handleSearch} className="flex w-full mb-2 bg-gray-100 dark:bg-gray-800 rounded-full pl-3 pr-1 h-10 items-center">
+        <input
+          type="search"
+          placeholder="Search products"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="flex-1 h-full bg-transparent placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none text-sm"
+        />
+        <button
+          type="submit"
+          aria-label="Search"
+          className="p-1.5 rounded-full bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none transition-colors"
         >
-          <input
-            type="search"
-            placeholder="Search products around you"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="flex-1 h-full bg-transparent placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none"
-            autoFocus
-          />
+          <Search className="h-4 w-4" />
+        </button>
+      </form>
 
-          <div className="hidden sm:block h-6 border-l border-gray-300 dark:border-gray-600 mx-1 sm:mx-2 md:mx-3" />
-
-          {/* Filters Section */}
-          <DropdownMenu.Root>
-            <DropdownMenu.Trigger className="hidden sm:block h-full px-1 sm:px-2 md:px-3 text-xs sm:text-sm text-gray-700 dark:text-gray-300 bg-transparent hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-0 border-0 hover:border-0">
-              Filters
-            </DropdownMenu.Trigger>
-            <DropdownMenu.Portal>
-              <DropdownMenu.Content
-                className="w-64 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-[100] border border-gray-200 dark:border-gray-600 space-y-4"
-                align="end"
-                sideOffset={8}
-              >
-                {/* Search Type Toggle */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Search Type</label>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSearchType('products');
-                        if (onSearch) {
-                          const params: ProductSearchParams = {
-                            query,
-                            searchType: 'products',
-                            priceMin,
-                            priceMax,
-                            selectedTags,
-                            sortBy: sortBy as any,
-                            sortOrder: 'desc'
-                          };
-                          onSearch(params);
-                        }
-                      }}
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${searchType === 'products'
-                          ? 'bg-blue-500 text-white'
-                          : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'
-                        }`}
-                    >
-                      Products
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSearchType('stores');
-                        if (onSearch) {
-                          const params: ProductSearchParams = {
-                            query,
-                            searchType: 'stores',
-                            priceMin,
-                            priceMax,
-                            selectedTags,
-                            sortBy: sortBy as any,
-                            sortOrder: 'desc'
-                          };
-                          onSearch(params);
-                        }
-                      }}
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${searchType === 'stores'
-                          ? 'bg-blue-500 text-white'
-                          : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'
-                        }`}
-                    >
-                      Stores
-                    </button>
-                  </div>
+      {/* Row 2: Filters and Sort */}
+      <div className="flex items-center justify-between gap-2 mb-2">
+        {/* Filters Button */}
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger className="flex items-center px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none">
+            Filters
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Portal>
+            <DropdownMenu.Content
+              className="w-64 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-[100] border border-gray-200 dark:border-gray-600 space-y-4"
+              align="start"
+              sideOffset={8}
+            >
+              {/* Search Type Toggle */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Search Type</label>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setSearchType('products')}
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      searchType === 'products'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'
+                    }`}
+                  >
+                    Products
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSearchType('stores')}
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      searchType === 'stores'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'
+                    }`}
+                  >
+                    Stores
+                  </button>
                 </div>
+              </div>
 
-  {/* Tag Filter */ }
-  <div className="space-y-2">
-    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Tags</label>
-    <TagFilter
-      selectedTags={selectedTags}
-      onTagChange={setSelectedTags}
-    />
-  </div>
+              {/* Price Range */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Price Range</label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    min="0"
+                    value={priceMin}
+                    onChange={(e) => setPriceMin(Number(e.target.value))}
+                    placeholder="Min"
+                    className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700 dark:text-white"
+                  />
+                  <span className="text-gray-500">-</span>
+                  <input
+                    type="number"
+                    min="0"
+                    value={priceMax}
+                    onChange={(e) => setPriceMax(Number(e.target.value))}
+                    placeholder="Max"
+                    className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700 dark:text-white"
+                  />
+                </div>
+              </div>
 
-  {/* Price Range Filter */ }
-  <div className="space-y-2">
-    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Price Range</label>
-    <div className="space-y-2">
-      <div>
-        <label className="text-xs text-gray-600 dark:text-gray-400">Min €</label>
-        <input
-          type="number"
-          min={0}
-          value={priceMin}
-          onChange={(e) => {
-            setPriceMin(Number(e.target.value));
-            if (onSearch) {
-              const params: ProductSearchParams = {
-                query,
-                searchType,
-                priceMin: Number(e.target.value),
-                priceMax,
-                selectedTags,
-                sortBy: sortBy as any,
-                sortOrder: 'desc'
-              };
-              onSearch(params);
-            }
-          }}
-          className="w-full border border-gray-300 dark:border-gray-600 px-2 py-1 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-        />
+              {/* Tags */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Tags</label>
+                <TagFilter
+                  selectedTags={selectedTags}
+                  onTagsChange={(tags) => {
+                    setSelectedTags(tags);
+                    if (onSearch) {
+                      const params: ProductSearchParams = {
+                        query,
+                        searchType,
+                        priceMin,
+                        priceMax,
+                        selectedTags: tags,
+                        sortBy: sortBy as any,
+                        sortOrder: 'desc'
+                      };
+                      onSearch(params);
+                    }
+                  }}
+                />
+              </div>
+            </DropdownMenu.Content>
+          </DropdownMenu.Portal>
+        </DropdownMenu.Root>
+
+        {/* Sort Dropdown */}
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger className="flex items-center px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none">
+            Sort: {sortOptions[sortBy]}
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Portal>
+            <DropdownMenu.Content
+              className="w-40 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-2 z-[100] border border-gray-200 dark:border-gray-600"
+              align="end"
+              sideOffset={8}
+            >
+              {Object.entries(sortOptions).map(([value, label]) => (
+                <DropdownMenu.Item
+                  key={value}
+                  className={`block w-full text-left px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer focus:outline-none ${
+                    sortBy === value
+                      ? 'font-semibold text-gray-900 dark:text-white'
+                      : 'text-gray-700 dark:text-gray-300'
+                  }`}
+                  onSelect={() => handleSortChange(value)}
+                >
+                  {label}
+                </DropdownMenu.Item>
+              ))}
+            </DropdownMenu.Content>
+          </DropdownMenu.Portal>
+        </DropdownMenu.Root>
       </div>
-      <div>
-        <label className="text-xs text-gray-600 dark:text-gray-400">Max €</label>
-        <input
-          type="number"
-          min={0}
-          value={priceMax}
-          onChange={(e) => {
-            setPriceMax(Number(e.target.value));
-            if (onSearch) {
-              const params: ProductSearchParams = {
-                query,
-                searchType,
-                priceMin,
-                priceMax: Number(e.target.value),
-                selectedTags,
-                sortBy: sortBy as any,
-                sortOrder: 'desc'
-              };
-              onSearch(params);
-            }
-          }}
-          className="w-full border border-gray-300 dark:border-gray-600 px-2 py-1 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-        />
-      </div>
-    </div>
-  </div>
-              </DropdownMenu.Content >
-            </DropdownMenu.Portal >
-          </DropdownMenu.Root >
 
-    <div className="hidden sm:block h-6 border-l border-gray-300 dark:border-gray-600 mx-1 sm:mx-2 md:mx-3" />
+      {/* Row 3: Navigation icons */}
+      <div className="flex items-center justify-between">
+        <a
+          href="/"
+          className="text-xl font-bold text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-300 transition-colors px-2"
+        >
+          Partle
+        </a>
 
-  {/* Sort Dropdown */ }
+        <div className="flex items-center gap-3">
+          {isLoggedIn && (
+            <DropdownMenu.Root>
+              <DropdownMenu.Trigger className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                <Plus className="h-5 w-5" />
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Portal>
+                <DropdownMenu.Content
+                  className="w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-50 border border-gray-200 dark:border-gray-700"
+                  align="end"
+                  sideOffset={8}
+                >
+                  <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                    <a href="/products/new" className="block">Add product</a>
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                    <a href="/stores/new" className="block">Add store</a>
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu.Portal>
+            </DropdownMenu.Root>
+          )}
+
           <DropdownMenu.Root>
-            <DropdownMenu.Trigger className="hidden md:block h-full px-1 sm:px-2 md:px-3 text-xs sm:text-sm text-gray-700 dark:text-gray-300 bg-transparent hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-0 border-0 hover:border-0 whitespace-nowrap">
-              <span className="hidden lg:inline">Sort: </span>{sortOptions[sortBy]}
+            <DropdownMenu.Trigger
+              className="p-1.5 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+              onClick={!isLoggedIn ? onAccountClick : undefined}
+            >
+              <User className="h-5 w-5" />
             </DropdownMenu.Trigger>
-
-            <DropdownMenu.Portal>
-              <DropdownMenu.Content
-                className="w-40 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-2 z-[100] border border-gray-200 dark:border-gray-600"
-                align="end"
-                sideOffset={8}
-              >
-                {Object.entries(sortOptions).map(([value, label]) => (
+            {isLoggedIn && (
+              <DropdownMenu.Portal>
+                <DropdownMenu.Content
+                  className="w-56 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-50 border border-gray-200 dark:border-gray-600"
+                  align="end"
+                  sideOffset={8}
+                >
+                  <div className="px-2 pb-3 mb-2 border-b border-gray-200 dark:border-gray-600">
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Logged in as</div>
+                    <div className="font-medium text-gray-900 dark:text-white">
+                      {user?.username ? `@${user.username}` : user?.email}
+                    </div>
+                  </div>
+                  <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                    <a href="/products/my" className="block">My Products</a>
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                    <a href="/account" className="block">Account</a>
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Separator className="border-t border-gray-200 dark:border-gray-600 my-2" />
                   <DropdownMenu.Item
-                    key={value}
-                    className={`block w-full text-left px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 ${sortBy === value
-                        ? 'font-semibold text-gray-900 dark:text-white'
-                        : 'text-gray-700 dark:text-gray-300'
-                      }`}
+                    className="block w-full text-left px-2 py-1 text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer"
                     onSelect={() => {
-                      setSortBy(value);
-                      if (onSearch) {
-                        const params: ProductSearchParams = {
-                          query,
-                          searchType,
-                          priceMin,
-                          priceMax,
-                          selectedTags,
-                          sortBy: value as any,
-                          sortOrder: 'desc'
-                        };
-                        onSearch(params);
-                      }
+                      localStorage.removeItem('token');
+                      window.location.reload();
                     }}
                   >
-                    {label}
+                    Log out
                   </DropdownMenu.Item>
-                ))}
+                </DropdownMenu.Content>
+              </DropdownMenu.Portal>
+            )}
+          </DropdownMenu.Root>
+
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger className="p-1.5 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <Info className="h-5 w-5" />
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content
+                className="w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-50 border border-gray-200 dark:border-gray-700"
+                align="end"
+                sideOffset={8}
+              >
+                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                  <a href="/about" className="block">About</a>
+                </DropdownMenu.Item>
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
           </DropdownMenu.Root>
+        </div>
+      </div>
+    </div>
+  );
 
-          <div className="hidden sm:block h-6 border-l border-gray-300 dark:border-gray-600 mx-1 sm:mx-2 md:mx-3" />
-          
-          <button
-            type="submit"
-            aria-label="Search"
-            className="p-2 rounded-full bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors"
-          >
-            <Search className="h-5 w-5" />
-          </button>
-        </form >
+  // Desktop Layout (single row)
+  const DesktopLayout = () => (
+    <div className="w-full max-w-screen-2xl mx-auto flex items-center justify-between px-2 sm:px-4 py-3">
+      <Tooltip text="Go home (Alt+N, H)">
+        <a
+          href="/"
+          className="text-2xl font-bold text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+        >
+          Partle
+        </a>
+      </Tooltip>
 
-    <div className="flex items-center gap-1 sm:gap-2 md:gap-3">
-      {isLoggedIn && (
+      <form
+        onSubmit={handleSearch}
+        className="flex flex-1 mx-2 md:mx-4 lg:mx-6 bg-gray-100 dark:bg-gray-800 rounded-full pl-3 md:pl-4 pr-1 sm:pr-2 h-12 items-center"
+      >
+        <input
+          type="search"
+          placeholder="Search products around you"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="flex-1 h-full bg-transparent placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none"
+          autoFocus
+        />
+
+        <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-2 md:mx-3" />
+
+        {/* Desktop Filters */}
         <DropdownMenu.Root>
-          <DropdownMenu.Trigger className="bg-transparent text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-0 border-0 hover:border-0 p-1 sm:p-2">
-            <Plus className="h-5 w-5 sm:h-6 sm:w-6" />
+          <DropdownMenu.Trigger className="h-full px-2 md:px-3 text-sm text-gray-700 dark:text-gray-300 bg-transparent hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none">
+            Filters
           </DropdownMenu.Trigger>
+          <DropdownMenu.Portal>
+            <DropdownMenu.Content
+              className="w-64 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-[100] border border-gray-200 dark:border-gray-600 space-y-4"
+              align="end"
+              sideOffset={8}
+            >
+              {/* Same filter content as mobile */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Search Type</label>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setSearchType('products')}
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      searchType === 'products'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'
+                    }`}
+                  >
+                    Products
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSearchType('stores')}
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      searchType === 'stores'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'
+                    }`}
+                  >
+                    Stores
+                  </button>
+                </div>
+              </div>
 
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Price Range</label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    min="0"
+                    value={priceMin}
+                    onChange={(e) => setPriceMin(Number(e.target.value))}
+                    placeholder="Min"
+                    className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700 dark:text-white"
+                  />
+                  <span className="text-gray-500">-</span>
+                  <input
+                    type="number"
+                    min="0"
+                    value={priceMax}
+                    onChange={(e) => setPriceMax(Number(e.target.value))}
+                    placeholder="Max"
+                    className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700 dark:text-white"
+                  />
+                </div>
+              </div>
+            </DropdownMenu.Content>
+          </DropdownMenu.Portal>
+        </DropdownMenu.Root>
+
+        <div className="hidden md:block h-6 border-l border-gray-300 dark:border-gray-600 mx-2 md:mx-3" />
+
+        {/* Desktop Sort */}
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger className="hidden md:block h-full px-2 md:px-3 text-sm text-gray-700 dark:text-gray-300 bg-transparent hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none whitespace-nowrap">
+            <span className="hidden lg:inline">Sort: </span>{sortOptions[sortBy]}
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Portal>
+            <DropdownMenu.Content
+              className="w-40 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-2 z-[100] border border-gray-200 dark:border-gray-600"
+              align="end"
+              sideOffset={8}
+            >
+              {Object.entries(sortOptions).map(([value, label]) => (
+                <DropdownMenu.Item
+                  key={value}
+                  className={`block w-full text-left px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer focus:outline-none ${
+                    sortBy === value
+                      ? 'font-semibold text-gray-900 dark:text-white'
+                      : 'text-gray-700 dark:text-gray-300'
+                  }`}
+                  onSelect={() => handleSortChange(value)}
+                >
+                  {label}
+                </DropdownMenu.Item>
+              ))}
+            </DropdownMenu.Content>
+          </DropdownMenu.Portal>
+        </DropdownMenu.Root>
+
+        <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-2 md:mx-3" />
+
+        <button
+          type="submit"
+          aria-label="Search"
+          className="p-2 rounded-full bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors"
+        >
+          <Search className="h-5 w-5" />
+        </button>
+      </form>
+
+      <div className="flex items-center gap-2 md:gap-3">
+        {isLoggedIn && (
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger className="bg-transparent text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none p-2">
+              <Plus className="h-6 w-6" />
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content
+                className="w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-50 border border-gray-200 dark:border-gray-700"
+                align="end"
+                sideOffset={8}
+              >
+                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                  <Tooltip text="Add product (Alt+N, P)">
+                    <a href="/products/new" className="block">Add product</a>
+                  </Tooltip>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                  <Tooltip text="Add store (Alt+N, S)">
+                    <a href="/stores/new" className="block">Add store</a>
+                  </Tooltip>
+                </DropdownMenu.Item>
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Root>
+        )}
+
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger
+            className="bg-transparent text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none p-2"
+            onClick={!isLoggedIn ? onAccountClick : undefined}
+          >
+            <User className="h-7 w-7" />
+          </DropdownMenu.Trigger>
+          {isLoggedIn && (
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content
+                className="w-56 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-50 border border-gray-200 dark:border-gray-600"
+                align="end"
+                sideOffset={8}
+              >
+                <div className="px-2 pb-3 mb-2 border-b border-gray-200 dark:border-gray-600">
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Logged in as</div>
+                  <div className="font-medium text-gray-900 dark:text-white">
+                    {user?.username ? `@${user.username}` : user?.email}
+                  </div>
+                </div>
+                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                  <a href="/products/my" className="block">My Products</a>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                  <a href="/account" className="block">Account</a>
+                </DropdownMenu.Item>
+                <DropdownMenu.Separator className="border-t border-gray-200 dark:border-gray-600 my-2" />
+                <DropdownMenu.Item
+                  className="block w-full text-left px-2 py-1 text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer"
+                  onSelect={() => {
+                    localStorage.removeItem('token');
+                    window.location.reload();
+                  }}
+                >
+                  Log out
+                </DropdownMenu.Item>
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          )}
+        </DropdownMenu.Root>
+
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger className="bg-transparent text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none p-2">
+            <Info className="h-6 w-6" />
+          </DropdownMenu.Trigger>
           <DropdownMenu.Portal>
             <DropdownMenu.Content
               className="w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-50 border border-gray-200 dark:border-gray-700"
               align="end"
               sideOffset={8}
             >
-              <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700">
-                <Tooltip text="Add product (Alt+N, P)">
-                  <a href="/products/new" className="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:font-medium">Add product</a>
-                </Tooltip>
-              </DropdownMenu.Item>
-              <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700">
-                <Tooltip text="Add store (Alt+N, S)">
-                  <a href="/stores/new" className="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:font-medium">Add store</a>
-                </Tooltip>
+              <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                <a href="/about" className="block">About</a>
               </DropdownMenu.Item>
             </DropdownMenu.Content>
           </DropdownMenu.Portal>
         </DropdownMenu.Root>
-      )}
-
-      <DropdownMenu.Root>
-        <DropdownMenu.Trigger
-          className="bg-transparent text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-0 border-0 hover:border-0 p-1 sm:p-2"
-          onClick={!isLoggedIn ? onAccountClick : undefined}
-          aria-label="User account"
-        >
-          <User className="h-6 w-6 sm:h-7 sm:w-7" />
-        </DropdownMenu.Trigger>
-
-        {isLoggedIn && (
-          <DropdownMenu.Portal>
-            <DropdownMenu.Content
-              className="w-56 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-50 border border-gray-200 dark:border-gray-600"
-              align="end"
-              sideOffset={8}
-            >
-              {/* User info header */}
-              <div className="px-2 pb-3 mb-2 border-b border-gray-200 dark:border-gray-600">
-                <div className="text-sm text-gray-500 dark:text-gray-400">Logged in as</div>
-                <div className="font-medium text-gray-900 dark:text-white">
-                  {user?.username ? `@${user.username}` : user?.email}
-                </div>
-              </div>
-
-              <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700">
-                <a href="/products/my" className="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:font-medium">My Products</a>
-              </DropdownMenu.Item>
-              <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700">
-                <a href="/products/favourites" className="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:font-medium">Favourite Products</a>
-              </DropdownMenu.Item>
-              <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700">
-                <a href="/stores/favourites" className="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:font-medium">Favourite Stores</a>
-              </DropdownMenu.Item>
-              <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700">
-                <a href="/account" className="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:font-medium">Account</a>
-              </DropdownMenu.Item>
-
-              <div className="mt-2 px-2 py-1">
-                <div className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Theme</div>
-                <ThemeSwitch value={currentTheme} onChange={(mode) => setTheme(mode)} />
-              </div>
-
-              <DropdownMenu.Separator className="border-t border-gray-200 dark:border-gray-600 my-2" />
-              <DropdownMenu.Item
-                className="block w-full bg-transparent text-left px-2 py-1 text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-red-600 dark:text-red-400 hover:font-medium rounded cursor-pointer focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700"
-                onSelect={() => {
-                  localStorage.removeItem('token');
-                  window.location.reload();
-                }}
-              >
-                Log out
-              </DropdownMenu.Item>
-              <DropdownMenu.Item
-                className="mt-1 block w-full bg-transparent text-left px-2 py-1 text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-red-600 dark:text-red-400 hover:font-medium rounded cursor-pointer focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700"
-                onSelect={async () => {
-                  if (confirm('Delete account?')) {
-                    try {
-                      await deleteAccount();
-                      localStorage.removeItem('token');
-                      window.location.reload();
-                    } catch {
-                      alert('Could not delete account');
-                    }
-                  }
-                }}
-              >
-                Delete account
-              </DropdownMenu.Item>
-
-              <DropdownMenu.Separator className="border-t border-gray-200 dark:border-gray-600 my-2" />
-              <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700">
-                <a href="/premium" className="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:font-medium">Premium</a>
-              </DropdownMenu.Item>
-            </DropdownMenu.Content>
-          </DropdownMenu.Portal>
-        )}
-      </DropdownMenu.Root>
-
-      <DropdownMenu.Root>
-        <DropdownMenu.Trigger className="bg-transparent text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-0 border-0 hover:border-0 p-1 sm:p-2">
-          <Info className="h-5 w-5 sm:h-6 sm:w-6" />
-        </DropdownMenu.Trigger>
-
-        <DropdownMenu.Portal>
-          <DropdownMenu.Content
-            className="w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-50 border border-gray-200 dark:border-gray-700"
-            align="end"
-            sideOffset={8}
-          >
-            <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700">
-              <a href="/documentation" className="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:font-medium">Documentation</a>
-            </DropdownMenu.Item>
-            <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700">
-              <a href="/about" className="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:font-medium">About</a>
-            </DropdownMenu.Item>
-            <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700">
-              <a href="/contact" className="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:font-medium">Contact</a>
-            </DropdownMenu.Item>
-            <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700">
-              <a href="/terms" className="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:font-medium">Terms</a>
-            </DropdownMenu.Item>
-            <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700">
-              <a href="/privacy" className="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:font-medium">Privacy</a>
-            </DropdownMenu.Item>
-          </DropdownMenu.Content>
-        </DropdownMenu.Portal>
-      </DropdownMenu.Root>
-    </div>
-      </div >
-    </header >
-  );
-}
-
-/**
- * Props for ThemeSwitch component
- */
-interface ThemeSwitchProps {
-  /** Current theme value */
-  value: Theme;
-  /** Callback when theme changes */
-  onChange: (theme: Theme) => void;
-}
-
-/**
- * ThemeSwitch Component - Toggle between light/system/dark themes
- * 
- * @param props - Component props
- * @returns JSX element containing the theme switch
- */
-function ThemeSwitch({ value, onChange }: ThemeSwitchProps) {
-  const options: Theme[] = ['light', 'system', 'dark'];
-  const index = options.indexOf(value);
-
-  const WIDTH = 180; // px
-  const SEGMENT = WIDTH / 3;
-
-  return (
-    <div style={{ width: `${WIDTH}px` }} className="h-9">
-      <div className="relative flex h-full rounded-full bg-white dark:bg-gray-800 shadow-inner border border-gray-300 dark:border-gray-600 overflow-hidden">
-        {/* Knob */}
-        <div
-          className="absolute inset-y-0 left-0 rounded-full transition-transform duration-200 z-0 pointer-events-none bg-blue-500"
-          style={{
-            width: `${SEGMENT}px`,
-            transform: `translateX(${index * SEGMENT}px)`
-          }}
-        />
-        {/* Labels */}
-        {options.map((mode, i) => (
-          <button
-            key={mode}
-            onClick={() => onChange(mode)}
-            style={{ width: `${SEGMENT}px` }}
-            className={`relative z-10 h-full flex items-center justify-center text-sm font-medium transition-colors
-              ${index === i ? 'text-white dark:text-white' : 'text-gray-700 dark:text-gray-300'}
-              focus:outline-none border-none`}
-          >
-            {mode.charAt(0).toUpperCase() + mode.slice(1)}
-          </button>
-        ))}
       </div>
     </div>
+  );
+
+  return (
+    <header className="fixed sm:top-0 sm:bottom-auto bottom-0 left-0 right-0 z-20 bg-white dark:bg-gray-900 sm:border-b border-t sm:border-t-0 border-gray-200 dark:border-gray-700">
+      {/* Show mobile layout on small screens, desktop on larger */}
+      <div className="sm:hidden">
+        <MobileLayout />
+      </div>
+      <div className="hidden sm:block">
+        <DesktopLayout />
+      </div>
+    </header>
   );
 }

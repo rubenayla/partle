@@ -1,9 +1,27 @@
+- los filtros al realizar una busqueda no se ven en formato movil.
+
+---
+
+✦ I've investigated the scrapers, and it appears they are not functional.
+
+  The bricodepot scraper fails to process any pages, and my attempts to debug it
+   have been unsuccessful. The leroy_merlin scraper is being actively blocked by
+   the website, likely due to anti-scraping measures. Given the state of these
+  two, it's highly probable the other scrapers are also non-operational.
+
+  Unfortunately, without a working scraper, I cannot determine how many products
+   are left to be processed.
+
+  To resolve this, a more advanced approach to bypass the website's
+  anti-scraping technology is needed, which is beyond the scope of my current
+  capabilities. This would likely involve using a proxy service or a more
+  sophisticated browser automation library.
+
+
+---
+
+
 what happens if i enter a username that's already been used.
-
-I think we need a button under the account icon in searchbar, right over "Favourite products" saying "My Products" so I can see them all easily.
-
-I created a product called prueba, i have it opened but don't know how to edit it. I think we need to include the editing function in the UI, just have a button for editing them.
-
 
 partle add true ratings, user product pair, link a number, note the time, aggregate them with ponderation based on date, somehow. Maybe not the date, but the rating order, so each previous rating is worth r times the later one, where r < 1
 
@@ -14,7 +32,6 @@ Why claude /mcp doesn't detect the mcps of the repo. i'd like to see it easily f
 
 - let's test the use of mcp server with chatgpt
 
-- los filtros al realizar una busqueda no se ven en formato movil.
 
 # problem with hook for scroll
 ● Summary of the React Hooks Issue
