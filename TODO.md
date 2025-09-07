@@ -1,4 +1,4 @@
-After the mobile UI update, in both desktop and mobile ui, the "i" button only shows "About", not the other pages. Fix it.
+The "Add product"  and "Add store" buttons should be white, not blue. Just like the other text in the search bar
 
 ---
 
