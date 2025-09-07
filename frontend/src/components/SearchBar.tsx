@@ -365,19 +365,19 @@ export default function SearchBar({
                 sideOffset={8}
               >
                 <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                  <a href="/documentation" className="block">Documentation</a>
+                  <a href="/documentation" className="block text-inherit">Documentation</a>
                 </DropdownMenu.Item>
                 <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                  <a href="/about" className="block">About</a>
+                  <a href="/about" className="block text-inherit">About</a>
                 </DropdownMenu.Item>
                 <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                  <a href="/contact" className="block">Contact</a>
+                  <a href="/contact" className="block text-inherit">Contact</a>
                 </DropdownMenu.Item>
                 <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                  <a href="/terms" className="block">Terms</a>
+                  <a href="/terms" className="block text-inherit">Terms</a>
                 </DropdownMenu.Item>
                 <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                  <a href="/privacy" className="block">Privacy</a>
+                  <a href="/privacy" className="block text-inherit">Privacy</a>
                 </DropdownMenu.Item>
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
