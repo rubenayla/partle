@@ -18,7 +18,7 @@ from app.api.v1.stores import list_stores as _list_stores
 from app.api.v1.search import search_products as _search_products
 
 router = APIRouter()
-security = HTTPBearer()
+security = HTTPBearer(auto_error=False)  # Don't auto-error if no header present
 
 # API Keys (in production, store these in a database)
 VALID_API_KEYS = {
@@ -26,9 +26,26 @@ VALID_API_KEYS = {
     "claude_readonly": os.getenv("CLAUDE_API_KEY", "pk_test_claude_readonly_key"),
 }
 
-def verify_api_key(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    """Verify API key from Authorization header"""
-    token = credentials.credentials
+def verify_api_key(
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
+    api_key: Optional[str] = Query(None, description="API key for authentication (alternative to Authorization header)")
+):
+    """Verify API key from Authorization header or query parameter"""
+    # Try to get token from Authorization header first
+    token = None
+    if credentials:
+        token = credentials.credentials
+    
+    # Fall back to query parameter if no header
+    if not token and api_key:
+        token = api_key
+    
+    # If still no token, raise error
+    if not token:
+        raise HTTPException(
+            status_code=401,
+            detail="API key required. Use Authorization header or api_key query parameter"
+        )
     
     if token not in VALID_API_KEYS.values():
         raise HTTPException(

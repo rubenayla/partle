@@ -197,9 +197,8 @@ class DatabasePipeline:
                 if existing_product.description != description:
                     existing_product.description = description
                     updated_fields.append('description')
-                if existing_product.image_url != image_url:
-                    existing_product.image_url = image_url
-                    updated_fields.append('image_url')
+                # Note: We don't store image_url, only image_data
+                # The image_url is only used for downloading
                 if image_data and existing_product.image_data != image_data:
                     existing_product.image_data = image_data
                     existing_product.image_filename = image_filename
@@ -227,7 +226,6 @@ class DatabasePipeline:
                     price=price,
                     url=url,
                     description=description,
-                    image_url=image_url,
                     image_data=image_data,
                     image_filename=image_filename,
                     image_content_type=image_content_type,

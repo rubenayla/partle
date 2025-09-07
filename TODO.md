@@ -1,30 +1,27 @@
-The "Add product"  and "Add store" buttons should be white, not blue. Just like the other text in the search bar
+testing chatgpt connection with api (no mcp server compatibility yet)
+
+let's commit the stores filters, and the features for chatpgpt
 
 
----
 
-✦ I've investigated the scrapers, and it appears they are not functional.
 
-  The bricodepot scraper fails to process any pages, and my attempts to debug it
-   have been unsuccessful. The leroy_merlin scraper is being actively blocked by
-   the website, likely due to anti-scraping measures. Given the state of these
-  two, it's highly probable the other scrapers are also non-operational.
+Update the product view to show the date of last update, and the user that updated it.
 
-  Unfortunately, without a working scraper, I cannot determine how many products
-   are left to be processed.
-
-  To resolve this, a more advanced approach to bypass the website's
-  anti-scraping technology is needed, which is beyond the scope of my current
-  capabilities. This would likely involve using a proxy service or a more
-  sophisticated browser automation library.
-
+Make sure the sorting works and i can sort by Newest if I click it.
 
 ---
+consider dynamic call to api for search
 
+  1. Wallapop API - They have a public search endpoint
+  2. PrestaShop stores - Many Spanish shops use this, has API
+  3. Google Shopping Spain - Aggregates Spanish retailers
+  4. Facebook Marketplace Spain - Very active
+
+---
 
 what happens if i enter a username that's already been used.
 
-partle add true ratings, user product pair, link a number, note the time, aggregate them with ponderation based on date, somehow. Maybe not the date, but the rating order, so each previous rating is worth r times the later one, where r < 1
+partle add true ratings, user product pair, link a number, note the time, aggregate them with ponderation based on date, somehow. Maybe not the date, but the 0rating order, so each previous rating is worth r times the later one, where r < 1
 
 
 - How to modify product. If you are the user, when you click a product to see it, allow editing? Or do it in other way

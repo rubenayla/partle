@@ -2,6 +2,7 @@
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import PlainTextResponse
 
 from app.api.v1 import auth, external, health, parts, products, stores, tags, search, logs, public
 from datetime import datetime
@@ -113,6 +114,20 @@ app.include_router(health.router, prefix="/v1")
 def root():
     logger.info("Root endpoint accessed")
     return {"status": "ok", "version": "v1", "docs": "/docs"}
+
+@app.get("/api-docs", response_class=PlainTextResponse)
+def get_api_docs():
+    """
+    Serve API documentation as plain text for ChatGPT and other AI assistants.
+    This endpoint returns a human-readable markdown document.
+    """
+    from pathlib import Path
+    
+    docs_path = Path(__file__).parent / "static" / "api-docs.md"
+    if docs_path.exists():
+        return PlainTextResponse(docs_path.read_text())
+    else:
+        return PlainTextResponse("API documentation not found", status_code=404)
 
 @app.get("/health")
 def health_check():
