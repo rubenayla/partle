@@ -245,7 +245,7 @@ export default function SearchBar({
               </DropdownMenu.Trigger>
               <DropdownMenu.Portal>
                 <DropdownMenu.Content
-                  className="w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-50 border border-gray-200 dark:border-gray-700"
+                  className="w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-2 z-50 border border-gray-200 dark:border-gray-700 max-h-96 overflow-y-auto"
                   align="end"
                   sideOffset={8}
                 >
@@ -316,6 +316,10 @@ export default function SearchBar({
                   >
                     Delete account
                   </DropdownMenu.Item>
+                  <DropdownMenu.Separator className="border-t border-gray-200 dark:border-gray-600 my-2" />
+                  <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                    <a href="/premium" className="block">Premium</a>
+                  </DropdownMenu.Item>
                 </DropdownMenu.Content>
               </DropdownMenu.Portal>
             )}
@@ -327,7 +331,7 @@ export default function SearchBar({
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
               <DropdownMenu.Content
-                className="w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-50 border border-gray-200 dark:border-gray-700"
+                className="w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-2 z-50 border border-gray-200 dark:border-gray-700 max-h-96 overflow-y-auto"
                 align="end"
                 sideOffset={8}
               >
@@ -519,7 +523,7 @@ export default function SearchBar({
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
               <DropdownMenu.Content
-                className="w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-50 border border-gray-200 dark:border-gray-700"
+                className="w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-2 z-50 border border-gray-200 dark:border-gray-700 max-h-96 overflow-y-auto"
                 align="end"
                 sideOffset={8}
               >
@@ -593,6 +597,10 @@ export default function SearchBar({
                   }}
                 >
                   Delete account
+                </DropdownMenu.Item>
+                <DropdownMenu.Separator className="border-t border-gray-200 dark:border-gray-600 my-2" />
+                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                  <a href="/premium" className="block">Premium</a>
                 </DropdownMenu.Item>
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
