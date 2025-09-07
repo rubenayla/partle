@@ -16,6 +16,8 @@ config = context.config
 db_url = os.getenv("DATABASE_URL")
 if not db_url:
     sys.exit("⛔  DATABASE_URL not set; aborting migrations.")
+# Escape percent signs for ConfigParser
+db_url = db_url.replace('%', '%%')
 config.set_main_option("sqlalchemy.url", db_url)
 
 # this is the Alembic Config object, which provides
