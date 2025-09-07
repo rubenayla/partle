@@ -78,6 +78,15 @@ def list_products(
     return query.offset(offset).limit(limit).all()
 
 
+@router.get("/my", response_model=list[schema.ProductOut])
+def list_my_products(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """List products created by the current user."""
+    return db.query(Product).filter(Product.creator_id == current_user.id).order_by(Product.created_at.desc()).all()
+
+
 @router.get("/store/{store_id}", response_model=list[schema.ProductOut])
 def list_products_by_store(store_id: int, db: Session = Depends(get_db)):
     """List products for a specific store."""

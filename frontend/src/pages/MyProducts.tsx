@@ -42,20 +42,10 @@ export default function MyProducts() {
         const currentUserData = await currentUser();
         setUser(currentUserData);
 
-        // Fetch all products and filter by creator_id
-        const response = await api.get('/v1/products/', {
-          params: {
-            limit: 100,
-            offset: 0
-          }
-        });
+        // Fetch only the current user's products using the dedicated endpoint
+        const response = await api.get('/v1/products/my');
         
-        // Filter products created by current user
-        const userProducts = (response.data as Product[]).filter(
-          product => product.creator_id === currentUserData.id
-        );
-        
-        setProducts(userProducts);
+        setProducts(response.data as Product[]);
       } catch (err: any) {
         console.error('Failed to fetch user products:', err);
         if (err.response?.status === 401) {
