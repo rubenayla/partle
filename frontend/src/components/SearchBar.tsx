@@ -310,10 +310,10 @@ export default function SearchBar({
                     </div>
                   </div>
                   <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                    <a href="/products/my" className="block">My Products</a>
+                    <a href="/products/my" className="block text-inherit">My Products</a>
                   </DropdownMenu.Item>
                   <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                    <a href="/account" className="block">Account</a>
+                    <a href="/account" className="block text-inherit">Account</a>
                   </DropdownMenu.Item>
                   <div className="mt-2 px-2 py-1">
                     <div className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Theme</div>
@@ -347,7 +347,7 @@ export default function SearchBar({
                   </DropdownMenu.Item>
                   <DropdownMenu.Separator className="border-t border-gray-200 dark:border-gray-600 my-2" />
                   <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                    <a href="/premium" className="block">Premium</a>
+                    <a href="/premium" className="block text-inherit">Premium</a>
                   </DropdownMenu.Item>
                 </DropdownMenu.Content>
               </DropdownMenu.Portal>
@@ -617,10 +617,10 @@ export default function SearchBar({
                   </div>
                 </div>
                 <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                  <a href="/products/my" className="block">My Products</a>
+                  <a href="/products/my" className="block text-inherit">My Products</a>
                 </DropdownMenu.Item>
                 <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                  <a href="/account" className="block">Account</a>
+                  <a href="/account" className="block text-inherit">Account</a>
                 </DropdownMenu.Item>
                 <div className="mt-2 px-2 py-1">
                   <div className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Theme</div>
@@ -654,7 +654,7 @@ export default function SearchBar({
                 </DropdownMenu.Item>
                 <DropdownMenu.Separator className="border-t border-gray-200 dark:border-gray-600 my-2" />
                 <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                  <a href="/premium" className="block">Premium</a>
+                  <a href="/premium" className="block text-inherit">Premium</a>
                 </DropdownMenu.Item>
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
