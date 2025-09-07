@@ -250,10 +250,10 @@ export default function SearchBar({
                   sideOffset={8}
                 >
                   <DropdownMenu.Item className="block px-2 py-1 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                    <a href="/products/new" className="block">Add product</a>
+                    <a href="/products/new" className="block text-inherit">Add product</a>
                   </DropdownMenu.Item>
                   <DropdownMenu.Item className="block px-2 py-1 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                    <a href="/stores/new" className="block">Add store</a>
+                    <a href="/stores/new" className="block text-inherit">Add store</a>
                   </DropdownMenu.Item>
                 </DropdownMenu.Content>
               </DropdownMenu.Portal>
@@ -529,12 +529,12 @@ export default function SearchBar({
               >
                 <DropdownMenu.Item className="block px-2 py-1 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
                   <Tooltip text="Add product (Alt+N, P)">
-                    <a href="/products/new" className="block">Add product</a>
+                    <a href="/products/new" className="block text-inherit">Add product</a>
                   </Tooltip>
                 </DropdownMenu.Item>
                 <DropdownMenu.Item className="block px-2 py-1 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
                   <Tooltip text="Add store (Alt+N, S)">
-                    <a href="/stores/new" className="block">Add store</a>
+                    <a href="/stores/new" className="block text-inherit">Add store</a>
                   </Tooltip>
                 </DropdownMenu.Item>
               </DropdownMenu.Content>
