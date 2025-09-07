@@ -237,13 +237,17 @@ class DatabasePipeline:
                     updated_at=datetime.utcnow()
                 )
                 
-                # Add the "in-store" tag to all scraped products
-                in_store_tag = db.query(Tag).filter(Tag.name == "in-store").first()
-                if in_store_tag:
-                    product.tags.append(in_store_tag)
-                    spider.logger.debug(f"Added 'in-store' tag to product '{name}'")
+                # Add the "in-store" tag only to products from physical stores
+                from app.db.models import StoreType
+                if store.type == StoreType.physical:
+                    in_store_tag = db.query(Tag).filter(Tag.name == "in-store").first()
+                    if in_store_tag:
+                        product.tags.append(in_store_tag)
+                        spider.logger.debug(f"Added 'in-store' tag to product '{name}' from physical store")
+                    else:
+                        spider.logger.warning("'in-store' tag not found in database")
                 else:
-                    spider.logger.warning("'in-store' tag not found in database")
+                    spider.logger.debug(f"Skipping 'in-store' tag for product '{name}' from {store.type} store")
                 
                 db.add(product)
                 spider.logger.info(f"Created new product: '{name}'")

@@ -1,3 +1,4 @@
+
 The "Add product"  and "Add store" buttons should be white, not blue. Just like the other text in the search bar
 
 ---

@@ -178,7 +178,7 @@ export default function SearchBar({
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Tags</label>
                 <TagFilter
                   selectedTags={selectedTags}
-                  onTagsChange={(tags) => {
+                  onTagChange={(tags) => {
                     setSelectedTags(tags);
                     if (onSearch) {
                       const params: ProductSearchParams = {
@@ -249,10 +249,10 @@ export default function SearchBar({
                   align="end"
                   sideOffset={8}
                 >
-                  <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                  <DropdownMenu.Item className="block px-2 py-1 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
                     <a href="/products/new" className="block">Add product</a>
                   </DropdownMenu.Item>
-                  <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                  <DropdownMenu.Item className="block px-2 py-1 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
                     <a href="/stores/new" className="block">Add store</a>
                   </DropdownMenu.Item>
                 </DropdownMenu.Content>
@@ -453,7 +453,7 @@ export default function SearchBar({
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Tags</label>
                 <TagFilter
                   selectedTags={selectedTags}
-                  onTagsChange={(tags) => {
+                  onTagChange={(tags) => {
                     setSelectedTags(tags);
                     if (onSearch) {
                       const params: ProductSearchParams = {
@@ -527,12 +527,12 @@ export default function SearchBar({
                 align="end"
                 sideOffset={8}
               >
-                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                <DropdownMenu.Item className="block px-2 py-1 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
                   <Tooltip text="Add product (Alt+N, P)">
                     <a href="/products/new" className="block">Add product</a>
                   </Tooltip>
                 </DropdownMenu.Item>
-                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                <DropdownMenu.Item className="block px-2 py-1 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
                   <Tooltip text="Add store (Alt+N, S)">
                     <a href="/stores/new" className="block">Add store</a>
                   </Tooltip>
