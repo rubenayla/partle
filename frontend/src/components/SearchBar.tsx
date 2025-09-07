@@ -314,6 +314,12 @@ export default function SearchBar({
                 <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
                   <a href="/about" className="block">About</a>
                 </DropdownMenu.Item>
+                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                  <a href="/docs" className="block">Documentation</a>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                  <a href="/api-docs" className="block">API Docs</a>
+                </DropdownMenu.Item>
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
           </DropdownMenu.Root>
@@ -410,6 +416,29 @@ export default function SearchBar({
                     className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700 dark:text-white"
                   />
                 </div>
+              </div>
+
+              {/* Tags */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Tags</label>
+                <TagFilter
+                  selectedTags={selectedTags}
+                  onTagsChange={(tags) => {
+                    setSelectedTags(tags);
+                    if (onSearch) {
+                      const params: ProductSearchParams = {
+                        query,
+                        searchType,
+                        priceMin,
+                        priceMax,
+                        selectedTags: tags,
+                        sortBy: sortBy as any,
+                        sortOrder: 'desc'
+                      };
+                      onSearch(params);
+                    }
+                  }}
+                />
               </div>
             </DropdownMenu.Content>
           </DropdownMenu.Portal>

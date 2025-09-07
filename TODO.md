@@ -1,4 +1,4 @@
-in mobile ui the i button only shows "About", not the other pages.
+After the mobile UI update, in both desktop and mobile ui, the "i" button only shows "About", not the other pages. Fix it.
 
 ---
 
