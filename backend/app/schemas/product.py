@@ -17,7 +17,6 @@ class ProductIn(BaseModel):
     lat: Optional[float] = None
     lon: Optional[float] = None
     description: Optional[str] = None
-    image_url: Optional[HttpUrl] = None
     image_filename: Optional[str] = None
     image_content_type: Optional[str] = None
 
@@ -49,7 +48,6 @@ class ProductOut(ProductIn):
     updated_by_id: Optional[int] = None
     creator_id: Optional[int] = None
     creator: Optional[UserBasic] = None
-    image_url: Optional[HttpUrl] = None
     image_filename: Optional[str] = None
     image_content_type: Optional[str] = None
     tags: list[Tag] = []

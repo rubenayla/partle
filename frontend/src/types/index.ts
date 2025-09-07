@@ -77,8 +77,6 @@ export interface Product {
   price?: number;
   /** Currency for the price (free text, defaults to €) */
   currency?: string;
-  /** Product image URL */
-  image_url?: string;
   /** Product image filename (when stored in database) */
   image_filename?: string;
   /** Product image content type (when stored in database) */

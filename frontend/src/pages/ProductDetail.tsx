@@ -20,7 +20,8 @@ interface EditForm {
   price: string;
   currency: string;
   url: string;
-  image_url: string;
+  imageFile: File | null;
+  imagePreview: string | null;
 }
 
 /**
@@ -85,7 +86,8 @@ export default function ProductDetail(): JSX.Element {
     description: '',
     price: '',
     url: '',
-    image_url: ''
+    imageFile: null,
+    imagePreview: null
   });
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -112,7 +114,8 @@ export default function ProductDetail(): JSX.Element {
           price: productData.price?.toString() || '',
           currency: productData.currency || '€',
           url: productData.url || '',
-          image_url: productData.image_url || ''
+          imageFile: null,
+          imagePreview: null
         });
 
         // Track product view for analytics
@@ -162,24 +165,34 @@ export default function ProductDetail(): JSX.Element {
       return;
     }
     
-    if (editForm.image_url && !isValidUrl(editForm.image_url)) {
-      setErrorMessage('Please enter a valid image URL');
-      return;
-    }
-    
     setIsSaving(true);
     try {
+      // First update the product details
       const updateData: Partial<Product> = {
         name: editForm.name.trim(),
         description: editForm.description?.trim() || undefined,
         price: editForm.price ? parseFloat(editForm.price) : undefined,
         currency: editForm.currency?.trim() || '€',
-        url: editForm.url?.trim() || undefined,
-        image_url: editForm.image_url?.trim() || undefined
+        url: editForm.url?.trim() || undefined
       };
       
       const response = await api.patch(`/v1/products/${id}/`, updateData);
-      setProduct(response.data as Product);
+      let updatedProduct = response.data as Product;
+      
+      // Then upload the image if a new file was selected
+      if (editForm.imageFile) {
+        const formData = new FormData();
+        formData.append('file', editForm.imageFile);
+        
+        const imageResponse = await api.post(`/v1/products/${id}/image`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        updatedProduct = imageResponse.data as Product;
+      }
+      
+      setProduct(updatedProduct);
       setIsEditing(false);
       setSuccessMessage('Product updated successfully!');
       
@@ -211,8 +224,10 @@ export default function ProductDetail(): JSX.Element {
       name: product.name || '',
       description: product.description || '',
       price: product.price?.toString() || '',
+      currency: product.currency || '€',
       url: product.url || '',
-      image_url: product.image_url || ''
+      imageFile: null,
+      imagePreview: null
     });
     setIsEditing(false);
     setErrorMessage('');
@@ -226,6 +241,35 @@ export default function ProductDetail(): JSX.Element {
    */
   const handleInputChange = (field: keyof EditForm, value: string): void => {
     setEditForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  /**
+   * Handle image file selection
+   */
+  const handleImageFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      setEditForm(prev => ({ ...prev, imageFile: null, imagePreview: null }));
+      return;
+    }
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      setErrorMessage('Please select a valid image file (JPEG, PNG, GIF, or WebP)');
+      return;
+    }
+
+    // Validate file size (10MB limit)
+    if (file.size > 10 * 1024 * 1024) {
+      setErrorMessage('Image file must be less than 10MB');
+      return;
+    }
+
+    // Create preview URL
+    const previewUrl = URL.createObjectURL(file);
+    setEditForm(prev => ({ ...prev, imageFile: file, imagePreview: previewUrl }));
+    setErrorMessage('');
   };
 
   /**
@@ -253,7 +297,7 @@ export default function ProductDetail(): JSX.Element {
     '@type': 'Product',
     name: product.name,
     description: product.description || product.name,
-    image: getProductImageSrc(product) || product.image_url || '',
+    image: getProductImageSrc(product) || '',
     url: `https://partle.rubenayla.xyz/products/${product.id}`,
     offers: {
       '@type': 'Offer',
@@ -297,32 +341,38 @@ export default function ProductDetail(): JSX.Element {
           {/* Product Image */}
           {isEditing ? (
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Image URL
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Product Image
               </label>
               <input
-                type="url"
-                value={editForm.image_url}
-                onChange={(e) => handleInputChange('image_url', e.target.value)}
-                className={`w-full p-2 border rounded focus:outline-none ${
-                  editForm.image_url && !isValidUrl(editForm.image_url)
-                    ? 'border-red-300 focus:border-red-500'
-                    : 'border-gray-300 focus:border-blue-500'
-                }`}
-                placeholder="https://example.com/image.jpg (optional)"
+                type="file"
+                accept="image/jpeg,image/png,image/gif,image/webp"
+                onChange={handleImageFileChange}
+                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:border-blue-500 dark:bg-gray-800 dark:text-white"
               />
-              {editForm.image_url && !isValidUrl(editForm.image_url) && (
-                <p className="text-red-500 text-sm mt-1">Please enter a valid image URL</p>
-              )}
-              {editForm.image_url && isValidUrl(editForm.image_url) && (
-                <img
-                  src={editForm.image_url}
-                  alt="Preview"
-                  className="w-full max-w-md h-auto object-cover rounded mt-2"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none';
-                  }}
-                />
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                Accepted formats: JPEG, PNG, GIF, WebP (max 10MB)
+              </p>
+              
+              {/* Image preview */}
+              {(editForm.imagePreview || (product && hasProductImage(product))) && (
+                <div className="mt-4">
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Preview:</p>
+                  <img
+                    src={editForm.imagePreview || getProductImageSrc(product) || ''}
+                    alt="Product preview"
+                    className="w-full max-w-md h-auto object-cover rounded border border-gray-300 dark:border-gray-600"
+                  />
+                  {editForm.imageFile && (
+                    <button
+                      type="button"
+                      onClick={() => setEditForm(prev => ({ ...prev, imageFile: null, imagePreview: null }))}
+                      className="mt-2 text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                    >
+                      Remove new image
+                    </button>
+                  )}
+                </div>
               )}
             </div>
           ) : (

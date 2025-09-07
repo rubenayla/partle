@@ -1,7 +1,7 @@
 # backend/app/api/v1/products.py
 from collections.abc import Generator
 from sqlalchemy import or_, func
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Response, UploadFile, File
 from sqlalchemy.orm import Session
 
 from app.db.models import Product, User, Tag
@@ -269,3 +269,86 @@ def get_product_image(product_id: int, db: Session = Depends(get_db)):
             "Content-Disposition": f"inline; filename={product.image_filename or 'image.jpg'}"
         }
     )
+
+
+@router.post("/{product_id}/image", response_model=schema.ProductOut)
+async def upload_product_image(
+    product_id: int,
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Upload an image for a product."""
+    product = db.get(Product, product_id)
+    if not product:
+        raise HTTPException(404, "Product not found")
+    
+    # Check ownership - only creator can edit their product
+    if product.creator_id != current_user.id:
+        raise HTTPException(403, "You can only edit products you created")
+    
+    # Validate file type
+    allowed_types = ["image/jpeg", "image/png", "image/gif", "image/webp"]
+    if file.content_type not in allowed_types:
+        raise HTTPException(400, f"Invalid file type. Allowed types: {', '.join(allowed_types)}")
+    
+    # Read file data (limit to 10MB)
+    file_data = await file.read()
+    if len(file_data) > 10 * 1024 * 1024:  # 10MB limit
+        raise HTTPException(400, "File too large. Maximum size is 10MB")
+    
+    # Update product with image data
+    product.image_data = file_data
+    product.image_filename = file.filename
+    product.image_content_type = file.content_type
+    product.updated_by_id = current_user.id
+    
+    db.commit()
+    db.refresh(product)
+    
+    logger.info("Product image uploaded", 
+               product_id=product.id, 
+               filename=file.filename,
+               size_bytes=len(file_data))
+    
+    # Update in Elasticsearch if available
+    if search_client.is_available():
+        try:
+            index_product(product)
+        except Exception as e:
+            logger.warning(f"Failed to update product {product.id} in Elasticsearch: {e}")
+    
+    return product
+
+
+@router.delete("/{product_id}/image", status_code=204)
+def delete_product_image(
+    product_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Delete the image from a product."""
+    product = db.get(Product, product_id)
+    if not product:
+        raise HTTPException(404, "Product not found")
+    
+    # Check ownership - only creator can edit their product
+    if product.creator_id != current_user.id:
+        raise HTTPException(403, "You can only edit products you created")
+    
+    # Clear image data
+    product.image_data = None
+    product.image_filename = None
+    product.image_content_type = None
+    product.updated_by_id = current_user.id
+    
+    db.commit()
+    
+    logger.info("Product image deleted", product_id=product.id)
+    
+    # Update in Elasticsearch if available
+    if search_client.is_available():
+        try:
+            index_product(product)
+        except Exception as e:
+            logger.warning(f"Failed to update product {product.id} in Elasticsearch: {e}")

@@ -5,12 +5,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, User, Info, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { deleteAccount } from '../api/auth';
+import { deleteAccount, currentUser } from '../api/auth';
 import Tooltip from './Tooltip';
 import TagFilter from './TagFilter';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import api from '../api/index';
-import { Theme, ProductSearchParams } from '../types';
+import { Theme, ProductSearchParams, User as UserType } from '../types';
 
 /**
  * Search operators extracted from query string
@@ -109,9 +109,21 @@ export default function SearchBar({
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
   const [sortBy, setSortBy] = useState<string>('random');
   const [shortcutMode, setShortcutMode] = useState<boolean>(false);
+  const [user, setUser] = useState<UserType | null>(null);
   const shortcutTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const navigate = useNavigate();
+
+  // Fetch current user when logged in
+  useEffect(() => {
+    if (isLoggedIn) {
+      currentUser()
+        .then(userData => setUser(userData))
+        .catch(() => setUser(null));
+    } else {
+      setUser(null);
+    }
+  }, [isLoggedIn]);
 
   /**
    * Parse search operators from query string
@@ -526,6 +538,14 @@ export default function SearchBar({
               align="end"
               sideOffset={8}
             >
+              {/* User info header */}
+              <div className="px-2 pb-3 mb-2 border-b border-gray-200 dark:border-gray-600">
+                <div className="text-sm text-gray-500 dark:text-gray-400">Logged in as</div>
+                <div className="font-medium text-gray-900 dark:text-white">
+                  {user?.username ? `@${user.username}` : user?.email}
+                </div>
+              </div>
+
               <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700">
                 <a href="/products/my" className="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:font-medium">My Products</a>
               </DropdownMenu.Item>
