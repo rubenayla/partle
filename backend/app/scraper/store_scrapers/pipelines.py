@@ -18,7 +18,7 @@ from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 # Add the backend app to the Python path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
-from app.db.models import Product, Store
+from app.db.models import Product, Store, Tag
 from .config import config
 
 
@@ -236,6 +236,14 @@ class DatabasePipeline:
                     created_at=datetime.utcnow(),
                     updated_at=datetime.utcnow()
                 )
+                
+                # Add the "in-store" tag to all scraped products
+                in_store_tag = db.query(Tag).filter(Tag.name == "in-store").first()
+                if in_store_tag:
+                    product.tags.append(in_store_tag)
+                    spider.logger.debug(f"Added 'in-store' tag to product '{name}'")
+                else:
+                    spider.logger.warning("'in-store' tag not found in database")
                 
                 db.add(product)
                 spider.logger.info(f"Created new product: '{name}'")

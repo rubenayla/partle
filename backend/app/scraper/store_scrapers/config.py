@@ -27,10 +27,10 @@ class ScraperConfig:
     
     # Store IDs mapping
     STORE_IDS = {
-        "bricodepot": int(os.getenv("BRICODEPOT_STORE_ID", "3165")),  # Updated to canonical store ID
+        "bricodepot": int(os.getenv("BRICODEPOT_STORE_ID", "4064")),  # BRICO DEPOT store ID
         "bauhaus": int(os.getenv("BAUHAUS_STORE_ID", "4065")),  # New Bauhaus store  
         "rationalstock": int(os.getenv("RATIONALSTOCK_STORE_ID", "4066")),  # Industrial supplier
-        "leroy_merlin": int(os.getenv("LEROY_MERLIN_STORE_ID", "4067")),
+        "leroy_merlin": int(os.getenv("LEROY_MERLIN_STORE_ID", "4063")),
         "ferreterias": int(os.getenv("FERRETERIAS_STORE_ID", "4068")),
         "ferreteria_shop": int(os.getenv("FERRETERIA_SHOP_STORE_ID", "4069")),
         "mengual": int(os.getenv("MENGUAL_STORE_ID", "4070")),  # Spanish hardware store

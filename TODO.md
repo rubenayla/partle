@@ -1,4 +1,4 @@
-- los filtros al realizar una busqueda no se ven en formato movil.
+in mobile ui the i button only shows "About", not the other pages.
 
 ---
 
