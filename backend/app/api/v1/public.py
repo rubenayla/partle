@@ -115,11 +115,20 @@ def get_products_public(
     db: Session = Depends(get_db)
 ):
     """Get products with public read-only access"""
-    return _list_products(
+    # Get products but exclude binary image_data field to prevent serialization errors
+    products = _list_products(
         q=q, limit=limit, offset=offset, 
         min_price=min_price, max_price=max_price, 
         tags=tags, sort_by="created_at", db=db
     )
+    
+    # Clear image_data field from each product to prevent UnicodeDecodeError
+    # The image can still be accessed via /v1/products/{id}/image endpoint
+    for product in products:
+        if hasattr(product, 'image_data'):
+            product.image_data = None
+    
+    return products
 
 @router.get("/stores",
     summary="Browse marketplace stores",

@@ -1,8 +1,8 @@
-testing chatgpt connection with api (no mcp server compatibility yet)
+testing chatgpt connection with api (no mcp server compatibility yet), continue chat
 
 let's commit the stores filters, and the features for chatpgpt
 
-
+can we load empty boxes while loading the products, to make it look faster?
 
 
 Update the product view to show the date of last update, and the user that updated it.
