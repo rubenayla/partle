@@ -29,6 +29,8 @@ def list_products(
     max_price: float | None = None,
     tags: str | None = None,
     sort_by: str | None = None,
+    user_lat: float | None = None,  # User's latitude for distance sorting
+    user_lon: float | None = None,  # User's longitude for distance sorting
     limit: int = 20,
     offset: int = 0,
     db: Session = Depends(get_db),
@@ -74,7 +76,27 @@ def list_products(
         if tag_list and any(tag_name for tag_name in tag_list):
             query = query.join(Product.tags).filter(Tag.name.in_(tag_list))
 
-    if sort_by == "price_desc":
+    # Handle distance-based sorting
+    if sort_by == "distance" and user_lat is not None and user_lon is not None:
+        from app.db.models import Store
+        # Join with Store table
+        query = query.join(Store)
+
+        # Calculate distance using Haversine formula
+        # This uses PostgreSQL's math functions for distance calculation
+        # Distance in kilometers
+        distance = func.acos(
+            func.cos(func.radians(user_lat)) *
+            func.cos(func.radians(Store.lat)) *
+            func.cos(func.radians(Store.lon) - func.radians(user_lon)) +
+            func.sin(func.radians(user_lat)) *
+            func.sin(func.radians(Store.lat))
+        ) * 6371  # Earth's radius in km
+
+        # Filter out stores without coordinates and sort by distance
+        query = query.filter(Store.lat.isnot(None), Store.lon.isnot(None))
+        query = query.order_by(distance)
+    elif sort_by == "price_desc":
         query = query.order_by(Product.price.desc())
     elif sort_by == "name_asc":
         query = query.order_by(Product.name.asc())

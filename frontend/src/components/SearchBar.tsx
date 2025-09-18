@@ -24,6 +24,7 @@ interface SearchBarProps {
 }
 
 const sortOptions: Record<string, string> = {
+  distance: '📍 Near me',
   random: 'Random',
   price_desc: 'Price ↓',
   name_asc: 'Name A-Z',
@@ -45,6 +46,8 @@ export default function SearchBar({
   const [selectedStores, setSelectedStores] = useState<number[]>([]);
   const [sortBy, setSortBy] = useState<string>('random');
   const [user, setUser] = useState<UserType | null>(null);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lon: number } | null>(null);
+  const [locationError, setLocationError] = useState<string>('');
   const navigate = useNavigate();
 
   // Fetch current user when logged in
@@ -58,6 +61,32 @@ export default function SearchBar({
     }
   }, [isLoggedIn]);
 
+  // Get user location when "Near me" is selected
+  useEffect(() => {
+    if (sortBy === 'distance' && !userLocation) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setUserLocation({
+              lat: position.coords.latitude,
+              lon: position.coords.longitude
+            });
+            setLocationError('');
+          },
+          (error) => {
+            console.error('Location error:', error);
+            setLocationError('Location access denied. Enable location to see nearby products.');
+            // Fallback to random sort if location denied
+            setSortBy('random');
+          }
+        );
+      } else {
+        setLocationError('Geolocation is not supported by your browser');
+        setSortBy('random');
+      }
+    }
+  }, [sortBy, userLocation]);
+
   const handleSearch = (event: React.FormEvent) => {
     event.preventDefault();
     if (onSearch) {
@@ -69,7 +98,9 @@ export default function SearchBar({
         selectedTags,
         selectedStores,
         sortBy: sortBy as any,
-        sortOrder: 'desc'
+        sortOrder: 'desc',
+        userLat: userLocation?.lat,
+        userLon: userLocation?.lon
       };
       onSearch(searchParams);
     }

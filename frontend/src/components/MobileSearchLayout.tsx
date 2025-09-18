@@ -30,6 +30,7 @@ interface MobileSearchLayoutProps {
 }
 
 const sortOptions: Record<string, string> = {
+  distance: '📍 Near me',
   random: 'Random',
   price_desc: 'Price ↓',
   name_asc: 'Name A-Z',

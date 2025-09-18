@@ -113,7 +113,13 @@ export default function Home() {
         if (currentSearchParams.storeType) {
           productParams.store_type = currentSearchParams.storeType;
         }
-        
+
+        // Add location parameters for distance sorting
+        if (currentSearchParams.userLat && currentSearchParams.userLon) {
+          productParams.user_lat = currentSearchParams.userLat;
+          productParams.user_lon = currentSearchParams.userLon;
+        }
+
         response = await api.get('/v1/products/', {
           params: productParams,
         });

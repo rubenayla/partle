@@ -31,7 +31,7 @@ export type SortOrder = 'asc' | 'desc';
 /**
  * Product sort field options
  */
-export type ProductSortBy = 'name' | 'price' | 'created_at' | 'updated_at';
+export type ProductSortBy = 'name' | 'price' | 'created_at' | 'updated_at' | 'distance';
 
 /**
  * Store entity representing a retail location or website
@@ -160,6 +160,10 @@ export interface ProductSearchParams {
   sortOrder: SortOrder;
   /** Store type filter */
   storeType?: StoreType;
+  /** User's latitude for distance sorting */
+  userLat?: number;
+  /** User's longitude for distance sorting */
+  userLon?: number;
 }
 
 /**
