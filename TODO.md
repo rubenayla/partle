@@ -1,10 +1,12 @@
+add sorting by location
+
 testing chatgpt connection with api (no mcp server compatibility yet), continue chat
 
-let's commit the stores filters, and the features for chatpgpt
+can we load empty boxes while loading the products, to make the ui look faster? Like Youtube or Wallapop do.
 
-can we load empty boxes while loading the products, to make it look faster?
+phone version copy gemini iphone app layout and look
 
-
+could i have the edit button when i see my own product or it's only available in the "My Products" section? What's better?
 Update the product view to show the date of last update, and the user that updated it.
 
 Make sure the sorting works and i can sort by Newest if I click it.
