@@ -65,6 +65,12 @@ class StoreType(str, Enum):
     chain = "chain"
 
 
+class UserRole(str, Enum):
+    user = "user"
+    admin = "admin"
+    moderator = "moderator"
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -72,6 +78,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(String, unique=True, index=True)
     username: Mapped[Optional[str]] = mapped_column(String(50), unique=True, index=True, nullable=True)
     password_hash: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    role: Mapped[UserRole] = mapped_column(PgEnum(UserRole, name="user_role"), default=UserRole.user, nullable=False)
     stores: Mapped[list["Store"]] = relationship(back_populates="owner")
     credentials: Mapped[list["Credential"]] = relationship(back_populates="user")
     products: Mapped[list["Product"]] = relationship(

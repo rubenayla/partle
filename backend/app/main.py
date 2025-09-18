@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import PlainTextResponse
 
-from app.api.v1 import auth, external, health, parts, products, stores, tags, search, logs, public
+from app.api.v1 import auth, external, health, parts, products, stores, tags, search, logs, public, admin
 from datetime import datetime
 from app.logging_config import configure_logging, LoggingMiddleware, get_logger
 from app.middleware.rate_limit import RateLimitMiddleware
@@ -107,6 +107,7 @@ app.include_router(tags.router, prefix="/v1/tags", tags=["Tags"])
 app.include_router(search.router, prefix="/v1/search", tags=["Search"])
 app.include_router(logs.router, prefix="/v1/logs", tags=["Logs"])
 app.include_router(public.router, prefix="/v1/public", tags=["Public API"])
+app.include_router(admin.router, prefix="/v1/admin", tags=["Admin"])
 app.include_router(health.router, prefix="/v1")
 
 

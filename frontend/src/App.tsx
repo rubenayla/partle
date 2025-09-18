@@ -17,6 +17,7 @@ import Account from "./pages/Account"; // Import the new Account page
 import ResetPassword from "./pages/ResetPassword"; // Import the new ResetPassword page
 import CompleteProfile from "./pages/CompleteProfile"; // Import the new CompleteProfile page
 import MyProducts from "./pages/MyProducts"; // Import the new MyProducts page
+import AdminDashboard from "./pages/AdminDashboard"; // Import the new AdminDashboard page
 import { useBackendStatus } from './hooks/useBackendStatus'
 import { useTheme } from './hooks/useTheme';
 import { trackPageView } from './utils/analytics';
@@ -77,6 +78,7 @@ export default function App() {
             <Route path="/products/my" element={<MyProducts />} />
             <Route path="/stores/new" element={<AddStore />} />
             <Route path="/account" element={<Account />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Route>
 
           {/* catch-all → go to home */}

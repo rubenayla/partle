@@ -1,4 +1,10 @@
-add sorting by location
+I'm thinking whether we should create a dashboard with then number of users, products, stores etc, maybe public so everyone can see it, or private for admin only?
+
+how does the hetzner server know that it must pull whenever the CI/CD pipeline finishes the tests on github?
+
+What are the "Preview deployments" in github?
+
+Let's add sorting by location
 
 testing chatgpt connection with api (no mcp server compatibility yet), continue chat
 
