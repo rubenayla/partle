@@ -221,6 +221,65 @@ export function ProductCard({ product, onEdit, className }: ProductCardProps) {
 }
 ```
 
+## Claude MCP (Model Context Protocol) Servers - LOCAL ONLY
+
+### ✅ CORRECT MCP CONFIGURATION FOR CLAUDE DESKTOP
+MCP servers allow Claude Desktop to interact with local tools and APIs. These run on your local machine, NOT on production servers.
+
+**Working Configuration in `.mcp.json`:**
+```json
+{
+  "mcpServers": {
+    "partle-products": {
+      "command": "poetry",
+      "args": ["run", "-C", "/home/rubenayla/repos/partle/backend", "python", "/home/rubenayla/repos/partle/backend/scripts/run_mcp_products.py"],
+      "env": {
+        "PARTLE_API_URL": "http://localhost:8000"
+      }
+    }
+  }
+}
+```
+
+**Key Requirements for Poetry-based MCP servers:**
+1. **Use absolute paths** - Both for `-C` flag and script path
+2. **Use `-C` flag** - Tells Poetry where to find `pyproject.toml`
+3. **No `cwd` field needed** - The `-C` flag handles the directory
+4. **Command is just `poetry`** - Not a shell script or wrapper
+
+**What DOESN'T work:**
+- Relative paths like `./backend` or `scripts/run.py`
+- Using `cwd` field without `-C` flag
+- Shell script wrappers (permission issues)
+- Missing the `-C` flag (causes "Poetry could not find a pyproject.toml" error)
+
+**Local MCP Server Files (Claude Desktop only):**
+- **Configuration**: `/home/rubenayla/repos/partle/.mcp.json` (project-scoped)
+- **Launch Scripts**: `/home/rubenayla/repos/partle/backend/scripts/run_mcp_*.py`
+- **Server Code**: `/home/rubenayla/repos/partle/backend/app/mcp/`
+- **Debug Logs**: `/home/rubenayla/.cache/claude-cli-nodejs/-home-rubenayla-repos-partle/mcp-logs-*/`
+- **Settings**: `/home/rubenayla/repos/partle/.claude/settings.local.json`
+
+**Available MCP Servers (local Claude Desktop tools):**
+- `partle-products` - Product management
+- `partle-stores` - Store management
+- `partle-analytics` - Analytics tools
+- `partle-price-intelligence` - Price analysis
+- `partle-location-intelligence` - Location services
+- `partle-recommendations` - Recommendation engine
+- `partle-scraper-monitor` - Scraper monitoring
+
+**Testing MCP Servers:**
+```bash
+cd /home/rubenayla/repos/partle/backend
+poetry run python test_mcp.py
+```
+
+**Enable in Claude Desktop:**
+1. Set `enableAllProjectMcpServers: true` in `.claude/settings.local.json`
+2. Run `/mcp` command in Claude to see status
+3. Servers should show as "connected" not "failed"
+
 ## Search Engine
 - **Elasticsearch** for scalable search (millions of products)
 - **Setup**: `docker compose up -d elasticsearch && poetry run python manage_search.py setup`

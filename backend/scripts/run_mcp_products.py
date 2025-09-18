@@ -4,6 +4,10 @@ import sys
 import os
 import logging
 import asyncio
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv(os.path.join(os.path.dirname(__file__), '../../.env'))
 
 # Add the backend directory to the Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
