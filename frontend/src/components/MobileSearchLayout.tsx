@@ -189,7 +189,7 @@ export default function MobileSearchLayout({
       </div>
 
       {/* Bottom container fully rounded with margins - Gemini style */}
-      <div className="fixed bottom-2 left-2 right-2 bg-white dark:bg-gray-900 rounded-3xl border border-gray-300 dark:border-gray-600 px-4 pt-4 pb-3">
+      <div className="fixed bottom-2 left-2 right-2 z-40 bg-white dark:bg-gray-900 rounded-3xl border border-gray-300 dark:border-gray-600 px-4 pt-4 pb-3" style={{ position: 'fixed' }}>
         {/* Search input with icon button */}
         <form onSubmit={handleSearch} className="flex items-center gap-2 mb-3" id="mobile-search-form">
           <input

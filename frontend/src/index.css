@@ -128,7 +128,6 @@ body {
 
 /* Global overflow prevention */
 html {
-  width: 100%;
   overflow-x: hidden;
 }
 
