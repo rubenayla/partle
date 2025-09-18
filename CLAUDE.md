@@ -61,7 +61,7 @@
 - **Frontend Path**: `/srv/partle/frontend/`
 - **Environment Files**: `/srv/partle/backend/.env`
 - **SSH Command**: `ssh deploy@91.98.68.236`
-- **Deploy Process**: `git pull` then `supervisorctl restart partle`
+- **Deploy Process**: `git pull` then `sudo systemctl restart partle-backend partle-frontend`
 
 ## 🔐 Secrets Management & Security Rules
 ### Required Secrets
