@@ -18,13 +18,18 @@ fi
 poetry install --no-interaction
 
 echo "🔄 Restarting backend service..."
-# Kill existing processes more safely
-for pid in $(ps aux | grep "[p]ython.*uvicorn.*main:app" | awk '{print $2}'); do
-    kill $pid 2>/dev/null || true
-done
-sleep 2
-poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4 > /tmp/partle.log 2>&1 &
-echo "Backend started with PID $!"
+# Use systemd to properly manage the backend service
+sudo systemctl daemon-reload
+sudo systemctl restart partle-backend
+sleep 3
+# Check if service started successfully
+if sudo systemctl is-active --quiet partle-backend; then
+    echo "✓ Backend service restarted successfully"
+else
+    echo "✗ Failed to restart backend service"
+    sudo systemctl status partle-backend
+    exit 1
+fi
 
 echo "📦 Updating frontend..."
 cd /srv/partle/frontend
@@ -44,6 +49,19 @@ echo "🔄 Reloading nginx..."
 sudo nginx -t && sudo systemctl reload nginx
 
 echo "✅ Verifying deployment..."
-sleep 10
-curl -f http://localhost:8000/health || exit 1
+# Wait for backend to be fully ready
+for i in {1..30}; do
+    if curl -f -s http://localhost:8000/health > /dev/null 2>&1; then
+        echo "✓ Backend health check passed"
+        break
+    fi
+    if [ $i -eq 30 ]; then
+        echo "✗ Backend health check failed after 30 attempts"
+        sudo systemctl status partle-backend
+        exit 1
+    fi
+    echo "Waiting for backend to be ready... ($i/30)"
+    sleep 2
+done
+
 echo "🚀 Deployment completed successfully!"
