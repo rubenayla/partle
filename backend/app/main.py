@@ -92,7 +92,7 @@ app.add_middleware(RateLimitMiddleware, calls=100, period=3600)  # 100 requests 
 # CORS (must be added before routers)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://partle.rubenayla.xyz", "http://localhost:3000", "http://localhost:5173", "http://192.168.1.117:3000"],
+    allow_origins=["https://partle.rubenayla.xyz", "http://localhost:3000", "http://localhost:5173", "http://192.168.1.117:3000", "https://chatgpt.com", "https://chat.openai.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

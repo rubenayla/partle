@@ -32,10 +32,10 @@ interface DesktopSearchLayoutProps {
 
 const sortOptions: Record<string, string> = {
   distance: '📍 Near me',
-  random: 'Random',
-  price_desc: 'Price ↓',
-  name_asc: 'Name A-Z',
-  created_at: 'Newest',
+  random: '🎲 Random',
+  price_desc: '💰 Price ↓',
+  name_asc: '🔤 Name A-Z',
+  created_at: '✨ Newest',
 };
 
 export default function DesktopSearchLayout({

@@ -1,31 +1,11 @@
-I'm thinking whether we should create a dashboard with then number of users, products, stores etc, maybe public so everyone can see it, or private for admin only?
-
-how does the hetzner server know that it must pull whenever the CI/CD pipeline finishes the tests on github?
-
-What are the "Preview deployments" in github?
-
-Let's add sorting by location
-
+Why claude /mcp doesn't detect the mcps of the repo. i'd like to see it easily for checking the scrapers
+- let's test the use of mcp server with chatgpt
 testing chatgpt connection with api (no mcp server compatibility yet), continue chat
 
-can we load empty boxes while loading the products, to make the ui look faster? Like Youtube or Wallapop do.
-
-phone version copy gemini iphone app layout and look
+fix search box in chrome when scrolling
 
 could i have the edit button when i see my own product or it's only available in the "My Products" section? What's better?
 Update the product view to show the date of last update, and the user that updated it.
-
-Make sure the sorting works and i can sort by Newest if I click it.
-
----
-consider dynamic call to api for search
-
-  1. Wallapop API - They have a public search endpoint
-  2. PrestaShop stores - Many Spanish shops use this, has API
-  3. Google Shopping Spain - Aggregates Spanish retailers
-  4. Facebook Marketplace Spain - Very active
-
----
 
 what happens if i enter a username that's already been used.
 
@@ -34,9 +14,7 @@ partle add true ratings, user product pair, link a number, note the time, aggreg
 
 - How to modify product. If you are the user, when you click a product to see it, allow editing? Or do it in other way
 
-Why claude /mcp doesn't detect the mcps of the repo. i'd like to see it easily for checking the scrapers
 
-- let's test the use of mcp server with chatgpt
 
 
 # problem with hook for scroll
@@ -177,3 +155,4 @@ Explore direct public key login (passkeys) so the browser handles authentication
 - Search with free form descriptions and use AI, creating abstractions of the product and the search, and mapping the closest?
     - Or just let chatgpt search using our api
 - MCP should let my personal AI look around for products that will be actually interesting to me, and that AI, my personal one that might even run locally or with privacy taken into account, with my data safe, it will decide what i probably want, and suggest it to me, instead of letting external AIs spam me with ads. I believe the ad industry is going to change. We can achieve superhuman efficiency letting the AI even do purchases below a certain price threshold. If we happen to be close to a store that has what we want, just notify us and let us know we don't even have to search for it or travel. I there's something i don't want and has value, it might suggest me to sell it, with a client alreay ready to buy. Since the client is an AI, this is not wasting anyone's time. They could be like 'potential' transactions performed by the AI, and when both human parties agree, it's performed with ease.
+- can we load empty boxes while loading the products, to make the ui look faster? Like Youtube or Wallapop do.
