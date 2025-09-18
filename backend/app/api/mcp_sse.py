@@ -30,7 +30,7 @@ class MCPMessage(BaseModel):
 
 async def create_sse_message(data: Dict[str, Any]) -> str:
     """Format data as SSE message."""
-    return f"data: {json.dumps(data)}\n\n"
+    return json.dumps(data)
 
 
 @router.get("/sse")
