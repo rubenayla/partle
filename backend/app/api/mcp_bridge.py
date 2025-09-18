@@ -11,7 +11,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import subprocess
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/v1/mcp", tags=["MCP"])
@@ -147,7 +147,7 @@ async def mcp_health_check() -> Dict[str, Any]:
     """Health check endpoint for MCP services."""
     return {
         "status": "healthy",
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "servers_available": 6,
         "api_version": "1.0.0"
     }
