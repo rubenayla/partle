@@ -100,7 +100,7 @@ export default function SearchBar({
           placeholder="Search products"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="flex-1 h-full bg-transparent placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none text-sm"
+          className="flex-1 h-full bg-transparent placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none text-base"
         />
         <button
           type="submit"
