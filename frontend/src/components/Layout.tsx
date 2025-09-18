@@ -60,7 +60,7 @@ export default function Layout({ children, setTheme, currentTheme }: Props) {
       )}
 
       {/* Main content area with spacing to clear fixed SearchBar */}
-      <main className="mt-0 sm:mt-[72px] pt-6 pb-[120px] sm:pb-6 max-w-screen-2xl mx-auto w-full px-4">
+      <main className="mt-0 sm:mt-[72px] pt-16 sm:pt-6 pb-[140px] sm:pb-6 max-w-screen-2xl mx-auto w-full px-4">
         {children}
       </main>
     </div>

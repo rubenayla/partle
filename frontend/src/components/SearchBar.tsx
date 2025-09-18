@@ -90,33 +90,163 @@ export default function SearchBar({
     }
   };
 
-  // Mobile Layout (3 rows)
+  // Mobile Layout - Gemini style
   const MobileLayout = () => (
-    <div className="flex flex-col px-2 py-2">
-      {/* Row 1: Search bar */}
-      <form onSubmit={handleSearch} className="flex w-full mb-2 bg-gray-100 dark:bg-gray-800 rounded-full pl-3 pr-1 h-10 items-center">
-        <input
-          type="search"
-          placeholder="Search products"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="flex-1 h-full bg-transparent placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none text-base"
-        />
-        <button
-          type="submit"
-          aria-label="Search"
-          className="p-1.5 rounded-full bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none transition-colors"
+    <>
+      {/* Floating top buttons */}
+      <div className="fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-4 py-3">
+        <a
+          href="/"
+          className="text-xl font-bold text-gray-900 dark:text-white drop-shadow-lg bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm px-3 py-1 rounded-full"
         >
-          <Search className="h-4 w-4" />
-        </button>
-      </form>
+          Partle
+        </a>
 
-      {/* Row 2: Filters and Sort */}
-      <div className="flex items-center justify-between gap-2 mb-2">
-        {/* Filters Button */}
-        <DropdownMenu.Root>
-          <DropdownMenu.Trigger className="flex items-center px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none">
-            Filters
+        <div className="flex items-center gap-2">
+          {isLoggedIn && (
+            <DropdownMenu.Root>
+              <DropdownMenu.Trigger className="p-2 text-gray-700 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full shadow-lg">
+                <Plus className="h-5 w-5" />
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Portal>
+                <DropdownMenu.Content
+                  className="w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-2 z-50 border border-gray-200 dark:border-gray-700 max-h-96 overflow-y-auto"
+                  align="end"
+                  sideOffset={8}
+                >
+                  <DropdownMenu.Item className="block px-2 py-1 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                    <a href="/products/new" className="block text-inherit">Add product</a>
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item className="block px-2 py-1 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                    <a href="/stores/new" className="block text-inherit">Add store</a>
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu.Portal>
+            </DropdownMenu.Root>
+          )}
+
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger
+              className="p-2 text-gray-700 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full shadow-lg"
+              onClick={!isLoggedIn ? onAccountClick : undefined}
+            >
+              <User className="h-5 w-5" />
+            </DropdownMenu.Trigger>
+            {isLoggedIn && (
+              <DropdownMenu.Portal>
+                <DropdownMenu.Content
+                  className="w-56 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-50 border border-gray-200 dark:border-gray-600"
+                  align="end"
+                  sideOffset={8}
+                >
+                  <div className="px-2 pb-3 mb-2 border-b border-gray-200 dark:border-gray-600">
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Logged in as</div>
+                    <div className="font-medium text-gray-900 dark:text-white">
+                      {user?.username ? `@${user.username}` : user?.email}
+                    </div>
+                  </div>
+                  <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                    <a href="/products/my" className="block text-inherit">My Products</a>
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                    <a href="/account" className="block text-inherit">Account</a>
+                  </DropdownMenu.Item>
+                  <div className="mt-2 px-2 py-1">
+                    <div className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Theme</div>
+                    <ThemeSwitch value={currentTheme} onChange={(mode) => setTheme(mode)} />
+                  </div>
+                  <DropdownMenu.Separator className="border-t border-gray-200 dark:border-gray-600 my-2" />
+                  <DropdownMenu.Item
+                    className="block w-full text-left px-2 py-1 text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer"
+                    onSelect={() => {
+                      localStorage.removeItem('token');
+                      window.location.reload();
+                    }}
+                  >
+                    Log out
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item
+                    className="mt-1 block w-full text-left px-2 py-1 text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer"
+                    onSelect={async () => {
+                      if (confirm('Delete account? This action cannot be undone.')) {
+                        try {
+                          await deleteAccount();
+                          localStorage.removeItem('token');
+                          window.location.href = '/';
+                        } catch (error) {
+                          alert('Could not delete account');
+                        }
+                      }
+                    }}
+                  >
+                    Delete account
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Separator className="border-t border-gray-200 dark:border-gray-600 my-2" />
+                  <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                    <a href="/premium" className="block text-inherit">Premium</a>
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu.Portal>
+            )}
+          </DropdownMenu.Root>
+
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger className="p-2 text-gray-700 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full shadow-lg">
+              <Info className="h-5 w-5" />
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content
+                className="w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-2 z-50 border border-gray-200 dark:border-gray-700 max-h-96 overflow-y-auto"
+                align="end"
+                sideOffset={8}
+              >
+                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                  <a href="/documentation" className="block text-inherit">Documentation</a>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                  <a href="/about" className="block text-inherit">About</a>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                  <a href="/contact" className="block text-inherit">Contact</a>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                  <a href="/terms" className="block text-inherit">Terms</a>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                  <a href="/privacy" className="block text-inherit">Privacy</a>
+                </DropdownMenu.Item>
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Root>
+        </div>
+      </div>
+
+      {/* Bottom container fully rounded with margins - Gemini style */}
+      <div className="fixed bottom-2 left-2 right-2 bg-white dark:bg-gray-900 rounded-3xl border border-gray-300 dark:border-gray-600 px-4 pt-4 pb-3">
+        {/* Search input with icon button */}
+        <form onSubmit={handleSearch} className="flex items-center gap-2 mb-3" id="mobile-search-form">
+          <input
+            type="search"
+            placeholder="Search products around you"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="flex-1 bg-transparent placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none text-base px-2 py-3"
+          />
+          <button
+            type="submit"
+            aria-label="Search"
+            className="p-2.5 rounded-full text-blue-500 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+          >
+            <Search className="h-5 w-5" />
+          </button>
+        </form>
+
+        {/* Filter buttons row */}
+        <div className="flex items-center gap-2 overflow-x-auto border-t border-gray-200 dark:border-gray-700 pt-3">
+          {/* Filters Button */}
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger className="flex items-center px-4 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none whitespace-nowrap transition-colors">
+              Filters
           </DropdownMenu.Trigger>
           <DropdownMenu.Portal>
             <DropdownMenu.Content
@@ -228,10 +358,10 @@ export default function SearchBar({
           </DropdownMenu.Portal>
         </DropdownMenu.Root>
 
-        {/* Sort Dropdown */}
-        <DropdownMenu.Root>
-          <DropdownMenu.Trigger className="flex items-center px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none">
-            Sort: {sortOptions[sortBy]}
+          {/* Sort Dropdown */}
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger className="flex items-center px-4 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none whitespace-nowrap transition-colors">
+              Sort: {sortOptions[sortBy]}
           </DropdownMenu.Trigger>
           <DropdownMenu.Portal>
             <DropdownMenu.Content
@@ -255,136 +385,9 @@ export default function SearchBar({
             </DropdownMenu.Content>
           </DropdownMenu.Portal>
         </DropdownMenu.Root>
-      </div>
-
-      {/* Row 3: Navigation icons */}
-      <div className="flex items-center justify-between">
-        <a
-          href="/"
-          className="text-xl font-bold text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-300 transition-colors px-2"
-        >
-          Partle
-        </a>
-
-        <div className="flex items-center gap-3">
-          {isLoggedIn && (
-            <DropdownMenu.Root>
-              <DropdownMenu.Trigger className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
-                <Plus className="h-5 w-5" />
-              </DropdownMenu.Trigger>
-              <DropdownMenu.Portal>
-                <DropdownMenu.Content
-                  className="w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-2 z-50 border border-gray-200 dark:border-gray-700 max-h-96 overflow-y-auto"
-                  align="end"
-                  sideOffset={8}
-                >
-                  <DropdownMenu.Item className="block px-2 py-1 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                    <a href="/products/new" className="block text-inherit">Add product</a>
-                  </DropdownMenu.Item>
-                  <DropdownMenu.Item className="block px-2 py-1 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                    <a href="/stores/new" className="block text-inherit">Add store</a>
-                  </DropdownMenu.Item>
-                </DropdownMenu.Content>
-              </DropdownMenu.Portal>
-            </DropdownMenu.Root>
-          )}
-
-          <DropdownMenu.Root>
-            <DropdownMenu.Trigger
-              className="p-1.5 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-              onClick={!isLoggedIn ? onAccountClick : undefined}
-            >
-              <User className="h-5 w-5" />
-            </DropdownMenu.Trigger>
-            {isLoggedIn && (
-              <DropdownMenu.Portal>
-                <DropdownMenu.Content
-                  className="w-56 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-50 border border-gray-200 dark:border-gray-600"
-                  align="end"
-                  sideOffset={8}
-                >
-                  <div className="px-2 pb-3 mb-2 border-b border-gray-200 dark:border-gray-600">
-                    <div className="text-sm text-gray-500 dark:text-gray-400">Logged in as</div>
-                    <div className="font-medium text-gray-900 dark:text-white">
-                      {user?.username ? `@${user.username}` : user?.email}
-                    </div>
-                  </div>
-                  <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                    <a href="/products/my" className="block text-inherit">My Products</a>
-                  </DropdownMenu.Item>
-                  <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                    <a href="/account" className="block text-inherit">Account</a>
-                  </DropdownMenu.Item>
-                  <div className="mt-2 px-2 py-1">
-                    <div className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Theme</div>
-                    <ThemeSwitch value={currentTheme} onChange={(mode) => setTheme(mode)} />
-                  </div>
-                  <DropdownMenu.Separator className="border-t border-gray-200 dark:border-gray-600 my-2" />
-                  <DropdownMenu.Item
-                    className="block w-full text-left px-2 py-1 text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer"
-                    onSelect={() => {
-                      localStorage.removeItem('token');
-                      window.location.reload();
-                    }}
-                  >
-                    Log out
-                  </DropdownMenu.Item>
-                  <DropdownMenu.Item
-                    className="mt-1 block w-full text-left px-2 py-1 text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer"
-                    onSelect={async () => {
-                      if (confirm('Delete account? This action cannot be undone.')) {
-                        try {
-                          await deleteAccount();
-                          localStorage.removeItem('token');
-                          window.location.href = '/';
-                        } catch (error) {
-                          alert('Could not delete account');
-                        }
-                      }
-                    }}
-                  >
-                    Delete account
-                  </DropdownMenu.Item>
-                  <DropdownMenu.Separator className="border-t border-gray-200 dark:border-gray-600 my-2" />
-                  <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                    <a href="/premium" className="block text-inherit">Premium</a>
-                  </DropdownMenu.Item>
-                </DropdownMenu.Content>
-              </DropdownMenu.Portal>
-            )}
-          </DropdownMenu.Root>
-
-          <DropdownMenu.Root>
-            <DropdownMenu.Trigger className="p-1.5 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
-              <Info className="h-5 w-5" />
-            </DropdownMenu.Trigger>
-            <DropdownMenu.Portal>
-              <DropdownMenu.Content
-                className="w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-2 z-50 border border-gray-200 dark:border-gray-700 max-h-96 overflow-y-auto"
-                align="end"
-                sideOffset={8}
-              >
-                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                  <a href="/documentation" className="block text-inherit">Documentation</a>
-                </DropdownMenu.Item>
-                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                  <a href="/about" className="block text-inherit">About</a>
-                </DropdownMenu.Item>
-                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                  <a href="/contact" className="block text-inherit">Contact</a>
-                </DropdownMenu.Item>
-                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                  <a href="/terms" className="block text-inherit">Terms</a>
-                </DropdownMenu.Item>
-                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                  <a href="/privacy" className="block text-inherit">Privacy</a>
-                </DropdownMenu.Item>
-              </DropdownMenu.Content>
-            </DropdownMenu.Portal>
-          </DropdownMenu.Root>
         </div>
       </div>
-    </div>
+    </>
   );
 
   // Desktop Layout (single row)
@@ -694,15 +697,16 @@ export default function SearchBar({
   );
 
   return (
-    <header className="fixed sm:top-0 sm:bottom-auto bottom-0 left-0 right-0 z-20 bg-white dark:bg-gray-900 sm:border-b border-t sm:border-t-0 border-gray-200 dark:border-gray-700">
-      {/* Show mobile layout on small screens, desktop on larger */}
+    <>
+      {/* Mobile layout is split: floating top buttons + bottom search container */}
       <div className="sm:hidden">
         <MobileLayout />
       </div>
-      <div className="hidden sm:block">
+      {/* Desktop header remains as before */}
+      <header className="hidden sm:block fixed top-0 left-0 right-0 z-20 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
         <DesktopLayout />
-      </div>
-    </header>
+      </header>
+    </>
   );
 }
 
