@@ -3,6 +3,7 @@
  * @module pages/Home
  */
 import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams, useLocation } from 'react-router-dom';
 import api from '../api';
 import ListView from './ListView';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
@@ -54,16 +55,36 @@ export default function Home() {
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [offset, setOffset] = useState<number>(0);
   const [tags, setTags] = useState<Tag[]>([]);
-  const [searchParams, setSearchParams] = useState<ProductSearchParams>({
-    query: '',
-    searchType: 'products',
-    priceMin: 0,
-    priceMax: 500,
-    selectedTags: [],
-    selectedStores: [],
-    sortBy: 'created_at',
-    sortOrder: 'desc'
-  });
+  const [urlSearchParams] = useSearchParams();
+  const location = useLocation();
+
+  // Parse URL params to create initial search state
+  const getSearchParamsFromURL = useCallback((): ProductSearchParams => {
+    const q = urlSearchParams.get('q') || '';
+    const type = urlSearchParams.get('type') as 'products' | 'stores' || 'products';
+    const minPrice = parseInt(urlSearchParams.get('minPrice') || '0');
+    const maxPrice = parseInt(urlSearchParams.get('maxPrice') || '500');
+    const tagIds = urlSearchParams.get('tags')?.split(',').map(Number).filter(Boolean) || [];
+    const storeIds = urlSearchParams.get('stores')?.split(',').map(Number).filter(Boolean) || [];
+    const sortBy = urlSearchParams.get('sort') || 'created_at';
+    const lat = parseFloat(urlSearchParams.get('lat') || '');
+    const lon = parseFloat(urlSearchParams.get('lon') || '');
+
+    return {
+      query: q,
+      searchType: type,
+      priceMin: minPrice,
+      priceMax: maxPrice,
+      selectedTags: tagIds,
+      selectedStores: storeIds,
+      sortBy: sortBy as any,
+      sortOrder: 'desc',
+      userLat: isNaN(lat) ? undefined : lat,
+      userLon: isNaN(lon) ? undefined : lon
+    };
+  }, [urlSearchParams]);
+
+  const [searchParams, setSearchParams] = useState<ProductSearchParams>(getSearchParamsFromURL());
 
   // Fetch tags on mount
   useEffect(() => {
@@ -227,14 +248,19 @@ export default function Home() {
     }
   }, [stores]);
 
-  // Expose setSearchParams to parent via global window object
-  // TODO: Replace with proper React context or props drilling
+  // Sync search params with URL changes
   useEffect(() => {
-    // Type assertion for global window property
+    const paramsFromURL = getSearchParamsFromURL();
+    setSearchParams(paramsFromURL);
+  }, [location.search, getSearchParamsFromURL]);
+
+  // Expose setSearchParams to parent via global window object for immediate updates
+  useEffect(() => {
     (window as any).homeSearchHandler = (params: ProductSearchParams) => {
       console.log('Home.tsx: window.homeSearchHandler called with params', params);
       setSearchParams(params);
     };
+
     return () => {
       delete (window as any).homeSearchHandler;
     };

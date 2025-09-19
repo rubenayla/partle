@@ -1,7 +1,8 @@
 import { useState, useEffect, ReactNode } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import SearchBar from './SearchBar';
 import AuthModal from './AuthModal';
+import type { ProductSearchParams } from '../types';
 
 interface Props {
   children: ReactNode;
@@ -30,6 +31,7 @@ export default function Layout({ children, setTheme, currentTheme }: Props) {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(!!localStorage.getItem('token'));
   const [accountOpen, setAccountOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const isHomePage = location.pathname === '/';
 
@@ -38,16 +40,41 @@ export default function Layout({ children, setTheme, currentTheme }: Props) {
     return () => clearInterval(id);
   }, []);
 
+  const handleSearch = (params: ProductSearchParams) => {
+    // Build URL search params
+    const searchParams = new URLSearchParams();
+
+    if (params.query) searchParams.set('q', params.query);
+    if (params.searchType !== 'products') searchParams.set('type', params.searchType);
+    if (params.priceMin > 0) searchParams.set('minPrice', params.priceMin.toString());
+    if (params.priceMax !== 500) searchParams.set('maxPrice', params.priceMax.toString());
+    if (params.selectedTags?.length) searchParams.set('tags', params.selectedTags.join(','));
+    if (params.selectedStores?.length) searchParams.set('stores', params.selectedStores.join(','));
+    if (params.sortBy && params.sortBy !== 'created_at') searchParams.set('sort', params.sortBy);
+    if (params.userLat) searchParams.set('lat', params.userLat.toString());
+    if (params.userLon) searchParams.set('lon', params.userLon.toString());
+
+    const queryString = searchParams.toString();
+    const newPath = queryString ? `/?${queryString}` : '/';
+
+    if (isHomePage) {
+      // On home page, update URL and trigger search
+      navigate(newPath, { replace: true });
+      if ((window as any).homeSearchHandler) {
+        (window as any).homeSearchHandler(params);
+      }
+    } else {
+      // On any other page, navigate to home with search params
+      navigate(newPath);
+    }
+  };
+
   return (
     <div className="min-h-screen w-full bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
       <SearchBar
         isLoggedIn={isLoggedIn}
         onAccountClick={() => setAccountOpen(true)}
-        onSearch={isHomePage ? (params: any) => {
-          if ((window as any).homeSearchHandler) {
-            (window as any).homeSearchHandler(params);
-          }
-        } : undefined}
+        onSearch={handleSearch}
         currentTheme={currentTheme}
         setTheme={setTheme}
       />
