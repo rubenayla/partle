@@ -1,8 +1,6 @@
-Why claude /mcp doesn't detect the mcps of the repo. i'd like to see it easily for checking the scrapers
-- let's test the use of mcp server with chatgpt
-testing chatgpt connection with api (no mcp server compatibility yet), continue chat
+We have lots of stores in the database, which have been scraped. Do we have their location? coordinates? If not, i think we should check the scraping software to check if the website where we got it from does have the info or not.
 
-fix search box in chrome when scrolling
+Add in product view the "last updated" date
 
 could i have the edit button when i see my own product or it's only available in the "My Products" section? What's better?
 Update the product view to show the date of last update, and the user that updated it.
@@ -15,7 +13,7 @@ partle add true ratings, user product pair, link a number, note the time, aggreg
 - How to modify product. If you are the user, when you click a product to see it, allow editing? Or do it in other way
 
 
-
+- Chatgpt MCP working
 
 # problem with hook for scroll
 ● Summary of the React Hooks Issue
@@ -125,6 +123,7 @@ partle add true ratings, user product pair, link a number, note the time, aggreg
 - use uptimerobot
 
 ## Not urgent, long term
+- fix search box in chrome when scrolling
 - When we got to the end of the page, Use Shopify Storefront API directly:
   - Public API, no authentication needed for product search
   - GraphQL for flexible queries

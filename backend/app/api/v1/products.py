@@ -2,7 +2,7 @@
 from collections.abc import Generator
 from sqlalchemy import or_, func
 from fastapi import APIRouter, Depends, HTTPException, Response, UploadFile, File
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.db.models import Product, User, Tag
 from app.schemas import product as schema
@@ -35,7 +35,12 @@ def list_products(
     offset: int = 0,
     db: Session = Depends(get_db),
 ):
-    query = db.query(Product)
+    # Start with eager loading to prevent N+1 queries
+    query = db.query(Product).options(
+        joinedload(Product.store),
+        joinedload(Product.creator),
+        joinedload(Product.tags)
+    )
 
     # Handle multiple store IDs if provided
     if store_ids is not None:
@@ -116,14 +121,50 @@ def list_my_products(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """List products created by the current user."""
-    return db.query(Product).filter(Product.creator_id == current_user.id).order_by(Product.created_at.desc()).all()
+    """List products created by the current user - with eager loading to prevent N+1 queries."""
+    return (
+        db.query(Product)
+        .options(
+            joinedload(Product.store),
+            joinedload(Product.creator),
+            joinedload(Product.tags)
+        )
+        .filter(Product.creator_id == current_user.id)
+        .order_by(Product.created_at.desc())
+        .all()
+    )
 
 
 @router.get("/store/{store_id}", response_model=list[schema.ProductOut])
 def list_products_by_store(store_id: int, db: Session = Depends(get_db)):
-    """List products for a specific store."""
-    return db.query(Product).filter(Product.store_id == store_id).order_by(func.random()).all()
+    """List products for a specific store - with eager loading to prevent N+1 queries."""
+    return (
+        db.query(Product)
+        .options(
+            joinedload(Product.store),
+            joinedload(Product.creator),
+            joinedload(Product.tags)
+        )
+        .filter(Product.store_id == store_id)
+        .order_by(func.random())
+        .all()
+    )
+
+
+@router.get("/user/{user_id}", response_model=list[schema.ProductOut])
+def list_products_by_user(user_id: int, db: Session = Depends(get_db)):
+    """List products uploaded by a specific user - with eager loading to prevent N+1 queries."""
+    return (
+        db.query(Product)
+        .options(
+            joinedload(Product.store),
+            joinedload(Product.creator),
+            joinedload(Product.tags)
+        )
+        .filter(Product.creator_id == user_id)
+        .order_by(Product.created_at.desc())
+        .all()
+    )
 
 
 # TODO HOW TO UPDATE PRODUCT

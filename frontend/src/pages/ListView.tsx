@@ -132,9 +132,13 @@ export default function ListView({ items }: ListViewProps) {
                     {item.price ? `${item.currency || '€'}${item.price}` : 'Price not set'}
                   </span>
                   {item.store && (
-                    <span className="block text-xs mt-1">
+                    <Link
+                      to={`/stores/${item.store_id}/products`}
+                      className="block text-xs mt-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       {item.store.name}
-                    </span>
+                    </Link>
                   )}
                 </p>
               ) : (

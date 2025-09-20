@@ -635,4 +635,38 @@ OpenStreetMap
 
 # 
 GitHub Preview Deployments
+not yet, i just test in localhost
 
+# 
+ Why did the backend fail?
+
+The backend failed during the deployment of the SSE implementation because the deployment script's
+  health check timed out. The error was curl: (56) Recv failure: Connection reset by peer - this
+happened because the old deploy.sh script was killing processes and restarting with a basic
+background process that wasn't properly managed.
+
+Why did the latest deploy fail?
+
+The deployment failed because:
+1. The deploy.sh script was using a crude process killing method that would kill all uvicorn
+processes
+2. The backend was restarted as a simple background process without proper service management
+3. The health check at the end of deploy.sh (curl -f http://localhost:8000/health) timed out after
+  the backend was killed
+
+How it's fixed now:
+
+1. You manually restarted the backend using systemd (systemctl restart partle-backend) which
+properly manages the service
+2. The latest deployment (SSE fix) succeeded because the backend was already running properly via
+systemd
+3. The production backend is now using systemd service management which is more reliable than the
+old deploy.sh approach
+
+Recommendation:
+
+The deploy.sh script should be updated to use systemctl restart partle-backend instead of manually
+  killing processes and starting them in the background. This would prevent future deployment
+failures.
+
+# 

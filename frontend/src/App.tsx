@@ -17,6 +17,7 @@ import Account from "./pages/Account"; // Import the new Account page
 import ResetPassword from "./pages/ResetPassword"; // Import the new ResetPassword page
 import CompleteProfile from "./pages/CompleteProfile"; // Import the new CompleteProfile page
 import MyProducts from "./pages/MyProducts"; // Import the new MyProducts page
+import UserProducts from "./pages/UserProducts"; // Import the new UserProducts page
 import AdminDashboard from "./pages/AdminDashboard"; // Import the new AdminDashboard page
 import { useBackendStatus } from './hooks/useBackendStatus'
 import { useTheme } from './hooks/useTheme';
@@ -63,6 +64,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/stores" element={<Stores />} />
           <Route path="/stores/:id/products" element={<Products />} />
+          <Route path="/users/:id/products" element={<UserProducts />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/terms" element={<Terms />} />

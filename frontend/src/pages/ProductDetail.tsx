@@ -592,7 +592,12 @@ export default function ProductDetail(): JSX.Element {
               <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-3">Store Information</h3>
               <div className="space-y-3">
                 <div>
-                  <p className="font-semibold text-gray-900 dark:text-white">{store.name}</p>
+                  <Link
+                    to={`/stores/${store.id}/products`}
+                    className="font-semibold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  >
+                    {store.name}
+                  </Link>
                   {store.type && (
                     <p className="text-sm text-gray-600 dark:text-gray-400 capitalize">{store.type} store</p>
                   )}
@@ -651,7 +656,12 @@ export default function ProductDetail(): JSX.Element {
                 <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
-                <span className="text-gray-700 dark:text-gray-300">@{product.creator.username}</span>
+                <Link
+                  to={`/users/${product.creator.id}/products`}
+                  className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                >
+                  @{product.creator.username}
+                </Link>
               </div>
             </div>
           )}
