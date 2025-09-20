@@ -18,10 +18,10 @@ logger = get_logger("main")
 from pathlib import Path
 from dotenv import load_dotenv
 
-# Load from root .env file
-root_env = Path(__file__).parents[2] / '.env'
-if root_env.exists():
-    load_dotenv(root_env, override=True)
+# Load from backend/.env file
+backend_env = Path(__file__).parent.parent / '.env'
+if backend_env.exists():
+    load_dotenv(backend_env, override=True)
 
 app = FastAPI(
     title="Partle API",

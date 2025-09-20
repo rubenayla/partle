@@ -2,8 +2,9 @@ import { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import api from '../api';
+import { useAuth } from '../hooks/useAuth';
 
-interface Store { id: number; name: string; }
+interface Store { id: number; name: string; owner_id?: number; }
 interface FormState {
   name: string;
   spec: string;
@@ -17,6 +18,7 @@ interface FormState {
 
 export default function AddProduct() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [stores, setStores] = useState<Store[]>([]);
   const [form, setForm] = useState<FormState>({
     name: '',
@@ -33,8 +35,14 @@ export default function AddProduct() {
   const [altNPressed, setAltNPressed] = useState(false);
 
   useEffect(() => {
-    api.get('/v1/stores/').then(res => setStores(res.data));
-  }, []);
+    // Fetch all stores and filter to show only user's stores
+    api.get('/v1/stores/').then(res => {
+      const userStores = res.data.filter((store: Store) =>
+        store.owner_id === user?.id
+      );
+      setStores(userStores);
+    });
+  }, [user]);
 
   useEffect(() => {
     const handle = (e: KeyboardEvent) => {
@@ -217,13 +225,18 @@ export default function AddProduct() {
                     onChange={change}
                     className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-background focus:ring-2 focus:ring-accent focus:border-transparent transition-colors"
                   >
-                    <option value="">Select a store (optional)</option>
+                    <option value="">No store (independent product)</option>
                     {stores.map((s) => (
                       <option key={s.id} value={s.id}>
                         {s.name}
                       </option>
                     ))}
                   </select>
+                  {stores.length === 0 && (
+                    <p className="text-sm text-secondary mt-2">
+                      You don't have any stores yet. Products will be created as independent.
+                    </p>
+                  )}
                 </div>
               </div>
 

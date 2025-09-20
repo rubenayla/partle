@@ -4,7 +4,7 @@ from sqlalchemy import or_, func
 from fastapi import APIRouter, Depends, HTTPException, Response, UploadFile, File
 from sqlalchemy.orm import Session, joinedload
 
-from app.db.models import Product, User, Tag
+from app.db.models import Product, User, Tag, Store
 from app.schemas import product as schema
 from app.auth.security import get_current_user
 from app.api.deps import get_db
@@ -174,12 +174,21 @@ def create_product(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    logger.info("Creating product", 
-                product_name=payload.name, 
-                user_id=current_user.id, 
+    logger.info("Creating product",
+                product_name=payload.name,
+                user_id=current_user.id,
                 store_id=payload.store_id)
-    
+
     if payload.store_id is not None:
+        # Check if store exists and user owns it
+        store = db.query(Store).filter_by(id=payload.store_id).first()
+        if not store:
+            raise HTTPException(404, "Store not found")
+
+        # Only the store owner can add products to their store
+        if store.owner_id != current_user.id:
+            raise HTTPException(403, "You can only add products to your own stores")
+
         # If product is linked to a store, check for uniqueness by name and store_id
         existing = (
             db.query(Product)
@@ -187,8 +196,8 @@ def create_product(
             .first()
         )
         if existing:
-            logger.warning("Product creation failed - duplicate in store", 
-                          product_name=payload.name, 
+            logger.warning("Product creation failed - duplicate in store",
+                          product_name=payload.name,
                           store_id=payload.store_id)
             raise HTTPException(409, "Product with this name already exists in this store")
     else:

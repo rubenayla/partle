@@ -13,14 +13,19 @@
 **ALWAYS VERIFY DATABASE_URL POINTS TO HETZNER BEFORE ANY DB OPERATION**
 
 ## ✅ ENVIRONMENT VARIABLES (COMPLETE LIST - DO NOT ADD MORE)
-**Location**: `.env` file at `/srv/partle/.env` (on server) or project root (local)
-**Loading**: Simple - loads root `.env` with `override=True` to ensure values take precedence over existing environment variables.
+**Location**: Separate `.env` files for each service following industry best practices
+- **Backend**: `backend/.env` - Private secrets (database, API keys)
+- **Frontend**: `frontend/.env` - Build-time configuration (API base URL)
+**Loading**: Each service loads its own `.env` with `override=True`
 
-**Required variables (these 4 only)**:
+**Backend variables (backend/.env)**:
 - `DATABASE_URL` - PostgreSQL connection string
 - `SECRET_KEY` - JWT signing key
 - `CLOUDFLARE_WORKER_URL` - Email service endpoint
 - `CLOUDFLARE_WORKER_API_KEY` - Email service authentication
+
+**Frontend variables (frontend/.env)**:
+- `VITE_API_BASE` - Backend API URL (build-time variable)
 
 ## Project Structure
 - **Backend**: Python FastAPI application using Poetry for dependency management
@@ -70,14 +75,15 @@
 - **CLOUDFLARE_WORKER_API_KEY**: Email service authentication
 
 ### Storage Rules
-- **Production Environment Files**: 
-  - `frontend/.env`: Production settings (tracked in git, no secrets)
+- **Production Environment Files**:
+  - `frontend/.env`: Frontend build config (VITE_API_BASE) - can be tracked in git (no secrets)
+  - `backend/.env`: Backend secrets (DATABASE_URL, SECRET_KEY, etc.) - gitignored
+- **Local Development**:
+  - `frontend/.env`: Default development values (can be tracked)
+  - `frontend/.env.local`: Local overrides (gitignored, takes precedence)
   - `backend/.env`: Backend secrets (gitignored)
-  - Root `.env`: Database credentials (gitignored)
-- **Local Development**: 
-  - `frontend/.env.local`: Local overrides (gitignored, takes precedence over .env)
   - **IMPORTANT**: Never create `.env.local` on production server
-- **All `.env*` and `*.local` files are gitignored** - these files must never be tracked by Git
+- **All `.env*` and `*.local` files are gitignored** - except `.env.example`
 - **Local Testing**: Use `.env.test` for test database credentials (also gitignored)
 - **Validation**: Always verify `DATABASE_URL` points to Hetzner before DB operations
 

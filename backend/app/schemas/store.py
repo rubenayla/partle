@@ -18,6 +18,7 @@ class StoreCreate(StoreBase):
 
 class StoreRead(StoreBase):
     id: int
+    owner_id: Optional[int] = None
     tags: list[Tag] = []
 
     class Config:

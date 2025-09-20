@@ -6,9 +6,9 @@ from pathlib import Path
 from typing import Optional
 from dotenv import load_dotenv
 
-# Load environment variables from root .env file
-root_env_path = Path(__file__).parents[4] / '.env'
-load_dotenv(root_env_path, override=True)
+# Load environment variables from backend/.env file
+backend_env_path = Path(__file__).parents[3] / '.env'
+load_dotenv(backend_env_path, override=True)
 
 
 class ScraperConfig:
