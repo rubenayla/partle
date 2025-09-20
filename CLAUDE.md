@@ -28,15 +28,19 @@
 - `VITE_API_BASE` - Backend API URL (build-time variable)
 
 ## Project Structure
-- **Backend**: Python FastAPI application using Poetry for dependency management
+- **Backend**: Python FastAPI application using UV for dependency management (fast, modern Python package manager)
 - **Frontend**: React/TypeScript application using npm/Node.js
 - **Database**: PostgreSQL with SQLAlchemy ORM and Alembic migrations
 
 ## Backend Commands (run from `/backend` directory)
-- **Run migrations**: `poetry run alembic upgrade head`
-- **Create migration**: `poetry run alembic revision -m "description"`
-- **Check migration status**: `poetry run alembic current`
-- **Run Python scripts**: `poetry run python <script>`
+- **Install dependencies**: `uv sync` (takes ~1 second!)
+- **Run server**: `uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000`
+- **Run migrations**: `uv run alembic upgrade head`
+- **Create migration**: `uv run alembic revision -m "description"`
+- **Check migration status**: `uv run alembic current`
+- **Run Python scripts**: `uv run python <script>`
+- **Add a package**: `uv add package-name`
+- **Remove a package**: `uv remove package-name`
 
 ## Frontend Commands (run from `/frontend` directory)
 - **Install dependencies**: `npm install`
@@ -48,7 +52,7 @@
 - **Backend models**: `backend/app/db/models.py`
 - **Backend schemas**: `backend/app/schemas/`
 - **Alembic migrations**: `backend/alembic/versions/`
-- **Poetry config**: `backend/pyproject.toml`
+- **Backend config**: `backend/pyproject.toml` (works with UV)
 - **Frontend config**: `frontend/package.json`
 
 ## Database Notes
@@ -114,8 +118,8 @@
 ## Testing
 - **Backend**: pytest (check for test commands in pyproject.toml)
 - **Frontend**: Vitest (configured in vite.config.js)
-- **Search Engine**: `poetry run python test_search_quick.py` (quick verification)
-- **Search Tests**: `poetry run pytest app/tests/test_search_simple.py -v` (comprehensive)
+- **Search Engine**: `uv run python test_search_quick.py` (quick verification)
+- **Search Tests**: `uv run pytest app/tests/test_search_simple.py -v` (comprehensive)
 
 ## Development Server Architecture
 
