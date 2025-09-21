@@ -80,7 +80,7 @@ if [ "$DISK_USAGE" -gt 80 ]; then
 fi
 
 # Check database connectivity
-DB_CHECK=$(cd /srv/partle/backend && poetry run python -c "
+DB_CHECK=$(cd /srv/partle/backend && uv run python -c "
 from app.db.database import engine
 try:
     with engine.connect() as conn:

@@ -11,7 +11,7 @@ WorkingDirectory=/root/partle/backend
 Environment=PATH=/root/.local/bin:/usr/local/bin:/usr/bin:/bin
 Environment=PYTHONPATH=/root/partle/backend
 Environment=PARTLE_API_URL=http://localhost:8000
-ExecStart=/usr/bin/poetry run python scripts/run_mcp_products.py
+ExecStart=/root/.local/bin/uv run python scripts/run_mcp_products.py
 Restart=always
 RestartSec=5
 StandardOutput=journal

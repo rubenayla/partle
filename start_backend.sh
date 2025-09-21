@@ -12,7 +12,7 @@ sleep 2
 
 # Start the backend (it will load from .env file)
 echo "Starting Partle backend..."
-nohup poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 > /tmp/backend.log 2>&1 &
+nohup uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 > /tmp/backend.log 2>&1 &
 
 # Wait a moment for startup
 sleep 3
