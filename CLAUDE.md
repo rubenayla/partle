@@ -242,7 +242,7 @@ MCP servers allow Claude Desktop to interact with local tools and APIs. These ru
   "mcpServers": {
     "partle-products": {
       "command": "uv",
-      "args": ["run", "-C", "/home/rubenayla/repos/partle/backend", "python", "/home/rubenayla/repos/partle/backend/scripts/run_mcp_products.py"],
+      "args": ["--directory", "/home/rubenayla/repos/partle/backend", "run", "python", "scripts/run_mcp_products.py"],
       "env": {
         "PARTLE_API_URL": "http://localhost:8000"
       }
@@ -252,16 +252,18 @@ MCP servers allow Claude Desktop to interact with local tools and APIs. These ru
 ```
 
 **Key Requirements for UV-based MCP servers:**
-1. **Use absolute paths** - Both for `-C` flag and script path
-2. **Use `-C` flag** - Tells UV where to find `pyproject.toml`
-3. **No `cwd` field needed** - The `-C` flag handles the directory
-4. **Command is just `uv`** - Not a shell script or wrapper
+1. **Use absolute paths** - For the `--directory` flag
+2. **Use relative paths for scripts** - After setting directory context
+3. **Use `--directory` flag** - Tells UV where to find `pyproject.toml`
+4. **No `cwd` field needed** - The `--directory` flag handles the directory
+5. **Command is just `uv`** - Not a shell script or wrapper
 
 **What DOESN'T work:**
-- Relative paths like `./backend` or `scripts/run.py`
-- Using `cwd` field without `-C` flag
+- Using `-C` flag (deprecated, use `--directory` instead)
+- Absolute paths for scripts after `--directory` is set
+- Using `cwd` field without `--directory` flag
 - Shell script wrappers (permission issues)
-- Missing the `-C` flag (causes "UV could not find a pyproject.toml" error)
+- Missing the `--directory` flag (causes "UV could not find a pyproject.toml" error)
 
 **Local MCP Server Files (Claude Desktop only):**
 - **Configuration**: `/home/rubenayla/repos/partle/.mcp.json` (project-scoped)

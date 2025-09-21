@@ -1,4 +1,127 @@
-Add foo stores around me at 1km distance with foo products, and add corresponding tag to know them. I want to check the algorithm for closest stores.
+disable test products by default, somehow
+
+
+# todo ruben check sku
+  🎯 SKU Implementation Summary
+
+  Backend Changes
+
+  1. Database Model (app/db/models.py):
+    - Added sku field (String(50), nullable, indexed)
+    - Added composite unique constraint on (store_id, sku)
+    - This ensures SKUs are unique per store but can be reused across stores
+  2. Migration (alembic/versions/ffbebe72d891_add_sku_field_with_per_store_uniqueness.py):
+    - Successfully migrated database with SKU field
+    - Added index for faster SKU lookups
+    - Created unique constraint unique_store_sku
+  3. API Schema (app/schemas/product.py):
+    - Added sku to ProductIn, ProductUpdate, and ProductOut schemas
+    - SKU is optional but validated when provided
+  4. Bulk Import (app/routes/bulk_import.py):
+    - Added SKU column support
+    - Validates SKU uniqueness during import
+    - Returns clear error if duplicate SKU found
+
+  Frontend Changes
+
+  1. Type Definition (src/types/index.ts):
+    - Added sku?: string to Product interface
+  2. Display Utility (src/utils/product.ts):
+    - getProductIdentifier() - Returns SKU or #ID
+    - getProductIdentifierWithLabel() - Returns "SKU: XXX" or "ID: #XXX"
+    - hasCustomSKU() - Checks if product has custom SKU
+  3. Product Detail Page (src/pages/ProductDetail.tsx):
+    - Shows SKU below product name (or #ID if no SKU)
+    - Edit form includes SKU field with helpful description
+    - SKU is saved when updating product
+  4. Bulk Import UI (src/pages/BulkImport.tsx):
+    - Supports SKU column in CSV/Excel files
+    - Templates include SKU as first column
+
+  Sample Templates
+
+  - CSV and Excel templates now include SKU column
+  - Example SKUs like "LAPTOP-001", "MOUSE-WL-02"
+  - Instructions explain SKU is optional and unique per store
+
+  Key Features
+
+  ✅ Per-Store Uniqueness: Each store can have "PROD-001", no conflicts
+  ✅ Optional Field: Works without SKU (displays #ID instead)
+  ✅ Bulk Import Support: Can import products with SKUs
+  ✅ User-Friendly: Clear labeling and helpful hints in UI
+  ✅ Future-Proof: Can add franchise-wide SKUs later if needed
+
+  This implementation gives stores professional inventory management capabilities while
+  keeping it simple for those who don't need SKUs!
+
+
+
+# todo ruben check bulk import:
+I've successfully created a comprehensive bulk product import system for Partle! Here's
+  what was implemented:
+
+  ✅ Backend Features
+
+  1. Bulk Import Endpoint (/v1/stores/{store_id}/bulk-import)
+    - Accepts CSV or Excel files with product data
+    - Supports ZIP files with product images
+    - Validates data (name and price required)
+    - Processes images and stores them in the database
+    - Handles tags automatically
+  2. Template Endpoints
+    - /v1/import-template - Downloads sample CSV/Excel templates
+    - /v1/import-instructions - Returns detailed import instructions
+  3. Data Validation
+    - Checks for required columns
+    - Validates price data
+    - Handles errors gracefully with detailed feedback
+
+  ✅ Frontend Features
+
+  1. Bulk Import Page (/stores/:storeId/bulk-import)
+    - Drag-and-drop file upload for CSV/Excel
+    - Optional ZIP upload for images
+    - Download template buttons
+    - Real-time import progress
+    - Error reporting with specific row details
+    - Success summary with statistics
+  2. Store Card Enhancement
+    - Added "Import" button for store owners
+    - Shows only when the current user owns the store
+    - Quick access to bulk import functionality
+
+  ✅ Sample Templates Created
+
+  - product_import_template.csv - Simple CSV format
+  - product_import_template.xlsx - Excel with instructions sheet
+  - minimal_import.csv - Quick testing template
+
+  📋 How Store Owners Use It
+
+  1. Navigate to their store page
+  2. Click "Import" button (green upload icon)
+  3. Download a template (CSV or Excel)
+  4. Fill in product details
+  5. Optionally prepare a ZIP with product images
+  6. Upload both files
+  7. View import results and any errors
+
+  🔑 Key Features
+
+  - Easy to use: Simple drag-and-drop interface
+  - Flexible formats: Supports both CSV and Excel
+  - Image support: Bulk upload product images via ZIP
+  - Tag management: Automatically creates/assigns tags
+  - Error handling: Clear feedback on what went wrong
+  - Owner-only access: Only store owners can bulk import
+
+  This system makes it incredibly easy for medium-small stores to quickly add their entire
+   inventory to Partle!
+
+---
+
+test bulk add
 
 - take location into account for sorting. Add Closest first option, and ask for location permission if not given yet
 - i see a few new markdown files in the docs folder. Should we use mkdocs?

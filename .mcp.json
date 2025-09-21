@@ -41,6 +41,13 @@
       "env": {
         "PARTLE_API_URL": "http://localhost:8000"
       }
+    },
+    "partle-scraper-monitor": {
+      "command": "uv",
+      "args": ["--directory", "/home/rubenayla/repos/partle/backend", "run", "python", "scripts/run_mcp_scraper_monitor.py"],
+      "env": {
+        "PARTLE_API_URL": "http://localhost:8000"
+      }
     }
   }
 }
