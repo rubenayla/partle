@@ -1,5 +1,3 @@
-let claude continue
-
 We have lots of stores in the database, which have been scraped. Do we have their location? coordinates? If not, i think we should check the scraping software to check if the website where we got it from does have the info or not.
 
 Add in product view the "last updated" date

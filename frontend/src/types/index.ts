@@ -45,16 +45,22 @@ export interface Store {
   type: StoreType;
   /** Store website URL (optional) */
   website?: string;
+  /** Store homepage URL (optional) */
+  homepage?: string;
   /** Store logo image URL (optional) */
   image_url?: string;
   /** Store description */
   description?: string;
   /** Physical address (for physical stores) */
   address?: string;
-  /** Geographic latitude coordinate */
+  /** Geographic latitude coordinate (legacy) */
   latitude?: number;
-  /** Geographic longitude coordinate */
+  /** Geographic longitude coordinate (legacy) */
   longitude?: number;
+  /** Geographic latitude coordinate */
+  lat?: number;
+  /** Geographic longitude coordinate */
+  lon?: number;
   /** When the store was created */
   created_at?: string;
   /** When the store was last updated */
