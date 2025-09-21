@@ -54,7 +54,7 @@ def set_user_role(db: Session, email: str, role: str):
         # Check if role field exists
         if not hasattr(user, 'role'):
             print("Warning: Role field doesn't exist yet. Please run migration first:")
-            print("  poetry run alembic upgrade head")
+            print("  uv run alembic upgrade head")
             return
 
         # Set role
@@ -81,7 +81,7 @@ def main():
             print("Please run the migration first on the server:")
             print("  ssh deploy@91.98.68.236")
             print("  cd /srv/partle/backend")
-            print("  poetry run alembic upgrade head")
+            print("  uv run alembic upgrade head")
             print()
     except OperationalError as e:
         print(f"\n❌ Database connection error: {e}")

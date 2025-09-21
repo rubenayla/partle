@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Enhanced debugging script for password reset email functionality
-Run with: poetry run python test_email_debug.py
+Run with: uv run python test_email_debug.py
 """
 import os
 import sys

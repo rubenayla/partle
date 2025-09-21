@@ -11,4 +11,4 @@ def init_db():
 if __name__ == "__main__":
     init_db()
 
-# To start fresh with the right database schema: `poetry run python app/db/base.py`
+# To start fresh with the right database schema: `uv run python app/db/base.py`

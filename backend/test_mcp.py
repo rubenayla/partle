@@ -23,7 +23,7 @@ def test_mcp_server():
 
     # Start the MCP server
     proc = subprocess.Popen(
-        ['poetry', 'run', 'python', 'scripts/run_mcp_products.py'],
+        ['uv', 'run', 'python', 'scripts/run_mcp_products.py'],
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,

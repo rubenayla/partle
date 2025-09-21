@@ -53,7 +53,7 @@ def test_index_exists():
             return True
         else:
             print(f"❌ Index '{search_client.index_name}' does not exist")
-            print("   Run: poetry run python manage_search.py init")
+            print("   Run: uv run python manage_search.py init")
             return False
             
     except Exception as e:
@@ -121,7 +121,7 @@ def test_api_endpoint():
             
     except requests.ConnectionError:
         print("❌ Could not connect to API server")
-        print("   Make sure to run: poetry run uvicorn app.main:app --reload")
+        print("   Make sure to run: uv run uvicorn app.main:app --reload")
         return False
     except Exception as e:
         print(f"❌ API test failed: {e}")

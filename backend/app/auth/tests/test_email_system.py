@@ -1,6 +1,6 @@
 """
 Comprehensive test suite for the email reset system
-Run with: poetry run pytest app/auth/tests/test_email_system.py -v
+Run with: uv run pytest app/auth/tests/test_email_system.py -v
 """
 import os
 import pytest

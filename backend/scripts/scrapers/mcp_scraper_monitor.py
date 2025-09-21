@@ -87,7 +87,7 @@ class ScraperMonitor:
         try:
             # Start the scraper process
             cmd = [
-                "poetry", "run", "scrapy", "crawl", scraper_name, "-L", "INFO"
+                "uv", "run", "scrapy", "crawl", scraper_name, "-L", "INFO"
             ]
             
             # Change to scraper directory

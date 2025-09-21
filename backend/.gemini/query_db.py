@@ -157,7 +157,7 @@ if __name__ == "__main__":
             sys.exit(1)
         search_products(sys.argv[2])
     elif command == "query_products_with_full_filters":
-        # Example usage: poetry run python .gemini/query_db.py query_products_with_full_filters --q test2 --sort_by relevance
+        # Example usage: uv run python .gemini/query_db.py query_products_with_full_filters --q test2 --sort_by relevance
         # Parse arguments manually for simplicity
         args = sys.argv[2:]
         params = {}
