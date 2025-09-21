@@ -590,7 +590,8 @@ export default function ProductDetail(): JSX.Element {
           {store && (
             <div className="border-t border-gray-200 dark:border-gray-600 pt-6">
               <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-3">Store Information</h3>
-              <div className="space-y-3">
+              <div className="space-y-4">
+                {/* Store Name and Type */}
                 <div>
                   <Link
                     to={`/stores/${store.id}/products`}
@@ -602,71 +603,86 @@ export default function ProductDetail(): JSX.Element {
                     <p className="text-sm text-gray-600 dark:text-gray-400 capitalize">{store.type} store</p>
                   )}
                 </div>
-                
-                {/* Physical Address */}
-                {store.address && (
-                  <div>
-                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Address:</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{store.address}</p>
+
+                {/* Location Section - Grouped Together */}
+                {(store.address || (store.lat && store.lon)) && (
+                  <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 space-y-3">
+                    <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      Location
+                    </h4>
+
+                    {/* Physical Address */}
+                    {store.address && (
+                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                        <span className="font-medium">Address: </span>
+                        <span>{store.address}</span>
+                      </div>
+                    )}
+
+                    {/* Coordinates and Map Links */}
+                    {store.lat && store.lon && (
+                      <>
+                        {/* Coordinates Display */}
+                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                          <span className="font-medium">Coordinates: </span>
+                          <span className="font-mono">{store.lat.toFixed(6)}, {store.lon.toFixed(6)}</span>
+                        </div>
+
+                        {/* Map Action Buttons */}
+                        <div className="flex flex-wrap gap-3 pt-2">
+                          {/* Google Maps Link */}
+                          <a
+                            href={`https://maps.google.com/?q=${store.lat},${store.lon}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium"
+                            onClick={() => trackExternalLink(`https://maps.google.com/?q=${store.lat},${store.lon}`, 'store')}
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            Open in Google Maps
+                          </a>
+
+                          {/* Get Directions Link */}
+                          <a
+                            href={`https://www.google.com/maps/dir/?api=1&destination=${store.lat},${store.lon}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 text-sm font-medium"
+                            onClick={() => trackExternalLink(`https://www.google.com/maps/dir/?api=1&destination=${store.lat},${store.lon}`, 'directions')}
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                            </svg>
+                            Get Directions
+                          </a>
+                        </div>
+                      </>
+                    )}
                   </div>
                 )}
-                
-                {/* Location Actions */}
-                <div className="flex flex-col gap-2">
-                  {store.lat && store.lon && (
-                    <>
-                      {/* Coordinates Display */}
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
-                        <span className="font-medium">Coordinates: </span>
-                        <span className="font-mono">{store.lat.toFixed(6)}, {store.lon.toFixed(6)}</span>
-                      </div>
 
-                      {/* Google Maps Link */}
-                      <a
-                        href={`https://maps.google.com/?q=${store.lat},${store.lon}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium"
-                        onClick={() => trackExternalLink(`https://maps.google.com/?q=${store.lat},${store.lon}`, 'store')}
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        Open in Google Maps
-                      </a>
-
-                      {/* Get Directions Link */}
-                      <a
-                        href={`https://www.google.com/maps/dir/?api=1&destination=${store.lat},${store.lon}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 text-sm font-medium"
-                        onClick={() => trackExternalLink(`https://www.google.com/maps/dir/?api=1&destination=${store.lat},${store.lon}`, 'directions')}
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                        </svg>
-                        Get Directions
-                      </a>
-                    </>
-                  )}
-                  
-                  {store.homepage && (
-                    <a
-                      href={store.homepage}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm"
-                      onClick={() => trackExternalLink(store.homepage || '', 'store')}
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9" />
-                      </svg>
-                      Visit Store Website
-                    </a>
-                  )}
-                </div>
+                {/* Store Website Link - Separate */}
+                {store.homepage && (
+                  <a
+                    href={store.homepage}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium"
+                    onClick={() => trackExternalLink(store.homepage || '', 'store')}
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9" />
+                    </svg>
+                    Visit Store Website
+                  </a>
+                )}
               </div>
             </div>
           )}
