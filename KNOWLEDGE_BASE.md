@@ -102,7 +102,7 @@
 - **Solution**: Add `_mailchannels` TXT record with Worker subdomain
 
 ### GitHub Actions Failing
-- **Cause**: Poetry not in PATH for deploy user
+- **Cause**: UV not in PATH for deploy user
 - **Solution**: Add `export PATH="/home/deploy/.local/bin:$PATH"`
 
 ---

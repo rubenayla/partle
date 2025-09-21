@@ -119,7 +119,7 @@ sudo lsof -i :8000
 # Check systemd service
 sudo journalctl -u partle-backend -n 50
 
-# Verify Poetry installation
+# Verify UV installation
 uv --version
 
 # Test database connection

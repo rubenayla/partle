@@ -88,7 +88,7 @@ To optimize the site for AI search and allow AI agents to discover and potential
     - I prefer TypeScript for type safety
 - **backend/**
     - Uses `pyenv` to manage Python versions
-    - Poetry for Python dependency management
+    - UV for Python dependency management
     - FastAPI as backend server
     - PostgreSQL with SQLAlchemy ORM and Alembic for migrations
     - Running `make setup` creates `backend/.venv` and installs dependencies
@@ -148,7 +148,7 @@ For a quick and automated setup, run the `dev_setup.sh` script:
 ./dev_setup.sh
 ```
 
-This script will install system dependencies, Node.js via nvm, set up the frontend, and configure the Python backend with pyenv and Poetry.
+This script will install system dependencies, Node.js via nvm, set up the frontend, and configure the Python backend with pyenv and UV.
 
 ### 4. Manual Setup (Alternative)
 
@@ -188,7 +188,7 @@ echo "VITE_API_BASE=http://localhost:8000" > frontend/.env
 make install
 ```
 
-   *Sets up venv, Poetry, npm packages, etc.*
+   *Sets up venv, UV, npm packages, etc.*
 
    **Note on Frontend Dependencies:** Due to potential peer dependency conflicts with React 19 and some libraries (e.g., `@testing-library/react`, `react-leaflet`), `npm install` might require the `--force` flag to resolve. While generally not recommended for production, this can be used in development to proceed with installation:
    ```bash

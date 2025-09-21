@@ -202,7 +202,7 @@ ChatGPT will automatically choose the right server based on your query:
 
 3. **ChatGPT Can't Connect**:
    - Verify working directory path is correct
-   - Check that Python and Poetry are in PATH
+   - Check that Python and UV are in PATH
    - Ensure no firewall blocking connections
 
 ### Discovery Issues

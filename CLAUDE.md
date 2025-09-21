@@ -136,7 +136,7 @@ This project uses a **decoupled frontend/backend architecture** with standard in
 - **Port**: `8000` (FastAPI standard)
 - **URL**: `http://localhost:8000` 
 - **Purpose**: API endpoints, database operations, image serving
-- **Start Command**: `poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000` (from `/backend` directory)
+- **Start Command**: `uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000` (from `/backend` directory)
 
 **Database Server (PostgreSQL):**
 - **Port**: `5432` (PostgreSQL standard)
@@ -241,7 +241,7 @@ MCP servers allow Claude Desktop to interact with local tools and APIs. These ru
 {
   "mcpServers": {
     "partle-products": {
-      "command": "poetry",
+      "command": "uv",
       "args": ["run", "-C", "/home/rubenayla/repos/partle/backend", "python", "/home/rubenayla/repos/partle/backend/scripts/run_mcp_products.py"],
       "env": {
         "PARTLE_API_URL": "http://localhost:8000"
@@ -251,17 +251,17 @@ MCP servers allow Claude Desktop to interact with local tools and APIs. These ru
 }
 ```
 
-**Key Requirements for Poetry-based MCP servers:**
+**Key Requirements for UV-based MCP servers:**
 1. **Use absolute paths** - Both for `-C` flag and script path
-2. **Use `-C` flag** - Tells Poetry where to find `pyproject.toml`
+2. **Use `-C` flag** - Tells UV where to find `pyproject.toml`
 3. **No `cwd` field needed** - The `-C` flag handles the directory
-4. **Command is just `poetry`** - Not a shell script or wrapper
+4. **Command is just `uv`** - Not a shell script or wrapper
 
 **What DOESN'T work:**
 - Relative paths like `./backend` or `scripts/run.py`
 - Using `cwd` field without `-C` flag
 - Shell script wrappers (permission issues)
-- Missing the `-C` flag (causes "Poetry could not find a pyproject.toml" error)
+- Missing the `-C` flag (causes "UV could not find a pyproject.toml" error)
 
 **Local MCP Server Files (Claude Desktop only):**
 - **Configuration**: `/home/rubenayla/repos/partle/.mcp.json` (project-scoped)
@@ -282,7 +282,7 @@ MCP servers allow Claude Desktop to interact with local tools and APIs. These ru
 **Testing MCP Servers:**
 ```bash
 cd /home/rubenayla/repos/partle/backend
-poetry run python test_mcp.py
+uv run python test_mcp.py
 ```
 
 **Enable in Claude Desktop:**
@@ -292,7 +292,7 @@ poetry run python test_mcp.py
 
 ## Search Engine
 - **Elasticsearch** for scalable search (millions of products)
-- **Setup**: `docker compose up -d elasticsearch && poetry run python manage_search.py setup`
+- **Setup**: `docker compose up -d elasticsearch && uv run python manage_search.py setup`
 - **New endpoint**: `/v1/search/products/` with advanced filtering
 - **Fallback**: `/v1/products/` uses database search if Elasticsearch unavailable
 
