@@ -8,6 +8,7 @@ def build_product_search_query(
     min_price: Optional[float] = None,
     max_price: Optional[float] = None,
     tags: Optional[List[str]] = None,
+    excluded_tags: Optional[List[str]] = None,
     store_id: Optional[int] = None,
     location: Optional[Dict[str, float]] = None,
     distance_km: Optional[float] = None,
@@ -77,7 +78,8 @@ def build_product_search_query(
     
     # Build filters
     filters = []
-    
+    must_not_filters = []
+
     # Price range filter
     if min_price is not None or max_price is not None:
         price_filter = {'range': {'price': {}}}
@@ -86,10 +88,14 @@ def build_product_search_query(
         if max_price is not None:
             price_filter['range']['price']['lte'] = max_price
         filters.append(price_filter)
-    
+
     # Tags filter
     if tags:
         filters.append({'terms': {'tags': tags}})
+
+    # Excluded tags filter (for filtering out test/mock data)
+    if excluded_tags:
+        must_not_filters.append({'terms': {'tags': excluded_tags}})
     
     # Store filter
     if store_id is not None:
@@ -108,21 +114,13 @@ def build_product_search_query(
         })
     
     # Combine query and filters
-    if filters:
-        if query:
-            full_query = {
-                'bool': {
-                    'must': [es_query],
-                    'filter': filters
-                }
-            }
-        else:
-            full_query = {
-                'bool': {
-                    'must': [es_query],
-                    'filter': filters
-                }
-            }
+    if filters or must_not_filters:
+        bool_clause = {'must': [es_query]}
+        if filters:
+            bool_clause['filter'] = filters
+        if must_not_filters:
+            bool_clause['must_not'] = must_not_filters
+        full_query = {'bool': bool_clause}
     else:
         full_query = es_query
     

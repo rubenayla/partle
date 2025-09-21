@@ -1,6 +1,6 @@
 # backend/app/api/v1/products.py
 from collections.abc import Generator
-from sqlalchemy import or_, func
+from sqlalchemy import or_, func, and_, not_
 from fastapi import APIRouter, Depends, HTTPException, Response, UploadFile, File
 from sqlalchemy.orm import Session, joinedload
 
@@ -11,6 +11,7 @@ from app.api.deps import get_db
 from app.search.indexing import index_product, delete_product_from_index
 from app.search.client import search_client
 from app.logging_config import get_logger
+from app.utils.test_data import get_excluded_test_tags
 
 router = APIRouter()
 logger = get_logger("api.products")
@@ -31,6 +32,7 @@ def list_products(
     sort_by: str | None = None,
     user_lat: float | None = None,  # User's latitude for distance sorting
     user_lon: float | None = None,  # User's longitude for distance sorting
+    include_test_data: bool = False,  # Include mock/test data in results
     limit: int = 20,
     offset: int = 0,
     db: Session = Depends(get_db),
@@ -41,6 +43,20 @@ def list_products(
         joinedload(Product.creator),
         joinedload(Product.tags)
     )
+
+    # Exclude test/mock data by default unless explicitly requested
+    if not include_test_data:
+        excluded_tags = get_excluded_test_tags()
+        if excluded_tags:
+            # Subquery to find products with excluded tags
+            excluded_products = (
+                db.query(Product.id)
+                .join(Product.tags)
+                .filter(Tag.name.in_(excluded_tags))
+                .subquery()
+            )
+            # Exclude products that have any of the excluded tags
+            query = query.filter(~Product.id.in_(excluded_products))
 
     # Handle multiple store IDs if provided
     if store_ids is not None:
@@ -136,9 +152,13 @@ def list_my_products(
 
 
 @router.get("/store/{store_id}", response_model=list[schema.ProductOut])
-def list_products_by_store(store_id: int, db: Session = Depends(get_db)):
+def list_products_by_store(
+    store_id: int,
+    include_test_data: bool = False,
+    db: Session = Depends(get_db)
+):
     """List products for a specific store - with eager loading to prevent N+1 queries."""
-    return (
+    query = (
         db.query(Product)
         .options(
             joinedload(Product.store),
@@ -146,9 +166,21 @@ def list_products_by_store(store_id: int, db: Session = Depends(get_db)):
             joinedload(Product.tags)
         )
         .filter(Product.store_id == store_id)
-        .order_by(func.random())
-        .all()
     )
+
+    # Exclude test/mock data by default unless explicitly requested
+    if not include_test_data:
+        excluded_tags = get_excluded_test_tags()
+        if excluded_tags:
+            excluded_products = (
+                db.query(Product.id)
+                .join(Product.tags)
+                .filter(Tag.name.in_(excluded_tags))
+                .subquery()
+            )
+            query = query.filter(~Product.id.in_(excluded_products))
+
+    return query.order_by(func.random()).all()
 
 
 @router.get("/user/{user_id}", response_model=list[schema.ProductOut])

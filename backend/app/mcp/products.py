@@ -132,6 +132,11 @@ async def list_tools() -> List[Tool]:
                         'type': 'string',
                         'description': 'Comma-separated tags'
                     },
+                    'include_test_data': {
+                        'type': 'boolean',
+                        'default': False,
+                        'description': 'Include mock/test data in results (default: False)'
+                    },
                     'location': {
                         'type': 'string',
                         'description': 'Location in format "lat,lon,radius_km"'
@@ -244,9 +249,14 @@ async def _get_products_by_store(args: Dict[str, Any]) -> List[TextContent]:
     store_id = args.get('store_id')
     if not store_id:
         return [TextContent(type='text', text='Error: store_id is required')]
-    
+
+    # Build params with include_test_data if provided
+    params = {}
+    if 'include_test_data' in args:
+        params['include_test_data'] = args['include_test_data']
+
     with get_http_client() as client:
-        response = client.get(f'/v1/products/store/{store_id}')
+        response = client.get(f'/v1/products/store/{store_id}', params=params)
         if response.status_code == 404:
             return [TextContent(type='text', text=f'Store with ID {store_id} not found or has no products.')]
         

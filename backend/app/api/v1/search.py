@@ -8,6 +8,7 @@ from app.search.client import search_client
 from app.search.queries import build_product_search_query, build_product_aggregation_query
 from app.search.indexing import initialize_product_index, reindex_all_products
 from app.schemas import product as schema
+from app.utils.test_data import get_excluded_test_tags
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -20,9 +21,10 @@ def search_products(
     tags: Optional[str] = Query(None, description="Comma-separated tags"),
     store_id: Optional[int] = Query(None, description="Filter by store ID"),
     lat: Optional[float] = Query(None, description="Latitude for location search"),
-    lon: Optional[float] = Query(None, description="Longitude for location search"), 
+    lon: Optional[float] = Query(None, description="Longitude for location search"),
     distance_km: Optional[float] = Query(None, description="Distance in kilometers for location search"),
     sort_by: Optional[str] = Query(None, description="Sort by: price_asc, price_desc, name_asc, created_at, distance, random"),
+    include_test_data: bool = Query(False, description="Include mock/test data in results"),
     limit: int = Query(20, ge=1, le=100, description="Number of results to return"),
     offset: int = Query(0, ge=0, description="Number of results to skip"),
     include_aggregations: bool = Query(False, description="Include faceted search aggregations")
@@ -45,6 +47,11 @@ def search_products(
         tag_list = None
         if tags:
             tag_list = [tag.strip() for tag in tags.split(',') if tag.strip()]
+
+        # Get excluded tags for test data
+        excluded_tags = None
+        if not include_test_data:
+            excluded_tags = get_excluded_test_tags()
         
         # Build location dict
         location = None
@@ -57,6 +64,7 @@ def search_products(
             min_price=min_price,
             max_price=max_price,
             tags=tag_list,
+            excluded_tags=excluded_tags,
             store_id=store_id,
             location=location,
             distance_km=distance_km,
