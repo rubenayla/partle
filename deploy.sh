@@ -5,6 +5,9 @@
 
 set -e  # Exit on error
 
+# Add local bin to PATH for UV
+export PATH="$HOME/.local/bin:$PATH"
+
 # Configuration
 REPO_DIR="/srv/partle"
 BACKUP_DIR="/srv/partle/backups"
@@ -69,6 +72,19 @@ git log --oneline HEAD..origin/main
 git pull origin main
 NEW_COMMIT=$(git rev-parse HEAD)
 log "${GREEN}✅ Updated to commit: $NEW_COMMIT${NC}"
+
+# Check if UV is installed
+if ! command -v uv &> /dev/null; then
+    log "${YELLOW}⚠️  UV not found, installing...${NC}"
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    export PATH="$HOME/.local/bin:$PATH"
+    if command -v uv &> /dev/null; then
+        log "${GREEN}✅ UV installed successfully${NC}"
+    else
+        log "${RED}❌ Failed to install UV${NC}"
+        exit 1
+    fi
+fi
 
 # Backend deployment
 log "${BLUE}🔧 Updating backend...${NC}"

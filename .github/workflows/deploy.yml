@@ -26,21 +26,21 @@ jobs:
       with:
         python-version: '3.12'
     
-    - name: Install Poetry
+    - name: Install UV
       run: |
-        curl -sSL https://install.python-poetry.org | python3 -
+        curl -LsSf https://astral.sh/uv/install.sh | sh
         echo "$HOME/.local/bin" >> $GITHUB_PATH
     
     - name: Install backend dependencies
       run: |
         cd backend
-        poetry install
+        uv sync
     
     - name: Run backend tests
       run: |
         cd backend
         # Run only tests that don't require external services
-        poetry run pytest app/api/v1/tests app/auth/tests -v --tb=short || echo "Some tests failed but continuing"
+        uv run pytest app/api/v1/tests app/auth/tests -v --tb=short || echo "Some tests failed but continuing"
     
     - name: Check Python syntax
       run: |
