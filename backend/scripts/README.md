@@ -36,13 +36,13 @@ Email system debugging (existing):
 
 ## Running Scripts
 
-All scripts should be run from the `/backend` directory using Poetry:
+All scripts should be run from the `/backend` directory using UV:
 
 ```bash
 # Examples:
-poetry run python scripts/tests/test_search_quick.py
-poetry run python scripts/utils/manage_search.py setup
-poetry run python scripts/utils/tag_stores_products.py
+uv run python scripts/tests/test_search_quick.py
+uv run python scripts/utils/manage_search.py setup
+uv run python scripts/utils/tag_stores_products.py
 ```
 
 ## Root Directory Files

@@ -219,7 +219,7 @@ export default function ProductDetail(): JSX.Element {
    */
   const handleCancel = (): void => {
     if (!product) return;
-    
+
     setEditForm({
       name: product.name || '',
       description: product.description || '',
@@ -234,6 +234,30 @@ export default function ProductDetail(): JSX.Element {
     setSuccessMessage('');
     // Scroll to top when exiting edit mode
     setTimeout(() => window.scrollTo({ top: 0, left: 0, behavior: 'smooth' }), 100);
+  };
+
+  /**
+   * Handle product deletion
+   */
+  const handleDelete = async (): Promise<void> => {
+    if (!product || !id) return;
+
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete "${product.name}"? This action cannot be undone.`
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      await api.delete(`/v1/products/${id}`);
+      setSuccessMessage('Product deleted successfully. Redirecting...');
+      setTimeout(() => {
+        navigate('/products');
+      }, 2000);
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      setErrorMessage('Failed to delete product. Please try again.');
+    }
   };
 
   /**
@@ -285,8 +309,8 @@ export default function ProductDetail(): JSX.Element {
     }
   };
 
-  // Check if current user is the product owner
-  const isOwner = user && product && user.id === product.creator_id;
+  // Check if current user is the product owner or an admin
+  const isOwner = user && product && (user.id === product.creator_id || user.role === 'admin');
 
   if (!product) return <p>Loading…</p>;
   if (authLoading) return <p>Loading…</p>;
@@ -410,16 +434,24 @@ export default function ProductDetail(): JSX.Element {
                     </button>
                   </>
                 ) : (
-                  <button
-                    onClick={() => {
-                      setIsEditing(true);
-                      // Scroll to top when entering edit mode
-                      setTimeout(() => window.scrollTo({ top: 0, left: 0, behavior: 'smooth' }), 100);
-                    }}
-                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm"
-                  >
-                    Edit
-                  </button>
+                  <>
+                    <button
+                      onClick={() => {
+                        setIsEditing(true);
+                        // Scroll to top when entering edit mode
+                        setTimeout(() => window.scrollTo({ top: 0, left: 0, behavior: 'smooth' }), 100);
+                      }}
+                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={handleDelete}
+                      className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm"
+                    >
+                      Delete
+                    </button>
+                  </>
                 )}
               </div>
               
@@ -586,6 +618,22 @@ export default function ProductDetail(): JSX.Element {
             </div>
           )}
 
+          {/* Last Updated Date */}
+          {product.updated_at && (
+            <div className="mb-6">
+              <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-2">Last Updated</h3>
+              <p className="text-gray-700 dark:text-gray-300">
+                {new Date(product.updated_at).toLocaleDateString(undefined, {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })}
+              </p>
+            </div>
+          )}
+
           {/* Store Information */}
           {store && (
             <div className="border-t border-gray-200 dark:border-gray-600 pt-6">
@@ -604,20 +652,14 @@ export default function ProductDetail(): JSX.Element {
                   )}
                 </div>
 
-                {/* Location Section - Grouped Together */}
+                {/* Location Section */}
                 {(store.address || (store.lat && store.lon)) && (
-                  <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 space-y-3">
-                    <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                      Location
-                    </h4>
+                  <div className="space-y-3 pt-4 border-t border-gray-200 dark:border-gray-600">
+                    <h4 className="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">Location</h4>
 
                     {/* Physical Address */}
                     {store.address && (
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                      <div className="text-sm text-gray-700 dark:text-gray-300">
                         <span className="font-medium">Address: </span>
                         <span>{store.address}</span>
                       </div>
@@ -627,13 +669,13 @@ export default function ProductDetail(): JSX.Element {
                     {store.lat && store.lon && (
                       <>
                         {/* Coordinates Display */}
-                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                        <div className="text-sm text-gray-700 dark:text-gray-300">
                           <span className="font-medium">Coordinates: </span>
                           <span className="font-mono">{store.lat.toFixed(6)}, {store.lon.toFixed(6)}</span>
                         </div>
 
                         {/* Map Action Buttons */}
-                        <div className="flex flex-wrap gap-3 pt-2">
+                        <div className="flex flex-wrap gap-3 pt-1">
                           {/* Google Maps Link */}
                           <a
                             href={`https://maps.google.com/?q=${store.lat},${store.lon}`}

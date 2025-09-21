@@ -18,12 +18,12 @@ docker compose up -d elasticsearch
 ### 2. Initialize Search Index
 ```bash
 cd backend
-poetry run python manage_search.py setup
+uv run python manage_search.py setup
 ```
 
 ### 3. Check Status
 ```bash
-poetry run python manage_search.py info
+uv run python manage_search.py info
 ```
 
 ## API Endpoints
@@ -53,22 +53,22 @@ curl "http://localhost:8000/v1/search/products/?q=test2&sort_by=random&limit=10"
 
 ```bash
 # Check Elasticsearch connectivity
-poetry run python manage_search.py check
+uv run python manage_search.py check
 
 # Initialize search index
-poetry run python manage_search.py init
+uv run python manage_search.py init
 
 # Force recreate index
-poetry run python manage_search.py init-force
+uv run python manage_search.py init-force
 
 # Reindex all products
-poetry run python manage_search.py reindex
+uv run python manage_search.py reindex
 
 # Show index information
-poetry run python manage_search.py info
+uv run python manage_search.py info
 
 # Complete setup (init + reindex + info)
-poetry run python manage_search.py setup
+uv run python manage_search.py setup
 ```
 
 ## Features
@@ -127,8 +127,8 @@ curl http://localhost:9200/products/_stats
 
 ### Common Issues
 1. **"Elasticsearch not available"** - Start Docker container
-2. **"Index not found"** - Run `poetry run python manage_search.py init`
-3. **"No search results"** - Run `poetry run python manage_search.py reindex`
+2. **"Index not found"** - Run `uv run python manage_search.py init`
+3. **"No search results"** - Run `uv run python manage_search.py reindex`
 4. **Permission denied** - Add user to docker group: `sudo usermod -aG docker $USER`
 
 ### Debug Commands

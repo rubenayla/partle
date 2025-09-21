@@ -1,3 +1,9 @@
+# stuff.md - Random Notes & Scratch Pad
+
+**PURPOSE**: This file is a dumping ground for random notes, ideas, snippets, and temporary information that doesn't belong anywhere else. It's intentionally messy and unorganized to keep the rest of the repo clean. Don't worry about tidying this file - it's meant to be chaotic!
+
+---
+
 # Possible names
 Partora, Partle, PartNow, Localon, Locado,
 - Discarded:

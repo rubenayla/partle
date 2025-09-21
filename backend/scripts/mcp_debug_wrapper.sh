@@ -18,4 +18,4 @@ if [ -f "../.env" ]; then
 fi
 
 # Run the actual MCP server and log everything
-exec poetry run python "$@" 2>> $LOG_FILE
+exec uv run python "$@" 2>> $LOG_FILE

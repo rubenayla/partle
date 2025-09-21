@@ -15,7 +15,7 @@
 cd frontend && npm run dev -- --port 3000
 
 # Backend  
-cd backend && poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+cd backend && uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ## Production Deployment

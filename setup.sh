@@ -64,16 +64,14 @@ cd backend
 echo "$PY_VERSION" > .python-version
 
 
-# ---- Poetry environment ----
-if ! command -v poetry >/dev/null 2>&1; then
-    echo "⬇️ Installing Poetry..."
-    curl -sSL https://install.python-poetry.org | python3 -
+# ---- UV environment ----
+if ! command -v uv >/dev/null 2>&1; then
+    echo "⬇️ Installing UV..."
+    curl -LsSf https://astral.sh/uv/install.sh | sh
     export PATH="$HOME/.local/bin:$PATH"
 fi
 
-poetry config virtualenvs.in-project true
-poetry env use "$PY_VERSION"
-poetry install
+uv sync
 
-echo "✅ Partle setup complete. To activate the backend shell, run:"
-echo "cd backend && poetry shell"
+echo "✅ Partle setup complete. To run backend commands, use:"
+echo "cd backend && uv run <command>"

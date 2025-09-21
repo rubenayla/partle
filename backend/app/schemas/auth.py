@@ -11,6 +11,7 @@ class UserRead(BaseModel):
     id: int
     email: EmailStr
     username: str | None = None
+    role: str | None = None
 
     class Config:
         from_attributes = True

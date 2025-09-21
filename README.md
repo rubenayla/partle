@@ -225,7 +225,7 @@ make dev DATABASE_URL=postgresql://user:pw@host:port/db
 
 * **Directly:**
 
-  * Backend:  poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 --log-level debug
+  * Backend:  uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 --log-level debug
   * Frontend: npm run dev --prefix frontend -- --port 3000
 
 ---
@@ -272,7 +272,7 @@ This project uses PostgreSQL as its primary database. For a simpler, file-based 
 
     ```bash
     cd backend
-    poetry run alembic upgrade head
+    uv run alembic upgrade head
     ```
 
 ### SQLite (for simple local development)
@@ -315,7 +315,7 @@ npm run dev -- --port 3000
 **Backend (FastAPI + Python):**
 ```bash
 cd backend
-poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 → **http://localhost:8000** (FastAPI standard)
 
@@ -389,8 +389,8 @@ partle/
 │   ├── tests/                         # Backend tests
 │   │   ├── test_api.py
 │   │   └── test_fast_api.py
-│   ├── pyproject.toml                 # Poetry config
-│   ├── poetry.lock
+│   ├── pyproject.toml                 # UV/Python project config
+│   ├── uv.lock
 │   └── README.md                      # Backend usage
 ├── Makefile
 ├── dev_setup.sh

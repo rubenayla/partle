@@ -29,8 +29,8 @@ git pull origin main
 
 # 3. Update backend
 cd /srv/partle/backend
-poetry install --no-interaction
-poetry run alembic upgrade head
+uv sync
+uv run alembic upgrade head
 sudo systemctl restart partle-backend
 
 # 4. Update frontend
@@ -120,7 +120,7 @@ sudo lsof -i :8000
 sudo journalctl -u partle-backend -n 50
 
 # Verify Poetry installation
-/home/deploy/.local/bin/poetry --version
+uv --version
 
 # Test database connection
 psql -h 91.98.68.236 -U partle_user -d partle -c "SELECT 1"
@@ -168,7 +168,7 @@ tar -xzf /srv/partle/backups/frontend_dist_<TIMESTAMP>.tar.gz -C /srv/partle/fro
 
 # Reinstall and restart
 cd /srv/partle/backend
-poetry install
+uv sync
 sudo systemctl restart partle-backend
 sudo systemctl reload nginx
 ```

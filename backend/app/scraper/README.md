@@ -10,11 +10,11 @@ This module is responsible for scraping product and store data from various onli
 
 ## How to Run Spiders
 
-To run a specific Scrapy spider, navigate to the `backend/app/scraper/` directory and use the `poetry run scrapy crawl` command:
+To run a specific Scrapy spider, navigate to the `backend/app/scraper/` directory and use the `uv run scrapy crawl` command:
 
 ```bash
 cd backend/app/scraper/
-poetry run scrapy crawl <spider_name>
+uv run scrapy crawl <spider_name>
 ```
 
 Replace `<spider_name>` with the name of the spider you want to run (e.g., `bricodepot`, `ferreterias`, `leroy_merlin`).
@@ -25,7 +25,7 @@ After a spider has successfully scraped data (usually output to a JSON file like
 
 ```bash
 cd backend/app/scraper/
-poetry run python import_ferreterias.py
+uv run python import_ferreterias.py
 ```
 
 This script handles authentication with the backend and manages duplicate entries based on store name, address, latitude, and longitude.

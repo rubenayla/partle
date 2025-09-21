@@ -59,9 +59,7 @@ From inside the `backend/` folder:
 ```bash
 cd backend
 rm -rf .venv
-poetry config virtualenvs.in-project true
-poetry env use $(pyenv which python)
-poetry install
+uv sync
 ```
 
 Alternatively, from the project root you can run:
@@ -76,7 +74,7 @@ pyenv Python.
 
 ### 4. Install backend project + dependencies
 
-Dependencies are installed via Poetry in the previous step. You can also run
+Dependencies are installed via UV in the previous step. You can also run
 `make setup` from the repository root to perform the same actions.
 
 ---
@@ -86,7 +84,7 @@ Dependencies are installed via Poetry in the previous step. You can also run
 To create the database tables, run the Alembic migrations from the `backend` directory:
 
 ```bash
-poetry run alembic upgrade head
+uv run alembic upgrade head
 ```
 
 For more detailed instructions on setting up the database, please see the main [README.md](../../README.md#database-setup).
@@ -94,7 +92,7 @@ For more detailed instructions on setting up the database, please see the main [
 ## ▶️ Run the development server
 
 ```bash
-uvicorn app.main:app --reload --port 8000
+uv run uvicorn app.main:app --reload --port 8000
 ```
 
 - http://localhost:8000/docs – interactive API

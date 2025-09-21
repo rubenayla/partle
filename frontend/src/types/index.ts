@@ -132,6 +132,8 @@ export interface User {
   email: string;
   /** User's unique username (optional until set) */
   username?: string | null;
+  /** User role (user, admin, or moderator) */
+  role?: string | null;
   /** Whether the user's email has been verified */
   is_verified?: boolean;
   /** User's display name (optional) */

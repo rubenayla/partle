@@ -22,19 +22,19 @@ A reliable, resumable web scraper for e-commerce product data using Scrapy.
 2. **Run a spider manually:**
    ```bash
    # From the scraper directory
-   poetry run python run_spider.py bricodepot
+   uv run python run_spider.py bricodepot
    ```
 
 3. **Run with custom options:**
    ```bash
    # Debug mode with custom log file
-   poetry run python run_spider.py bricodepot --log-level=DEBUG --log-file=custom.log
+   uv run python run_spider.py bricodepot --log-level=DEBUG --log-file=custom.log
    
    # Fresh start (no resume)
-   poetry run python run_spider.py bricodepot --no-resume
+   uv run python run_spider.py bricodepot --no-resume
    
    # Dry run (no database changes)
-   poetry run python run_spider.py bricodepot --dry-run
+   uv run python run_spider.py bricodepot --dry-run
    ```
 
 ## Cron Setup
@@ -43,12 +43,12 @@ To run scrapers automatically, add to your crontab:
 
 ```bash
 # Run bricodepot scraper daily at 2 AM
-0 2 * * * cd /path/to/partle/backend/app/scraper && /path/to/poetry run python run_spider.py bricodepot >> /var/log/scraper.log 2>&1
+0 2 * * * cd /path/to/partle/backend/app/scraper && /path/to/uv run python run_spider.py bricodepot >> /var/log/scraper.log 2>&1
 
 # Run multiple spiders at different times
-0 2 * * * cd /path/to/partle/backend/app/scraper && /path/to/poetry run python run_spider.py bricodepot
-0 4 * * * cd /path/to/partle/backend/app/scraper && /path/to/poetry run python run_spider.py leroy_merlin
-0 6 * * * cd /path/to/partle/backend/app/scraper && /path/to/poetry run python run_spider.py ferreterias
+0 2 * * * cd /path/to/partle/backend/app/scraper && /path/to/uv run python run_spider.py bricodepot
+0 4 * * * cd /path/to/partle/backend/app/scraper && /path/to/uv run python run_spider.py leroy_merlin
+0 6 * * * cd /path/to/partle/backend/app/scraper && /path/to/uv run python run_spider.py ferreterias
 ```
 
 ## Available Spiders

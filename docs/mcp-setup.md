@@ -46,7 +46,7 @@ The Partle Model Context Protocol (MCP) servers provide ChatGPT and other AI ass
 
 ### System Requirements
 - Python 3.12 or higher
-- Poetry package manager
+- UV package manager
 - Running Partle backend server
 - MCP-compatible AI client (ChatGPT, Claude, etc.)
 
@@ -55,18 +55,18 @@ The Partle Model Context Protocol (MCP) servers provide ChatGPT and other AI ass
 1. **Install Dependencies**
    ```bash
    cd backend/
-   poetry install
+   uv sync
    ```
 
 2. **Verify Installation**
    ```bash
-   poetry run python -c "from mcp.server import Server; print('MCP installed successfully')"
+   uv run python -c "from mcp.server import Server; print('MCP installed successfully')"
    ```
 
 3. **Start Partle Backend**
    ```bash
    # Make sure your Partle API is running
-   poetry run uvicorn app.main:app --reload
+   uv run uvicorn app.main:app --reload
    ```
 
 ## Quick Start
@@ -77,22 +77,22 @@ Each MCP server can be started independently:
 
 ```bash
 # Products server
-poetry run python backend/scripts/run_mcp_products.py
+uv run python backend/scripts/run_mcp_products.py
 
 # Stores server  
-poetry run python backend/scripts/run_mcp_stores.py
+uv run python backend/scripts/run_mcp_stores.py
 
 # Analytics server
-poetry run python backend/scripts/run_mcp_analytics.py
+uv run python backend/scripts/run_mcp_analytics.py
 
 # Price intelligence server
-poetry run python backend/scripts/run_mcp_price_intelligence.py
+uv run python backend/scripts/run_mcp_price_intelligence.py
 
 # Location intelligence server
-poetry run python backend/scripts/run_mcp_location_intelligence.py
+uv run python backend/scripts/run_mcp_location_intelligence.py
 
 # Recommendations server
-poetry run python backend/scripts/run_mcp_recommendations.py
+uv run python backend/scripts/run_mcp_recommendations.py
 ```
 
 ### Testing Server Connection
@@ -101,10 +101,10 @@ Test that servers are working correctly:
 
 ```bash
 # Test products server import
-poetry run python -c "from app.mcp.products import mcp_server; print('Products server ready')"
+uv run python -c "from app.mcp.products import mcp_server; print('Products server ready')"
 
 # Test with a simple query (if your API has data)
-poetry run python backend/scripts/run_mcp_products.py &
+uv run python backend/scripts/run_mcp_products.py &
 # Server will start and listen for MCP connections
 ```
 
@@ -140,8 +140,8 @@ Choose which servers you need and start them:
 
 ```bash
 # Example: Start products and analytics servers
-poetry run python backend/scripts/run_mcp_products.py &
-poetry run python backend/scripts/run_mcp_analytics.py &
+uv run python backend/scripts/run_mcp_products.py &
+uv run python backend/scripts/run_mcp_analytics.py &
 ```
 
 ### Step 2: Configure ChatGPT
@@ -179,10 +179,10 @@ In ChatGPT, try commands like:
 
 1. **"Module not found" errors**
    ```bash
-   # Make sure you're in the backend directory and using poetry
+   # Make sure you're in the backend directory and using uv
    cd backend/
-   poetry install
-   poetry run python scripts/run_mcp_products.py
+   uv sync
+   uv run python scripts/run_mcp_products.py
    ```
 
 2. **API connection failures**
@@ -200,7 +200,7 @@ In ChatGPT, try commands like:
    lsof -i :8000
    
    # Restart with verbose logging
-   MCP_LOG_LEVEL=DEBUG poetry run python scripts/run_mcp_products.py
+   MCP_LOG_LEVEL=DEBUG uv run python scripts/run_mcp_products.py
    ```
 
 ### Performance Tips

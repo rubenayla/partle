@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# Set up PATH for poetry
+# Set up PATH for uv
 export PATH="/home/deploy/.local/bin:$PATH"
 
 cd /srv/partle
@@ -15,7 +15,7 @@ if [ ! -f /srv/partle/.env ]; then
     echo "Please create /srv/partle/.env with required environment variables"
 fi
 
-poetry install --no-interaction
+uv sync
 
 echo "🔄 Restarting backend service..."
 # Use systemd to properly manage the backend service

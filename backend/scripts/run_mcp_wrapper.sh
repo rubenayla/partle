@@ -7,4 +7,4 @@ if [ -f "../.env" ]; then
 fi
 
 # Run the MCP server script passed as argument
-exec poetry run python "$@"
+exec uv run python "$@"

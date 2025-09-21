@@ -1,49 +1,49 @@
 {
   "mcpServers": {
     "partle-products": {
-      "command": "poetry",
+      "command": "uv",
       "args": ["run", "-C", "/home/rubenayla/repos/partle/backend", "python", "/home/rubenayla/repos/partle/backend/scripts/run_mcp_products.py"],
       "env": {
         "PARTLE_API_URL": "http://localhost:8000"
       }
     },
     "partle-stores": {
-      "command": "poetry",
+      "command": "uv",
       "args": ["run", "-C", "/home/rubenayla/repos/partle/backend", "python", "/home/rubenayla/repos/partle/backend/scripts/run_mcp_stores.py"],
       "env": {
         "PARTLE_API_URL": "http://localhost:8000"
       }
     },
     "partle-analytics": {
-      "command": "poetry",
+      "command": "uv",
       "args": ["run", "-C", "/home/rubenayla/repos/partle/backend", "python", "/home/rubenayla/repos/partle/backend/scripts/run_mcp_analytics.py"],
       "env": {
         "PARTLE_API_URL": "http://localhost:8000"
       }
     },
     "partle-price-intelligence": {
-      "command": "poetry",
+      "command": "uv",
       "args": ["run", "-C", "/home/rubenayla/repos/partle/backend", "python", "/home/rubenayla/repos/partle/backend/scripts/run_mcp_price_intelligence.py"],
       "env": {
         "PARTLE_API_URL": "http://localhost:8000"
       }
     },
     "partle-location-intelligence": {
-      "command": "poetry",
+      "command": "uv",
       "args": ["run", "-C", "/home/rubenayla/repos/partle/backend", "python", "/home/rubenayla/repos/partle/backend/scripts/run_mcp_location_intelligence.py"],
       "env": {
         "PARTLE_API_URL": "http://localhost:8000"
       }
     },
     "partle-recommendations": {
-      "command": "poetry",
+      "command": "uv",
       "args": ["run", "-C", "/home/rubenayla/repos/partle/backend", "python", "/home/rubenayla/repos/partle/backend/scripts/run_mcp_recommendations.py"],
       "env": {
         "PARTLE_API_URL": "http://localhost:8000"
       }
     },
     "partle-scraper-monitor": {
-      "command": "poetry",
+      "command": "uv",
       "args": ["run", "-C", "/home/rubenayla/repos/partle/backend", "python", "/home/rubenayla/repos/partle/backend/mcp_scraper_monitor.py"],
       "env": {
         "PARTLE_API_URL": "http://localhost:8000"

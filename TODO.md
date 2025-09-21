@@ -1,9 +1,11 @@
+Add foo stores around me at 1km distance with foo products, and add corresponding tag to know them. I want to check the algorithm for closest stores.
+
+- take location into account for sorting. Add Closest first option, and ask for location permission if not given yet
+- i see a few new markdown files in the docs folder. Should we use mkdocs?
+- Improve the scrapers so they get the image url and place it on the products in my website. I don't need to store the image, just the url. They would look much better.
+
+
 We have lots of stores in the database, which have been scraped. Do we have their location? coordinates? If not, i think we should check the scraping software to check if the website where we got it from does have the info or not.
-
-Add in product view the "last updated" date
-
-could i have the edit button when i see my own product or it's only available in the "My Products" section? What's better?
-Update the product view to show the date of last update, and the user that updated it.
 
 what happens if i enter a username that's already been used.
 
@@ -13,60 +15,8 @@ partle add true ratings, user product pair, link a number, note the time, aggreg
 - How to modify product. If you are the user, when you click a product to see it, allow editing? Or do it in other way
 
 
-- Chatgpt MCP working
-
-# problem with hook for scroll
-● Summary of the React Hooks Issue
-
-  After extensive investigation, here's what we've discovered:
-
-  The Problem:
-
-  - Custom hooks in separate files fail with "Cannot read properties of null (reading
-  'useState')"
-  - React's internal context (__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED) is
-  null
-  - Only affects hooks imported from separate files, not inline code
-
-  Root Cause:
-
-  The issue stems from Vite's module resolution combined with React's CommonJS format:
-  1. React ships as CommonJS (module.exports)
-  2. Vite transforms these to ESM for the browser
-  3. Something breaks when hooks are in separate files during this transformation
-
-  Working Solutions:
-
-  1. Inline Implementation (Currently used) ✅
-    - Keeps all hook logic directly in the component
-    - Fast and reliable
-  2. Component Wrapper Pattern (Alternative)
-    - Use InfiniteScrollWrapper component instead of a hook
-    - Avoids the hook context issue entirely
-
-  Failed Attempts:
-
-  - ❌ React.StrictMode removal (helped performance but not the core issue)
-  - ❌ Vite alias configuration
-  - ❌ Force optimization of React deps
-  - ❌ Different import styles
-
-  Recommendation:
-
-  Stick with the inline implementation for now. It's:
-  - Working reliably
-  - Performant
-  - Simple to understand
-
-  The custom hook issue appears to be a deep Vite/React integration bug that would
-  require significant investigation to fully resolve.
-
 ---
 
-- take location into account for sorting. Add Closest first option, and ask for location permission if not given yet
-- i see a few new markdown files in the docs folder. Should we use mkdocs?
-- Improve the scrapers so they get the image url and place it on the products in my website. I don't need to store the image, just the url. They would look much better.
-- So now that we have an mcp (model context protocol), chatgpt should be able to read info from this server by using the mcp server? How could he do it?
 
 # mcp for scraping when 5+ scrapers running
 ● Honest Assessment: MCP Scraping Agent

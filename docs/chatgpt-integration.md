@@ -80,13 +80,13 @@ If auto-discovery doesn't work, configure ChatGPT manually:
 cd /path/to/partle
 
 # Products server (most commonly used)
-poetry run python backend/scripts/run_mcp_products.py &
+uv run python backend/scripts/run_mcp_products.py &
 
 # Analytics server (for business intelligence)
-poetry run python backend/scripts/run_mcp_analytics.py &
+uv run python backend/scripts/run_mcp_analytics.py &
 
 # Add others as needed
-poetry run python backend/scripts/run_mcp_stores.py &
+uv run python backend/scripts/run_mcp_stores.py &
 ```
 
 ### Step 2: Configure ChatGPT
@@ -188,7 +188,7 @@ ChatGPT will automatically choose the right server based on your query:
    ps aux | grep mcp
    
    # Restart server manually
-   poetry run python backend/scripts/run_mcp_products.py
+   uv run python backend/scripts/run_mcp_products.py
    ```
 
 2. **API Connection Failed**:

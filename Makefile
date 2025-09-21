@@ -6,7 +6,7 @@
 PYTHON       := python3.12
 BACKEND_DIR  := backend
 FRONTEND_DIR := frontend           # adjust if the React folder is elsewhere
-PY           := poetry run
+PY           := uv run
 UVICORN_CMD  := $(PY) uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 # Default DSN; override on the CLI:  make dev DATABASE_URL=postgresql://…
@@ -25,17 +25,17 @@ install:
 	@if ! command -v python3 >/dev/null; then \
 		echo "Python 3 is required but not found."; exit 1; \
 	fi
-	@$(PYTHON) -m venv backend/.venv
-	@backend/.venv/bin/pip install -U pip
-	@backend/.venv/bin/pip install poetry
-	@cd backend && ../backend/.venv/bin/poetry lock
-	@cd backend && ../backend/.venv/bin/poetry install
+	@if ! command -v uv >/dev/null; then \
+		echo "Installing UV..."; \
+		curl -LsSf https://astral.sh/uv/install.sh | sh; \
+	fi
+	@cd backend && uv sync
 
 # -------- database & migrations ------------------------------------------
 .PHONY: db-init
 db-init:            ## create DB if missing + run migrations
 	@createdb --if-not-exists partle 2>/dev/null || true
-	@(cd backend && DATABASE_URL=$(DATABASE_URL) poetry run alembic upgrade head)
+	@(cd backend && DATABASE_URL=$(DATABASE_URL) uv run alembic upgrade head)
 
 
 .PHONY: migrate
