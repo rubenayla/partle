@@ -5,6 +5,7 @@ from typing import Optional
 
 class TagBase(BaseModel):
     name: str
+    description: Optional[str] = None
 
 
 class TagCreate(TagBase):

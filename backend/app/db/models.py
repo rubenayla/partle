@@ -15,6 +15,7 @@ from sqlalchemy import (
     DateTime,
     func,
     Table,
+    UniqueConstraint,
 )
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from app.db.base_class import Base
@@ -47,6 +48,7 @@ class Tag(Base):
     __tablename__ = "tags"
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     products: Mapped[list["Product"]] = relationship(
         secondary=product_tags, back_populates="tags"
@@ -117,9 +119,13 @@ class Store(Base):
 
 class Product(Base):
     __tablename__ = "products"
+    __table_args__ = (
+        UniqueConstraint('store_id', 'sku', name='unique_store_sku'),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String)
+    sku: Mapped[Optional[str]] = mapped_column(String(50), nullable=True, index=True)
     spec: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     price: Mapped[Optional[float]] = mapped_column(Numeric(10, 2), nullable=True)
     currency: Mapped[Optional[str]] = mapped_column(String(10), nullable=True, default='€')

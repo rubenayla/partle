@@ -10,6 +10,7 @@ class ProductIn(BaseModel):
     """Fields a client may send when creating a product."""
     store_id: Optional[int] = None        # nullable → orphan products allowed
     name: str
+    sku: Optional[str] = None             # Stock Keeping Unit - unique per store
     spec: Optional[str] = None
     price: Optional[Decimal] = None       # Decimal ↔ SQLAlchemy Numeric
     currency: Optional[str] = '€'         # Free text currency field, defaults to €
