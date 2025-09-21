@@ -97,6 +97,12 @@ def list_stores_for_dropdown(db: Session = Depends(get_db)):
     return [{"id": store.id, "name": store.name} for store in stores]
 
 
+@router.get("/user/{user_id}", response_model=list[schema.StoreRead])
+def list_stores_by_user(user_id: int, db: Session = Depends(get_db)):
+    """List stores owned by a specific user."""
+    return db.query(Store).filter(Store.owner_id == user_id).order_by(Store.created_at.desc()).all()
+
+
 @router.get("/{store_id}", response_model=schema.StoreRead)
 def get_store(store_id: int, db: Session = Depends(get_db)):
     """Retrieve a single store by *id*."""

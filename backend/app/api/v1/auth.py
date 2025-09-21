@@ -115,6 +115,15 @@ def read_current_user(current_user: User = Depends(get_current_user)):
     return current_user
 
 
+@router.get("/user/{user_id}", response_model=schema.UserRead)
+def get_user_by_id(user_id: int, db: Session = Depends(get_db)):
+    """Get user information by ID."""
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+
 @router.post("/set-username")
 def set_username(
     payload: schema.SetUsername,
