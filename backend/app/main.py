@@ -6,6 +6,7 @@ from fastapi.responses import PlainTextResponse
 
 from app.api.v1 import auth, external, health, parts, products, stores, tags, search, logs, public, admin
 from app.api import mcp_bridge, mcp_sse
+from app.routes import bulk_import
 from datetime import datetime
 from app.logging_config import configure_logging, LoggingMiddleware, get_logger
 from app.middleware.rate_limit import RateLimitMiddleware
@@ -109,6 +110,7 @@ app.include_router(search.router, prefix="/v1/search", tags=["Search"])
 app.include_router(logs.router, prefix="/v1/logs", tags=["Logs"])
 app.include_router(public.router, prefix="/v1/public", tags=["Public API"])
 app.include_router(admin.router, prefix="/v1/admin", tags=["Admin"])
+app.include_router(bulk_import.router, tags=["Bulk Import"])  # Bulk import endpoints
 app.include_router(mcp_bridge.router)  # MCP bridge endpoints at /v1/mcp
 app.include_router(mcp_sse.router)  # SSE-based MCP endpoints for ChatGPT
 app.include_router(health.router, prefix="/v1")
