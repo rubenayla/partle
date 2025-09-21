@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Store, MapPin, Globe, User } from 'lucide-react';
+import { Store, MapPin, Globe, User, Upload } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
 
 interface StoreData {
   id: number;
@@ -17,6 +18,9 @@ interface StoreCardProps {
 }
 
 export default function StoreCard({ store }: StoreCardProps) {
+  const { user } = useAuth();
+  const isOwner = user?.id === store.owner_id;
+
   const getTypeIcon = () => {
     switch (store.type) {
       case 'physical':
@@ -77,14 +81,26 @@ export default function StoreCard({ store }: StoreCardProps) {
       )}
 
       <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
-        <Link
-          to={`/stores/${store.id}/products`}
-          className="text-sm text-accent hover:underline"
-        >
-          View products →
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            to={`/stores/${store.id}/products`}
+            className="text-sm text-accent hover:underline"
+          >
+            View products →
+          </Link>
+          {isOwner && (
+            <Link
+              to={`/stores/${store.id}/bulk-import`}
+              className="flex items-center gap-1 text-sm text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300"
+              title="Bulk import products"
+            >
+              <Upload className="h-3 w-3" />
+              <span>Import</span>
+            </Link>
+          )}
+        </div>
 
-        {store.owner_id && (
+        {store.owner_id && !isOwner && (
           <Link
             to={`/user/${store.owner_id}`}
             className="flex items-center gap-1 text-xs text-secondary hover:text-accent transition-colors"

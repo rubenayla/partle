@@ -20,6 +20,7 @@ import MyProducts from "./pages/MyProducts"; // Import the new MyProducts page
 import UserProducts from "./pages/UserProducts"; // Import the new UserProducts page
 import UserProfile from "./pages/UserProfile"; // Import the new UserProfile page
 import AdminDashboard from "./pages/AdminDashboard"; // Import the new AdminDashboard page
+import BulkImport from "./pages/BulkImport"; // Import the new BulkImport page
 import { useBackendStatus } from './hooks/useBackendStatus'
 import { useTheme } from './hooks/useTheme';
 import { trackPageView } from './utils/analytics';
@@ -81,6 +82,7 @@ export default function App() {
             <Route path="/products/new" element={<AddProduct />} />
             <Route path="/products/my" element={<MyProducts />} />
             <Route path="/stores/new" element={<AddStore />} />
+            <Route path="/stores/:storeId/bulk-import" element={<BulkImport />} />
             <Route path="/account" element={<Account />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Route>

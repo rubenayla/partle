@@ -9,6 +9,7 @@ import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../hooks/useAuth';
 import type { Product, Store, User } from '../types';
 import { getProductImageSrc, hasProductImage } from '../utils/imageUtils';
+import { getProductIdentifierWithLabel } from '../utils/product';
 import { trackProductView, trackExternalLink, trackStoreVisit } from '../utils/analytics';
 
 /**
@@ -16,6 +17,7 @@ import { trackProductView, trackExternalLink, trackStoreVisit } from '../utils/a
  */
 interface EditForm {
   name: string;
+  sku: string;
   description: string;
   price: string;
   currency: string;
@@ -83,8 +85,10 @@ export default function ProductDetail(): JSX.Element {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editForm, setEditForm] = useState<EditForm>({
     name: '',
+    sku: '',
     description: '',
     price: '',
+    currency: '€',
     url: '',
     imageFile: null,
     imagePreview: null
@@ -110,6 +114,7 @@ export default function ProductDetail(): JSX.Element {
         setProduct(productData);
         setEditForm({
           name: productData.name || '',
+          sku: productData.sku || '',
           description: productData.description || '',
           price: productData.price?.toString() || '',
           currency: productData.currency || '€',
@@ -170,6 +175,7 @@ export default function ProductDetail(): JSX.Element {
       // First update the product details
       const updateData: Partial<Product> = {
         name: editForm.name.trim(),
+        sku: editForm.sku?.trim() || undefined,
         description: editForm.description?.trim() || undefined,
         price: editForm.price ? parseFloat(editForm.price) : undefined,
         currency: editForm.currency?.trim() || '€',
@@ -222,6 +228,7 @@ export default function ProductDetail(): JSX.Element {
 
     setEditForm({
       name: product.name || '',
+      sku: product.sku || '',
       description: product.description || '',
       price: product.price?.toString() || '',
       currency: product.currency || '€',
@@ -471,24 +478,44 @@ export default function ProductDetail(): JSX.Element {
             </div>
           )}
 
-          {/* Product Title */}
+          {/* Product Title and SKU */}
           {isEditing ? (
-            <div className="mb-4">
-              <input
-                type="text"
-                value={editForm.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                className={`text-2xl font-bold bg-transparent border-b-2 focus:outline-none w-full pb-2 ${
-                  !editForm.name.trim() ? 'border-red-300 focus:border-red-500' : 'border-gray-300 focus:border-blue-500'
-                }`}
-                placeholder="Product name (required)"
-              />
-              {!editForm.name.trim() && (
-                <p className="text-red-500 text-sm mt-1">Product name is required</p>
-              )}
+            <div className="mb-4 space-y-4">
+              <div>
+                <input
+                  type="text"
+                  value={editForm.name}
+                  onChange={(e) => handleInputChange('name', e.target.value)}
+                  className={`text-2xl font-bold bg-transparent border-b-2 focus:outline-none w-full pb-2 ${
+                    !editForm.name.trim() ? 'border-red-300 focus:border-red-500' : 'border-gray-300 focus:border-blue-500'
+                  }`}
+                  placeholder="Product name (required)"
+                />
+                {!editForm.name.trim() && (
+                  <p className="text-red-500 text-sm mt-1">Product name is required</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  SKU (Stock Keeping Unit)
+                </label>
+                <input
+                  type="text"
+                  value={editForm.sku}
+                  onChange={(e) => handleInputChange('sku', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800"
+                  placeholder="Optional - unique identifier for this store"
+                />
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Leave blank to use product ID
+                </p>
+              </div>
             </div>
           ) : (
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{product.name}</h1>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{product.name}</h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{getProductIdentifierWithLabel(product)}</p>
+            </div>
           )}
 
 

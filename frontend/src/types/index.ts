@@ -77,6 +77,8 @@ export interface Product {
   id: number;
   /** Product name */
   name: string;
+  /** Stock Keeping Unit - unique per store */
+  sku?: string;
   /** Product description */
   description?: string;
   /** Product price in cents (to avoid floating point issues) */
