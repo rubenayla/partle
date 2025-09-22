@@ -123,13 +123,17 @@ def list_products(
         query = query.order_by(Product.name.asc())
     elif sort_by == "random":
         query = query.order_by(func.random())
+    elif sort_by == "newest" or sort_by == "updated_at":
+        query = query.order_by(Product.updated_at.desc())
+    elif sort_by == "oldest" or sort_by == "updated_at_asc":
+        query = query.order_by(Product.updated_at.asc())
     elif sort_by == "created_at":
         query = query.order_by(Product.created_at.desc())
     elif sort_by == "created_at_asc":
         query = query.order_by(Product.created_at.asc())
     else:
-        # Default sort by creation date if no valid sort_by specified
-        query = query.order_by(Product.created_at.desc())
+        # Default sort by last modification date if no valid sort_by specified
+        query = query.order_by(Product.updated_at.desc())
 
     return query.offset(offset).limit(limit).all()
 

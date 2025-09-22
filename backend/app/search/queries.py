@@ -132,6 +132,10 @@ def build_product_search_query(
         sort_options.append({'price': {'order': 'desc', 'missing': '_last'}})
     elif sort_by == 'name_asc':
         sort_options.append({'name.raw': {'order': 'asc'}})
+    elif sort_by == 'newest' or sort_by == 'updated_at':
+        sort_options.append({'updated_at': {'order': 'desc'}})
+    elif sort_by == 'oldest' or sort_by == 'updated_at_asc':
+        sort_options.append({'updated_at': {'order': 'asc'}})
     elif sort_by == 'created_at':
         sort_options.append({'created_at': {'order': 'desc'}})
     elif sort_by == 'created_at_asc':
