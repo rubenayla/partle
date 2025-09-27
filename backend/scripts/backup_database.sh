@@ -25,7 +25,7 @@ DB_PORT=$(echo $DATABASE_URL | sed -n 's/.*:\([0-9]*\)\/.*/\1/p')
 DB_NAME=$(echo $DATABASE_URL | sed -n 's/.*\/\([^?]*\).*/\1/p')
 
 # Configuration
-BACKUP_DIR="/srv/partle/backend/backups"
+BACKUP_DIR="/srv/partle/backups"
 LOG_FILE="$BACKUP_DIR/backup.log"
 KEEP_DAYS=7
 
@@ -75,3 +75,31 @@ fi
 unset PGPASSWORD
 
 log_message "Backup process completed successfully."
+
+# Additional backup to debian laptop
+log_message "Starting backup transfer to debian laptop..."
+
+# Create backup directory on debian laptop if it doesn't exist
+if ssh debian "mkdir -p ~/backups/partle"; then
+    log_message "Remote backup directory created/verified on debian laptop"
+else
+    log_message "WARNING: Failed to create remote backup directory on debian laptop"
+fi
+
+# Copy the backup file to debian laptop
+if scp "$BACKUP_FILE" debian:~/backups/partle/; then
+    log_message "Backup successfully transferred to debian laptop: $(basename "$BACKUP_FILE")"
+    
+    # Clean up old backups on debian laptop (keep only last KEEP_DAYS days)
+    log_message "Cleaning up old backups on debian laptop..."
+    ssh debian "find ~/backups/partle -name 'backup_*.sql.gz' -type f -mtime +$KEEP_DAYS -delete"
+    
+    # Count remaining backups on debian laptop
+    REMOTE_BACKUP_COUNT=$(ssh debian "find ~/backups/partle -name 'backup_*.sql.gz' -type f | wc -l")
+    log_message "Remote cleanup completed. $REMOTE_BACKUP_COUNT backup files on debian laptop."
+    
+else
+    log_message "WARNING: Failed to transfer backup to debian laptop"
+fi
+
+log_message "Backup process with remote copy completed."
