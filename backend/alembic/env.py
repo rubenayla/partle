@@ -13,9 +13,20 @@ from app.db.models import Base
 
 config = context.config
 
+# Get DATABASE_URL from environment
 db_url = os.getenv("DATABASE_URL")
+
 if not db_url:
-    sys.exit("⛔  DATABASE_URL not set; aborting migrations.")
+    # Provide clear instructions on how to run migrations
+    print("\n⛔ DATABASE_URL not set")
+    print("\nTo run migrations, use one of these methods:")
+    print("\n1. Export from .env file (if you have one):")
+    print("   export $(grep DATABASE_URL .env) && uv run alembic upgrade head")
+    print("\n2. Set directly:")
+    print("   DATABASE_URL=postgresql://user:pass@host/db uv run alembic upgrade head")
+    print("\n3. For local testing:")
+    print("   DATABASE_URL=postgresql://localhost/test_db uv run alembic upgrade head")
+    sys.exit(1)
 # Escape percent signs for ConfigParser
 db_url = db_url.replace('%', '%%')
 config.set_main_option("sqlalchemy.url", db_url)

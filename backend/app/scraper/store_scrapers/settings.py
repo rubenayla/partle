@@ -93,6 +93,9 @@ ITEM_PIPELINES = {
 
 # Set settings whose default value is deprecated to a future-proof value
 FEED_EXPORT_ENCODING = "utf-8"
+
+# Use database-based duplicate filter to avoid re-scraping existing products
+DUPEFILTER_CLASS = 'store_scrapers.url_filter.DatabaseUrlFilter'
 # Minimal Playwright settings for maximum stability
 PLAYWRIGHT_DEFAULT_NAVIGATION_TIMEOUT = 20000
 PLAYWRIGHT_BROWSER_TYPE = 'chromium'

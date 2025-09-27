@@ -168,10 +168,15 @@ button {
   font-family: inherit;
   background-color: transparent;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: background-color 0.2s ease-out;
 }
 button:hover {
-  border-color: var(--color-primary);
+  background-color: rgba(0, 0, 0, 0.05); /* subtle gray background */
+  transition: none; /* instant on hover */
+}
+.dark button:hover {
+  background-color: rgba(255, 255, 255, 0.05); /* subtle light background for dark mode */
+  transition: none; /* instant on hover */
 }
 button:focus,
 button:focus-visible {

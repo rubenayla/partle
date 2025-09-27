@@ -7,10 +7,13 @@ Endpoints:
 - `POST /v1/stores/`      → create store (auth required)
 - `GET /v1/stores/{id}`   → get single store
 - `DELETE /v1/stores/{id}`→ delete store
+- `POST /v1/stores/{id}/logo` → upload store logo
+- `GET /v1/stores/{id}/logo`  → get store logo
 """
 from collections.abc import Generator
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
+from fastapi.responses import Response
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, func
 
@@ -142,3 +145,48 @@ def add_tag_to_store(
     db.commit()
     db.refresh(store)
     return store
+
+
+@router.post("/{store_id}/logo", response_model=dict)
+def upload_store_logo(
+    store_id: int,
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Upload a logo for a store. Only the store owner can upload."""
+    store = db.get(Store, store_id)
+    if not store:
+        raise HTTPException(status_code=404, detail="Store not found")
+
+    if store.owner_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized to update this store")
+
+    # Read and store the image data
+    logo_data = file.file.read()
+    store.logo_data = logo_data
+    store.logo_filename = file.filename
+    store.logo_content_type = file.content_type
+
+    db.commit()
+    return {"message": "Logo uploaded successfully"}
+
+
+@router.get("/{store_id}/logo")
+def get_store_logo(store_id: int, db: Session = Depends(get_db)):
+    """Get the logo image for a store."""
+    store = db.get(Store, store_id)
+    if not store:
+        raise HTTPException(status_code=404, detail="Store not found")
+
+    if not store.logo_data:
+        raise HTTPException(status_code=404, detail="Store has no logo")
+
+    return Response(
+        content=store.logo_data,
+        media_type=store.logo_content_type or "image/jpeg",
+        headers={
+            "Content-Disposition": f'inline; filename="{store.logo_filename or "logo.jpg"}"',
+            "Cache-Control": "public, max-age=86400",
+        }
+    )

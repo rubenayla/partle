@@ -87,7 +87,7 @@ export default function DesktopSearchLayout({
 
         {/* Desktop Filters */}
         <DropdownMenu.Root>
-          <DropdownMenu.Trigger className="h-full px-2 md:px-3 text-sm text-gray-700 dark:text-gray-300 bg-transparent hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none">
+          <DropdownMenu.Trigger className="h-full px-2 md:px-3 text-sm text-gray-600 dark:text-gray-400 bg-transparent hover:text-gray-900 dark:hover:text-gray-100 focus:outline-none transition-colors">
             Filters
           </DropdownMenu.Trigger>
           <DropdownMenu.Portal>
@@ -104,7 +104,7 @@ export default function DesktopSearchLayout({
                     onClick={() => setSearchType('products')}
                     className={`px-3 py-1 rounded-full text-sm font-medium ${
                       searchType === 'products'
-                        ? 'bg-blue-500 text-white'
+                        ? 'bg-gray-700 dark:bg-gray-600 text-white'
                         : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'
                     }`}
                   >
@@ -115,7 +115,7 @@ export default function DesktopSearchLayout({
                     onClick={() => setSearchType('stores')}
                     className={`px-3 py-1 rounded-full text-sm font-medium ${
                       searchType === 'stores'
-                        ? 'bg-blue-500 text-white'
+                        ? 'bg-gray-700 dark:bg-gray-600 text-white'
                         : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'
                     }`}
                   >
@@ -176,7 +176,7 @@ export default function DesktopSearchLayout({
 
         {/* Desktop Sort */}
         <DropdownMenu.Root>
-          <DropdownMenu.Trigger className="hidden md:block h-full px-2 md:px-3 text-sm text-gray-700 dark:text-gray-300 bg-transparent hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none whitespace-nowrap">
+          <DropdownMenu.Trigger className="hidden md:block h-full px-2 md:px-3 text-sm text-gray-600 dark:text-gray-400 bg-transparent hover:text-gray-900 dark:hover:text-gray-100 focus:outline-none whitespace-nowrap transition-colors">
             <span className="hidden lg:inline">Sort: </span>{sortOptions[sortBy]}
           </DropdownMenu.Trigger>
           <DropdownMenu.Portal>
@@ -207,7 +207,7 @@ export default function DesktopSearchLayout({
         <button
           type="submit"
           aria-label="Search"
-          className="p-2 rounded-full bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors"
+          className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 dark:hover:bg-blue-400 focus:outline-none transition-colors"
         >
           <Search className="h-5 w-5" />
         </button>

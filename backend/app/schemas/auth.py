@@ -12,6 +12,8 @@ class UserRead(BaseModel):
     email: EmailStr
     username: str | None = None
     role: str | None = None
+    profile_picture_filename: str | None = None
+    profile_picture_content_type: str | None = None
 
     class Config:
         from_attributes = True

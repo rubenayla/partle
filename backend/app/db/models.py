@@ -81,6 +81,9 @@ class User(Base):
     username: Mapped[Optional[str]] = mapped_column(String(50), unique=True, index=True, nullable=True)
     password_hash: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     role: Mapped[UserRole] = mapped_column(PgEnum(UserRole, name="user_role"), default=UserRole.user, nullable=False)
+    profile_picture_data: Mapped[Optional[bytes]] = mapped_column(LargeBinary, nullable=True)
+    profile_picture_filename: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    profile_picture_content_type: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     stores: Mapped[list["Store"]] = relationship(back_populates="owner")
     credentials: Mapped[list["Credential"]] = relationship(back_populates="user")
     products: Mapped[list["Product"]] = relationship(
@@ -106,6 +109,9 @@ class Store(Base):
     lon: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     address: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     homepage: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    logo_data: Mapped[Optional[bytes]] = mapped_column(LargeBinary, nullable=True)
+    logo_filename: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    logo_content_type: Mapped[Optional[str]] = mapped_column(String, nullable=True)
 
     owner_id: Mapped[Optional[int]] = mapped_column(
         ForeignKey("users.id", ondelete="SET NULL"), nullable=True

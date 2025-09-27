@@ -1,5 +1,6 @@
 # backend/app/api/v1/auth.py
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, UploadFile, File
+from fastapi.responses import Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
@@ -186,3 +187,43 @@ def change_password(
     db.refresh(current_user)
 
     return {"status": "ok"}
+
+
+@router.post("/me/profile-picture", response_model=dict)
+def upload_profile_picture(
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Upload a profile picture for the current user."""
+    # Read and store the image data
+    picture_data = file.file.read()
+
+    # Merge the user into this session to track changes
+    user = db.merge(current_user)
+    user.profile_picture_data = picture_data
+    user.profile_picture_filename = file.filename
+    user.profile_picture_content_type = file.content_type
+
+    db.commit()
+    return {"message": "Profile picture uploaded successfully"}
+
+
+@router.get("/user/{user_id}/profile-picture")
+def get_user_profile_picture(user_id: int, db: Session = Depends(get_db)):
+    """Get the profile picture for a user."""
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if not user.profile_picture_data:
+        raise HTTPException(status_code=404, detail="User has no profile picture")
+
+    return Response(
+        content=user.profile_picture_data,
+        media_type=user.profile_picture_content_type or "image/jpeg",
+        headers={
+            "Content-Disposition": f'inline; filename="{user.profile_picture_filename or "profile.jpg"}"',
+            "Cache-Control": "public, max-age=86400",
+        }
+    )

@@ -20,6 +20,8 @@ class StoreRead(StoreBase):
     id: int
     owner_id: Optional[int] = None
     tags: list[Tag] = []
+    logo_filename: Optional[str] = None
+    logo_content_type: Optional[str] = None
 
     class Config:
         from_attributes = True

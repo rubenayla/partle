@@ -59,26 +59,51 @@ class MengualBulkSpider(scrapy.Spider):
     def parse_category(self, response):
         """Parse category page to extract product links."""
         self.logger.info(f"Parsing category: {response.url}")
-        
+
         # Extract product links using multiple patterns
         product_links = set()
-        
+
+        # Patterns that indicate non-product pages (legal, guides, info pages)
+        excluded_patterns = [
+            'terminos', 'legal', 'privacidad', 'cookies', 'envio', 'pago',
+            'procedimiento', 'calendario', 'delegaciones', 'showrooms',
+            'incidencias', 'compliance', 'catalogos', 'historia', 'empresa',
+            'cobertura', 'expediciones', 'instalacion', 'fotovoltaica',
+            'guias-', 'catalogo', 'contacto', 'nosotros', 'blog', 'noticias'
+        ]
+
         # Look for product URLs in href attributes
         for link in response.css('a::attr(href)').getall():
-            if link and ('producto' in link.lower() or 'product' in link.lower() or 
-                        (link.startswith('/') and len(link) > 10 and '-' in link)):
-                if link.startswith('/'):
-                    link = f"https://www.mengual.com{link}"
-                product_links.add(link)
-        
-        # Also look for links that might be product pages based on URL patterns
-        for link in response.css('a::attr(href)').getall():
-            if link and link.startswith('/') and len(link.split('-')) >= 3:
-                full_url = f"https://www.mengual.com{link}"
-                product_links.add(full_url)
-        
+            if not link:
+                continue
+
+            # Skip if link contains excluded patterns
+            link_lower = link.lower()
+            if any(pattern in link_lower for pattern in excluded_patterns):
+                continue
+
+            # Skip category/listing pages
+            if any(cat in link_lower for cat in ['/categoria/', '/categorias/', '/collections/']):
+                continue
+
+            # Look for specific product URL patterns
+            # Mengual products typically have URLs like: /tirador-kimera, /cazoleta-rectangular
+            if link.startswith('/'):
+                # Must have at least one dash and be a reasonable length
+                if '-' in link and 10 < len(link) < 100:
+                    # Should not be a category page (those usually end with category names)
+                    if not any(cat in link for cat in self.start_urls):
+                        full_url = f"https://www.mengual.com{link}"
+                        product_links.add(full_url)
+            elif link.startswith('https://www.mengual.com/'):
+                # Full URL - apply same filters
+                path = link.replace('https://www.mengual.com/', '')
+                if '-' in path and 10 < len(path) < 100:
+                    if not any(cat in link for cat in self.start_urls):
+                        product_links.add(link)
+
         self.logger.info(f"Found {len(product_links)} potential product links in {response.url}")
-        
+
         # Follow product links
         for link in list(product_links)[:50]:  # Limit to 50 products per category
             yield scrapy.Request(
@@ -135,18 +160,37 @@ class MengualBulkSpider(scrapy.Spider):
             if '?' in image_url:
                 image_url = image_url.split('?')[0]
 
-        # Create and yield the product item if we have basic info
-        if name:
-            product_item = ProductItem(
-                name=name,
-                price=price,
-                url=response.url,
-                description=description,
-                image_url=image_url,
-                store_id=self.store_id,
-            )
+        # Create and yield the product item only if we have a valid product
+        # A valid product should have a name and ideally a price
+        # Exclude pages that are clearly not products
+        excluded_name_patterns = [
+            'términos', 'legal', 'catálogo', 'procedimiento', 'calendario',
+            'delegaciones', 'showroom', 'incidencias', 'compliance',
+            'instalación', 'cobertura', 'expediciones', 'historia'
+        ]
 
-            self.logger.info(f"Scraped bulk product: {name} | Price: {price} | Image: {bool(image_url)}")
-            yield product_item
+        if name:
+            # Check if this looks like a non-product page
+            name_lower = name.lower()
+            if any(pattern in name_lower for pattern in excluded_name_patterns):
+                self.logger.debug(f"Skipping non-product page: {name} at {response.url}")
+                return
+
+            # Only yield products that have prices or look like actual products
+            # Products without prices might be valid (price on request) but should have proper product names
+            if price or (len(name) < 100 and '-' in name):
+                product_item = ProductItem(
+                    name=name,
+                    price=price,
+                    url=response.url,
+                    description=description,
+                    image_url=image_url,
+                    store_id=self.store_id,
+                )
+
+                self.logger.info(f"Scraped bulk product: {name} | Price: {price} | Image: {bool(image_url)}")
+                yield product_item
+            else:
+                self.logger.debug(f"Skipping item without price: {name} at {response.url}")
         else:
             self.logger.debug(f"No product name found for {response.url}")

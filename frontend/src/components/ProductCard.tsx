@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
-import { Package, Store, User } from 'lucide-react';
+import { Package, Store, User, Building2 } from 'lucide-react';
 import { getProductImageSrc } from '../utils/helpers';
+import { getStoreLogoSrc } from '../utils/imageUtils';
 
 interface Product {
   id: number;
@@ -10,7 +11,12 @@ interface Product {
   description: string | null;
   image_url: string | null;
   store_id: number | null;
-  store?: { id: number; name: string };
+  store?: {
+    id: number;
+    name: string;
+    logo_filename?: string | null;
+    logo_content_type?: string | null;
+  };
   creator?: { id: number; email: string; username?: string };
   created_at: string;
   updated_at: string;
@@ -23,6 +29,7 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const imageSrc = getProductImageSrc(product.id, product.image_url);
   const displayCreator = product.creator?.username || product.creator?.email?.split('@')[0];
+  const storeLogoSrc = product.store ? getStoreLogoSrc(product.store as any) : null;
 
   return (
     <div className="bg-surface rounded-lg shadow-md border border-gray-300 dark:border-gray-600 overflow-hidden hover:shadow-lg transition-shadow">
@@ -55,13 +62,13 @@ export default function ProductCard({ product }: ProductCardProps) {
 
       <div className="p-4">
         <Link to={`/products/${product.id}`} className="block mb-2">
-          <h3 className="font-semibold text-foreground hover:text-accent transition-colors line-clamp-2">
+          <h3 className="font-semibold text-foreground line-clamp-2">
             {product.name}
           </h3>
         </Link>
 
         {product.price !== null && (
-          <p className="text-lg font-bold text-accent mb-2">
+          <p className="text-lg font-bold text-foreground mb-2">
             {product.price} {product.currency || '€'}
           </p>
         )}
@@ -72,28 +79,49 @@ export default function ProductCard({ product }: ProductCardProps) {
           </p>
         )}
 
-        <div className="flex items-center justify-between text-xs text-secondary">
-          {product.store ? (
-            <Link
-              to={`/stores/${product.store.id}/products`}
-              className="flex items-center gap-1 hover:text-accent transition-colors"
-            >
-              <Store className="h-3 w-3" />
-              <span className="truncate">{product.store.name}</span>
-            </Link>
-          ) : (
-            <span className="text-gray-400 italic">No store</span>
-          )}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-xs text-secondary">
+            {product.store ? (
+              <Link
+                to={`/stores/${product.store.id}/products`}
+                className="flex items-center gap-1 text-secondary hover:text-foreground transition-colors"
+              >
+                {storeLogoSrc ? (
+                  <img
+                    src={storeLogoSrc}
+                    alt={`${product.store.name} logo`}
+                    className="w-4 h-4 object-contain rounded"
+                  />
+                ) : (
+                  <Store className="h-3 w-3" />
+                )}
+                <span className="truncate">{product.store.name}</span>
+              </Link>
+            ) : (
+              <span className="text-gray-400 italic">No store</span>
+            )}
 
-          {product.creator && (
-            <Link
-              to={`/user/${product.creator.id}`}
-              className="flex items-center gap-1 hover:text-accent transition-colors"
-              title={`View ${displayCreator}'s profile`}
-            >
-              <User className="h-3 w-3" />
-              <span className="truncate">{displayCreator}</span>
-            </Link>
+            {product.creator && (
+              <Link
+                to={`/user/${product.creator.id}`}
+                className="flex items-center gap-1 text-secondary hover:text-foreground transition-colors"
+                title={`View ${displayCreator}'s profile`}
+              >
+                <User className="h-3 w-3" />
+                <span className="truncate">{displayCreator}</span>
+              </Link>
+            )}
+          </div>
+
+          {product.updated_at && (
+            <div className="text-xs text-gray-500 dark:text-gray-400">
+              Updated: {new Date(product.updated_at).toLocaleDateString(undefined, {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+              })}
+            </div>
           )}
         </div>
       </div>

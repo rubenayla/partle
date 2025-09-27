@@ -98,7 +98,7 @@ export default function Products(): JSX.Element {
     <main className="w-full max-w-screen-2xl mx-auto px-4">
       <header className="flex justify-between mb-4">
         <h1 className="text-2xl font-semibold">Products</h1>
-        <Link to="/stores" className="text-blue-600 hover:underline">
+        <Link to="/stores" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
           ← Back
         </Link>
       </header>
@@ -129,7 +129,7 @@ export default function Products(): JSX.Element {
               <div>
                 <Link
                   to={`/products/${product.id}`}
-                  className="text-blue-600 hover:underline"
+                  className="text-foreground hover:text-accent transition-colors"
                 >
                   <strong>{product.name}</strong>
                 </Link>

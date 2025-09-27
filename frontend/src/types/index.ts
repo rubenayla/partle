@@ -61,6 +61,10 @@ export interface Store {
   lat?: number;
   /** Geographic longitude coordinate */
   lon?: number;
+  /** Store logo filename (when stored in database) */
+  logo_filename?: string;
+  /** Store logo content type (when stored in database) */
+  logo_content_type?: string;
   /** When the store was created */
   created_at?: string;
   /** When the store was last updated */
@@ -142,6 +146,10 @@ export interface User {
   display_name?: string;
   /** User's avatar image URL (optional) */
   avatar_url?: string;
+  /** Profile picture filename (when stored in database) */
+  profile_picture_filename?: string | null;
+  /** Profile picture content type (when stored in database) */
+  profile_picture_content_type?: string | null;
   /** When the user account was created */
   created_at?: string;
   /** When the user account was last updated */

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
-import { Store, MapPin, Globe, User, Upload } from 'lucide-react';
+import { Store, MapPin, Globe, User, Upload, Building2 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { getStoreLogoSrc, hasStoreLogo } from '../utils/imageUtils';
 
 interface StoreData {
   id: number;
@@ -11,6 +12,8 @@ interface StoreData {
   lat: number | null;
   lon: number | null;
   owner_id: number | null;
+  logo_filename?: string | null;
+  logo_content_type?: string | null;
 }
 
 interface StoreCardProps {
@@ -47,15 +50,30 @@ export default function StoreCard({ store }: StoreCardProps) {
     }
   };
 
+  const logoSrc = getStoreLogoSrc(store as any);
+
   return (
     <div className="bg-surface rounded-lg shadow-md border border-gray-300 dark:border-gray-600 p-4 hover:shadow-lg transition-shadow">
       <div className="flex items-start justify-between mb-3">
-        <Link to={`/stores/${store.id}/products`}>
-          <h3 className="font-semibold text-foreground hover:text-accent transition-colors">
-            {store.name}
-          </h3>
-        </Link>
-        <span className="flex items-center gap-1 text-xs text-secondary bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
+        <div className="flex items-start gap-3">
+          {logoSrc ? (
+            <img
+              src={logoSrc}
+              alt={`${store.name} logo`}
+              className="w-10 h-10 object-contain rounded"
+            />
+          ) : (
+            <div className="w-10 h-10 bg-gray-100 dark:bg-gray-800 rounded flex items-center justify-center">
+              <Building2 className="w-5 h-5 text-gray-400" />
+            </div>
+          )}
+          <Link to={`/stores/${store.id}/products`}>
+            <h3 className="font-semibold text-foreground">
+              {store.name}
+            </h3>
+          </Link>
+        </div>
+        <span className="flex items-center gap-1 text-xs text-secondary">
           {getTypeIcon()}
           <span>{getTypeLabel()}</span>
         </span>
@@ -73,7 +91,7 @@ export default function StoreCard({ store }: StoreCardProps) {
           href={store.homepage}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-sm text-accent hover:underline flex items-center gap-1 mb-2"
+          className="text-sm text-primary hover:text-primary-600 flex items-center gap-1 mb-2"
         >
           <Globe className="h-3 w-3" />
           <span className="truncate">Visit website</span>
@@ -84,7 +102,7 @@ export default function StoreCard({ store }: StoreCardProps) {
         <div className="flex items-center gap-3">
           <Link
             to={`/stores/${store.id}/products`}
-            className="text-sm text-accent hover:underline"
+            className="text-sm text-primary hover:text-primary-600 transition-colors"
           >
             View products →
           </Link>
@@ -103,7 +121,7 @@ export default function StoreCard({ store }: StoreCardProps) {
         {store.owner_id && !isOwner && (
           <Link
             to={`/user/${store.owner_id}`}
-            className="flex items-center gap-1 text-xs text-secondary hover:text-accent transition-colors"
+            className="flex items-center gap-1 text-xs text-secondary hover:text-foreground transition-colors"
             title="View store owner's profile"
           >
             <User className="h-3 w-3" />

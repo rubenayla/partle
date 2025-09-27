@@ -113,23 +113,56 @@ class MengualSpider(scrapy.Spider):
                 'h3 a::attr(href)',
                 'h4 a::attr(href)',
             ]
-            
+
+            # Patterns that indicate non-product pages
+            excluded_patterns = [
+                'terminos', 'legal', 'privacidad', 'cookies', 'envio', 'pago',
+                'procedimiento', 'calendario', 'delegaciones', 'showrooms',
+                'incidencias', 'compliance', 'catalogos', 'historia', 'empresa',
+                'cobertura', 'expediciones', 'instalacion', 'fotovoltaica',
+                'guias-', 'catalogo', 'contacto', 'nosotros', 'blog', 'noticias',
+                '/categoria/', '/categorias/', '/collections/'
+            ]
+
             for selector in product_selectors:
                 try:
                     # Use Playwright to get links
                     elements = await page.locator('a').all()
                     for element in elements:
                         href = await element.get_attribute('href')
-                        if href and ('/producto/' in href or '/product/' in href or 
-                                   (href.startswith('/') and len(href) > 10 and '-' in href)):
-                            if href.startswith('/'):
-                                href = f"https://www.mengual.com{href}"
-                            product_links.append(href)
-                    
+                        if not href:
+                            continue
+
+                        href_lower = href.lower()
+                        # Skip excluded patterns
+                        if any(pattern in href_lower for pattern in excluded_patterns):
+                            continue
+
+                        # Look for product-like URLs
+                        if href.startswith('/'):
+                            # Must have at least one dash and reasonable length
+                            if '-' in href and 10 < len(href) < 100:
+                                # Should not be a category page (check against known category patterns)
+                                category_patterns = ['/tiradores-y-pomos', '/bisagras', '/guias-de-cajones',
+                                                   '/herrajes-para-armarios', '/cerraduras-y-seguridad',
+                                                   '/accesorios-de-cocina', '/accesorios-de-bano',
+                                                   '/herramientas-electricas', '/herramientas-manuales', '/iluminacion']
+                                if not any(cat in href for cat in category_patterns):
+                                    href = f"https://www.mengual.com{href}"
+                                    product_links.append(href)
+                        elif 'mengual.com' in href:
+                            # Full URL - check if it looks like a product
+                            path = href.split('mengual.com/')[-1] if 'mengual.com/' in href else ''
+                            if '-' in path and 10 < len(path) < 100:
+                                category_patterns = ['/tiradores-y-pomos', '/bisagras', '/guias-de-cajones',
+                                                   '/herrajes-para-armarios', '/cerraduras-y-seguridad']
+                                if not any(cat in href for cat in category_patterns):
+                                    product_links.append(href)
+
                     if product_links:
                         self.logger.info(f"Found {len(product_links)} product links")
                         break
-                        
+
                 except Exception as e:
                     self.logger.warning(f"Error with selector '{selector}': {e}")
                     continue
@@ -307,18 +340,37 @@ class MengualSpider(scrapy.Spider):
             except (ValueError, TypeError):
                 self.logger.warning(f"Could not convert price '{price}' to float")
 
-        # Create and yield the product item if we have basic info
-        if product_name:
-            product_item = ProductItem(
-                name=product_name,
-                price=price_float,
-                url=response.url,
-                description=description,
-                image_url=image_url,
-                store_id=self.store_id,
-            )
+        # Create and yield the product item only if we have a valid product
+        # Exclude pages that are clearly not products
+        excluded_name_patterns = [
+            'términos', 'legal', 'catálogo', 'procedimiento', 'calendario',
+            'delegaciones', 'showroom', 'incidencias', 'compliance',
+            'instalación', 'cobertura', 'expediciones', 'historia',
+            'proceder al pago', 'canal incidencias', 'guías correderas'
+        ]
 
-            self.logger.info(f"Scraped Mengual product: {product_name} | Price: {price_float} | Image: {bool(image_url)}")
-            yield product_item
+        if product_name:
+            # Check if this looks like a non-product page
+            name_lower = product_name.lower()
+            if any(pattern in name_lower for pattern in excluded_name_patterns):
+                self.logger.debug(f"Skipping non-product page: {product_name} at {response.url}")
+                return
+
+            # Only yield products that have prices or look like actual products
+            # Products without prices might be valid but should have proper product characteristics
+            if price_float or (image_url and len(product_name) < 100):
+                product_item = ProductItem(
+                    name=product_name,
+                    price=price_float,
+                    url=response.url,
+                    description=description,
+                    image_url=image_url,
+                    store_id=self.store_id,
+                )
+
+                self.logger.info(f"Scraped Mengual product: {product_name} | Price: {price_float} | Image: {bool(image_url)}")
+                yield product_item
+            else:
+                self.logger.warning(f"Skipping item without price/image: {product_name} at {response.url}")
         else:
             self.logger.warning(f"No product name found for {response.url}")
