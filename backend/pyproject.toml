@@ -69,5 +69,10 @@ ignore = ["D100", "D104", "D107"] # Common ignores for docstrings
 [tool.ruff.format]
 quote-style = "single"
 
+[dependency-groups]
+dev = [
+    "pytest>=8.4.2",
+]
+
 [project.scripts]
 populate = "stuff.populate_db:main"

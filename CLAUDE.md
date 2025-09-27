@@ -116,10 +116,14 @@
 - **Frontend Access**: Uses `getProductImageSrc()` utility to generate API URLs
 
 ## Testing
-- **Backend**: pytest (check for test commands in pyproject.toml)
-- **Frontend**: Vitest (configured in vite.config.js)
+- **Backend Tests Location**: `backend/app/tests/` (contains 4 test modules with 47 tests total)
+- **Run ALL Backend Tests**: `cd backend && uv run pytest app/tests/ -v`
+- **Run Specific Test Module**: `cd backend && uv run pytest app/tests/test_search.py -v`
+- **Frontend Tests**: `cd frontend && npm test` (Vitest - 8 tests)
 - **Search Engine**: `uv run python test_search_quick.py` (quick verification)
 - **Search Tests**: `uv run pytest app/tests/test_search_simple.py -v` (comprehensive)
+- **IMPORTANT**: Backend tests require pytest installed: `cd backend && uv add pytest --dev`
+- **Test Status**: ~19 pass, 17 skip (need Elasticsearch), 4 fail (auth issues)
 
 ## Development Server Architecture
 

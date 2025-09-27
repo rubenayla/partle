@@ -16,7 +16,7 @@ def product_to_search_doc(product: Product) -> dict:
         'spec': product.spec,
         'price': float(product.price) if product.price is not None else None,
         'url': product.url,
-        'image_url': product.image_url,
+        'image_url': f"/v1/products/{product.id}/image" if product.image_data else None,
         'creator_id': product.creator_id,
         'created_at': product.created_at.isoformat() if product.created_at else None,
         'updated_at': product.updated_at.isoformat() if product.updated_at else None,

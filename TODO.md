@@ -1,9 +1,3 @@
-Is it good that the primary color is blue? Does it make sense?
-
-
-Now it's
-  time to run the tests, commit, and push
-
 let's create some system to save backups
 
 continue claude chat, was creating localhost server to check that products show update date and location is not in pill but normal text with a normal header
