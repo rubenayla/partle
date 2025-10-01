@@ -76,30 +76,77 @@ unset PGPASSWORD
 
 log_message "Backup process completed successfully."
 
-# Additional backup to debian laptop
+# Additional backup to debian laptop with retry logic
 log_message "Starting backup transfer to debian laptop..."
 
-# Create backup directory on debian laptop if it doesn't exist
-if ssh debian "mkdir -p ~/backups/partle"; then
-    log_message "Remote backup directory created/verified on debian laptop"
-else
-    log_message "WARNING: Failed to create remote backup directory on debian laptop"
-fi
+# Retry configuration for Cloudflare Tunnel flakiness and router reboots
+MAX_RETRIES=8
+RETRY_DELAY=30
+TRANSFER_SUCCESS=false
 
-# Copy the backup file to debian laptop
-if scp "$BACKUP_FILE" debian:~/backups/partle/; then
-    log_message "Backup successfully transferred to debian laptop: $(basename "$BACKUP_FILE")"
-    
+# Function to attempt SSH/SCP with timeout (2 minutes for large transfers)
+try_ssh_command() {
+    timeout 120 bash -c "$1"
+    return $?
+}
+
+# Retry loop for creating remote directory
+for attempt in $(seq 1 $MAX_RETRIES); do
+    log_message "Attempt $attempt/$MAX_RETRIES: Creating remote backup directory..."
+
+    if try_ssh_command "ssh debian 'mkdir -p ~/backups/partle'"; then
+        log_message "Remote backup directory created/verified on debian laptop"
+        break
+    else
+        if [ $attempt -lt $MAX_RETRIES ]; then
+            log_message "Failed to connect to debian laptop, retrying in ${RETRY_DELAY}s..."
+            sleep $RETRY_DELAY
+            # Exponential backoff: double the delay each time
+            RETRY_DELAY=$((RETRY_DELAY * 2))
+        else
+            log_message "ERROR: Failed to create remote backup directory after $MAX_RETRIES attempts"
+            log_message "Backup process completed (local backup successful, remote backup failed)."
+            exit 0
+        fi
+    fi
+done
+
+# Reset retry delay for SCP
+RETRY_DELAY=10
+
+# Retry loop for file transfer
+for attempt in $(seq 1 $MAX_RETRIES); do
+    log_message "Attempt $attempt/$MAX_RETRIES: Transferring backup file..."
+
+    if try_ssh_command "scp '$BACKUP_FILE' debian:~/backups/partle/"; then
+        log_message "Backup successfully transferred to debian laptop: $(basename "$BACKUP_FILE")"
+        TRANSFER_SUCCESS=true
+        break
+    else
+        if [ $attempt -lt $MAX_RETRIES ]; then
+            log_message "Transfer failed, retrying in ${RETRY_DELAY}s..."
+            sleep $RETRY_DELAY
+            RETRY_DELAY=$((RETRY_DELAY * 2))
+        else
+            log_message "ERROR: Failed to transfer backup after $MAX_RETRIES attempts"
+            log_message "Backup process completed (local backup successful, remote backup failed)."
+            exit 0
+        fi
+    fi
+done
+
+# Only proceed with cleanup if transfer succeeded
+if [ "$TRANSFER_SUCCESS" = true ]; then
     # Clean up old backups on debian laptop (keep only last KEEP_DAYS days)
     log_message "Cleaning up old backups on debian laptop..."
-    ssh debian "find ~/backups/partle -name 'backup_*.sql.gz' -type f -mtime +$KEEP_DAYS -delete"
-    
-    # Count remaining backups on debian laptop
-    REMOTE_BACKUP_COUNT=$(ssh debian "find ~/backups/partle -name 'backup_*.sql.gz' -type f | wc -l")
-    log_message "Remote cleanup completed. $REMOTE_BACKUP_COUNT backup files on debian laptop."
-    
-else
-    log_message "WARNING: Failed to transfer backup to debian laptop"
+
+    if try_ssh_command "ssh debian 'find ~/backups/partle -name \"backup_*.sql.gz\" -type f -mtime +$KEEP_DAYS -delete'"; then
+        # Count remaining backups on debian laptop
+        REMOTE_BACKUP_COUNT=$(try_ssh_command "ssh debian 'find ~/backups/partle -name \"backup_*.sql.gz\" -type f | wc -l'")
+        log_message "Remote cleanup completed. $REMOTE_BACKUP_COUNT backup files on debian laptop."
+    else
+        log_message "WARNING: Remote cleanup failed (backup still transferred successfully)"
+    fi
 fi
 
 log_message "Backup process with remote copy completed."
