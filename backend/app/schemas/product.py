@@ -52,4 +52,7 @@ class ProductOut(ProductIn):
     image_filename: Optional[str] = None
     image_content_type: Optional[str] = None
     tags: list[Tag] = []
+    average_product_rating: Optional[float] = None
+    average_info_rating: Optional[float] = None
+    review_count: Optional[int] = None
 

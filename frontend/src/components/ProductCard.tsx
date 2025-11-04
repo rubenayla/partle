@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Package, Store, User, Building2 } from 'lucide-react';
 import { getProductImageSrc } from '../utils/helpers';
 import { getStoreLogoSrc } from '../utils/imageUtils';
+import StarRating from './StarRating';
 
 interface Product {
   id: number;
@@ -20,6 +21,9 @@ interface Product {
   creator?: { id: number; email: string; username?: string };
   created_at: string;
   updated_at: string;
+  average_product_rating?: number | null;
+  average_info_rating?: number | null;
+  review_count?: number;
 }
 
 interface ProductCardProps {
@@ -71,6 +75,22 @@ export default function ProductCard({ product }: ProductCardProps) {
           <p className="text-lg font-bold text-foreground mb-2">
             {product.price} {product.currency || '€'}
           </p>
+        )}
+
+        {/* Ratings Display */}
+        {product.average_product_rating && product.average_product_rating > 0 && (
+          <div className="mb-2">
+            <StarRating
+              rating={product.average_product_rating}
+              showNumber
+              size={14}
+            />
+            {product.review_count && product.review_count > 0 && (
+              <span className="text-xs text-secondary ml-1">
+                ({product.review_count} {product.review_count === 1 ? 'review' : 'reviews'})
+              </span>
+            )}
+          </div>
         )}
 
         {product.description && (

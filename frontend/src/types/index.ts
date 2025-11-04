@@ -112,6 +112,12 @@ export interface Product {
     id: number;
     username: string | null;
   };
+  /** Average product quality rating (1-5 stars) */
+  average_product_rating?: number | null;
+  /** Average information accuracy rating (1-5 stars) */
+  average_info_rating?: number | null;
+  /** Total number of reviews */
+  review_count?: number;
 }
 
 /**
@@ -320,4 +326,70 @@ export interface MapProps {
   bounds?: Bounds;
   /** Callback when store marker is clicked */
   onStoreClick?: (store: Store) => void;
+}
+
+/**
+ * Basic user info for review display
+ */
+export interface ReviewUser {
+  /** Unique user identifier */
+  id: number;
+  /** User's username */
+  username?: string | null;
+  /** User's email (may be partial for privacy) */
+  email?: string;
+}
+
+/**
+ * Product review entity
+ */
+export interface ProductReview {
+  /** Unique review identifier */
+  id: number;
+  /** Product being reviewed */
+  product_id: number;
+  /** User who wrote the review */
+  user_id: number;
+  /** User information */
+  user?: ReviewUser;
+  /** Product quality rating (1-5 stars) */
+  product_rating: number;
+  /** Information accuracy rating (1-5 stars) */
+  info_rating: number;
+  /** Optional review comment */
+  comment?: string | null;
+  /** Number of helpful votes */
+  helpful_count: number;
+  /** When the review was created */
+  created_at: string;
+  /** When the review was last updated */
+  updated_at: string;
+}
+
+/**
+ * Input for creating/updating a review
+ */
+export interface ProductReviewInput {
+  /** Product quality rating (1-5 stars) */
+  product_rating: number;
+  /** Information accuracy rating (1-5 stars) */
+  info_rating: number;
+  /** Optional review comment */
+  comment?: string;
+}
+
+/**
+ * Aggregated rating statistics for a product
+ */
+export interface ProductRatingSummary {
+  /** Product being rated */
+  product_id: number;
+  /** Total number of reviews */
+  total_reviews: number;
+  /** Average product quality rating */
+  average_product_rating?: number | null;
+  /** Average information accuracy rating */
+  average_info_rating?: number | null;
+  /** Distribution of product ratings (1-5 stars) */
+  rating_distribution: Record<number, number>;
 }
