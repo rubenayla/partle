@@ -289,7 +289,17 @@ const ReviewsSection: FC<ReviewsSectionProps> = ({ productId, className = '' }) 
       {!user && (
         <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg text-center">
           <p className="text-sm text-foreground">
-            Please <a href="/auth" className="text-blue-600 hover:underline">log in</a> to write a review
+            Please{' '}
+            <button
+              onClick={() => {
+                // Dispatch custom event to open auth modal
+                window.dispatchEvent(new CustomEvent('openAuthModal'));
+              }}
+              className="text-blue-600 hover:underline cursor-pointer font-medium"
+            >
+              log in
+            </button>{' '}
+            to write a review
           </p>
         </div>
       )}

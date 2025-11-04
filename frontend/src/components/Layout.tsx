@@ -40,6 +40,13 @@ export default function Layout({ children, setTheme, currentTheme }: Props) {
     return () => clearInterval(id);
   }, []);
 
+  // Listen for custom event to open auth modal
+  useEffect(() => {
+    const handleOpenAuthModal = () => setAccountOpen(true);
+    window.addEventListener('openAuthModal', handleOpenAuthModal);
+    return () => window.removeEventListener('openAuthModal', handleOpenAuthModal);
+  }, []);
+
   const handleSearch = (params: ProductSearchParams) => {
     // Build URL search params
     const searchParams = new URLSearchParams();
