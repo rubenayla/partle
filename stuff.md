@@ -703,3 +703,57 @@ failures.
 **Current status**: Rating system is fine, pagination needed for product list
 
 #
+ 2025-11-04 Performance Analysis UPDATE - Pagination IS Working!
+
+**CORRECTION**: Previous analysis was wrong about pagination.
+
+**Actual implementation**:
+- ✅ Frontend: Loads 20 products at a time with infinite scroll (Home.tsx)
+- ✅ Backend: Supports `limit` and `offset` query params (products.py)
+- ✅ SQL: Uses `.offset(offset).limit(limit)` correctly
+
+**Testing confirms pagination works**:
+```bash
+curl "/v1/products/?limit=5"          # Returns 5 products
+curl "/v1/products/?limit=5&offset=5" # Returns different 5 products  
+```
+
+**So why does it feel slow?** Unknown - needs browser DevTools profiling
+Possible causes:
+1. Network latency to Hetzner server
+2. Rating enrichment query (even with 0 reviews, adds DB roundtrip)
+3. Image loading
+4. Frontend rendering time
+
+**Quick optimization**: Skip rating query when review_count = 0 in database
+This would eliminate unnecessary JOIN on every product list request.
+
+
+**DevTools Profiling Results (2025-11-04):**
+
+Network timing analysis from Chrome DevTools:
+```
+/v1/products/ API calls:  79ms, 216ms  ✅ FAST
+Images (15+ shown):       69-216ms each 🐌 SLOW
+Total visible images:     ~300 KB
+```
+
+**Root cause identified**: Images are the bottleneck, NOT the rating system!
+- API is fast (79-216ms is good for database queries)
+- Images served from PostgreSQL via `/v1/products/{id}/image` endpoint
+- Each image = database read + binary data transfer
+- 20 images × ~120ms avg = 2.4 seconds cumulative
+
+**Why images are slow**:
+1. Stored as BYTEA in PostgreSQL (database not optimized for binary blobs)
+2. Each image request = full database query + binary transfer
+3. No CDN/caching layer
+4. Images not optimized/compressed for web
+
+**Optimization priority** (when we do this later):
+1. **HIGH**: Add image CDN (Cloudflare/S3) or nginx static file serving
+2. **MEDIUM**: Generate thumbnails (small for list view, full for detail)
+3. **MEDIUM**: Add HTTP cache headers for images (Cache-Control: max-age=86400)
+4. **LOW**: Consider moving images out of PostgreSQL to filesystem/object storage
+
+**Conclusion**: Rating system is innocent! Images need optimization. 📸
