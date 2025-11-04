@@ -1,5 +1,28 @@
 let's create some system to save backups
 
+## Image Performance Optimizations (2025-11-04)
+Root cause of slowness: Images served from PostgreSQL, 69-216ms each, 20 per page = 2-3s
+
+1. **HIGH PRIORITY: Image CDN** - Move images to Cloudflare Images or S3
+   - Biggest performance impact
+   - Offload binary data from PostgreSQL
+   - Global CDN = faster loading worldwide
+
+2. **MEDIUM PRIORITY: Generate thumbnails** - Small versions for product cards
+   - List view: 200x200px thumbnails
+   - Detail view: full-size images
+   - Reduces bandwidth and loading time
+
+3. **MEDIUM PRIORITY: Add HTTP cache headers** - Browser caching for images
+   - Add `Cache-Control: max-age=86400` to image endpoint
+   - Reduces repeat requests
+   - Quick win, minimal code change
+
+4. **LOW PRIORITY: Move images to filesystem** - Serve static files via nginx
+   - Alternative to CDN if staying self-hosted
+   - Store images in /srv/partle/images/
+   - Let nginx serve them directly (bypass FastAPI)
+
 continue claude chat, was creating localhost server to check that products show update date and location is not in pill but normal text with a normal header
 
 
