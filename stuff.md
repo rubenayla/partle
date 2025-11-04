@@ -676,3 +676,30 @@ The deploy.sh script should be updated to use systemctl restart partle-backend i
 failures.
 
 # 
+ 2025-11-04 Performance Analysis - Rating System Impact
+
+**Context**: User reported website feeling slow after adding rating system
+
+**Investigation findings**:
+- Database: 2,392 products, 0 reviews
+- Rating enrichment query adds ~1 extra DB call per product list request
+- Query uses `IN` clause to fetch all ratings in single query (good - no N+1)
+- Proper indexes exist on `product_reviews.product_id` (btree)
+- With 0 reviews, the rating query is essentially empty/fast
+
+**Actual performance issue**: Not the ratings feature
+- Loading 2,392 products at once on homepage
+- Each product card renders with image, store info, creator, etc.
+- Frontend rendering 2,392 DOM elements = slow
+- Image loading: 2,392 images at once
+
+**Potential solutions** (for later):
+1. **Pagination**: Limit to 50-100 products per page
+2. **Virtual scrolling**: Only render visible products
+3. **Lazy loading**: Load images as they enter viewport
+4. **Make ratings optional**: Only load on individual product pages
+5. **Add caching**: Cache product list responses
+
+**Current status**: Rating system is fine, pagination needed for product list
+
+#
