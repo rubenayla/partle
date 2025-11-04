@@ -676,3 +676,5 @@ The deploy.sh script should be updated to use systemctl restart partle-backend i
 failures.
 
 # 
+APPLY THIS ASAP: https://youtu.be/2C4Cs6503gw?si=EPN_plFFi9W3dqON
+
