@@ -25,6 +25,59 @@ Root cause of slowness: Images served from PostgreSQL, 69-216ms each, 20 per pag
    - Store images in /srv/partle/images/
    - Let nginx serve them directly (bypass FastAPI)
 
+## Local Database Setup for Safe Testing (2025-11-04)
+**Problem**: Currently backend/.env points to production database (Hetzner 91.98.68.236)
+- Running migrations locally = affects production immediately ⚠️
+- Adding test data = pollutes production database ⚠️
+
+**Solution**: Create local database for development/testing
+
+### Quick Setup (macOS):
+```bash
+# 1. Install PostgreSQL
+brew install postgresql@16
+brew services start postgresql@16
+
+# 2. Create local database
+createdb partle_dev
+
+# 3. Create backend/.env.local (gitignored, takes priority over .env)
+echo "DATABASE_URL=postgresql://localhost:5432/partle_dev" > backend/.env.local
+echo "SECRET_KEY=dev_secret_key_not_for_production" >> backend/.env.local
+echo "CLOUDFLARE_WORKER_URL=http://localhost:8787" >> backend/.env.local  # or use production
+echo "CLOUDFLARE_WORKER_API_KEY=your_key_here" >> backend/.env.local
+
+# 4. Update backend/app/main.py to load .env.local first (if exists)
+# Already done - loads with override=True
+
+# 5. Run migrations on local DB
+cd backend
+uv run alembic upgrade head
+
+# 6. Test locally
+uv run uvicorn app.main:app --reload
+```
+
+### Linux (Ubuntu/Debian):
+```bash
+sudo apt install postgresql-16
+sudo -u postgres createdb partle_dev
+# Rest is same as macOS
+```
+
+### Benefits:
+- ✅ Safe migration testing - never affects production
+- ✅ Fast iteration - local DB is instant
+- ✅ Seed test data without worry
+- ✅ Can reset database anytime: `dropdb partle_dev && createdb partle_dev`
+
+### Staging Environment (Future):
+When project grows, set up staging on Hetzner:
+- Separate database: `partle_staging`
+- Subdomain: `staging.partle.rubenayla.xyz`
+- Deploy feature branches to staging first
+- Test migrations before production
+
 continue claude chat, was creating localhost server to check that products show update date and location is not in pill but normal text with a normal header
 
 
