@@ -6,7 +6,7 @@
 import type { FC } from 'react';
 import { useState, useEffect } from 'react';
 import type { ProductReview, ProductReviewInput, ProductRatingSummary } from '../types';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import StarRating from './StarRating';
 import ProductReviewCard from './ProductReviewCard';
 import ProductReviewForm from './ProductReviewForm';
