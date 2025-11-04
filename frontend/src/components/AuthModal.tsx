@@ -22,7 +22,10 @@ export default function AuthModal({ onClose = () => { }, onSuccess = () => { } }
     try {
       const response = await login(email, password);
       localStorage.setItem("token", response.access_token);
-      
+
+      // Dispatch event to notify app that user logged in
+      window.dispatchEvent(new CustomEvent('userLoggedIn'));
+
       // Check if user needs to set username
       if (response.needs_username) {
         window.location.href = '/complete-profile';
@@ -44,7 +47,10 @@ export default function AuthModal({ onClose = () => { }, onSuccess = () => { } }
       await register(email, password);
       const response = await login(email, password);
       localStorage.setItem("token", response.access_token);
-      
+
+      // Dispatch event to notify app that user logged in
+      window.dispatchEvent(new CustomEvent('userLoggedIn'));
+
       // New users always need to set username
       window.location.href = '/complete-profile';
       onClose();

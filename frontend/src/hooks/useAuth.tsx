@@ -44,31 +44,43 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    // Initializing auth state
+  // Function to fetch and update user
+  const fetchUser = async () => {
     const token = localStorage.getItem('token');
     if (!token) {
-      // No token found, user not logged in
       setUser(null);
       setIsLoading(false);
       return;
     }
 
     console.log('AuthProvider: Token found, checking current user');
-    currentUser()
-      .then((userData: User) => {
-        console.log('AuthProvider: User logged in:', userData?.email);
-        setUser(userData);
-      })
-      .catch((error: any) => {
-        console.log('AuthProvider: Token invalid, removing:', error.response?.status);
-        localStorage.removeItem('token');
-        setUser(null);
-      })
-      .finally(() => {
-        console.log('AuthProvider: Auth initialization complete');
-        setIsLoading(false);
-      });
+    try {
+      const userData = await currentUser();
+      console.log('AuthProvider: User logged in:', userData?.email);
+      setUser(userData);
+    } catch (error: any) {
+      console.log('AuthProvider: Token invalid, removing:', error.response?.status);
+      localStorage.removeItem('token');
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Initial auth check on mount
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  // Listen for login events from AuthModal
+  useEffect(() => {
+    const handleUserLoggedIn = () => {
+      console.log('AuthProvider: Received userLoggedIn event, refreshing user');
+      fetchUser();
+    };
+
+    window.addEventListener('userLoggedIn', handleUserLoggedIn);
+    return () => window.removeEventListener('userLoggedIn', handleUserLoggedIn);
   }, []);
 
   /**
