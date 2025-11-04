@@ -95,6 +95,7 @@ class User(Base):
     tags: Mapped[list["Tag"]] = relationship(
         secondary=user_tags, back_populates="users"
     )
+    reviews: Mapped[list["ProductReview"]] = relationship(back_populates="user")
 
 
 class Store(Base):
@@ -169,6 +170,7 @@ class Product(Base):
     tags: Mapped[list["Tag"]] = relationship(
         secondary=product_tags, back_populates="products"
     )
+    reviews: Mapped[list["ProductReview"]] = relationship(back_populates="product")
 
 
 class Credential(Base):
@@ -181,3 +183,41 @@ class Credential(Base):
 
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     user: Mapped[User] = relationship(back_populates="credentials")
+
+
+class ProductReview(Base):
+    __tablename__ = "product_reviews"
+    __table_args__ = (
+        UniqueConstraint('product_id', 'user_id', name='unique_product_user_review'),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    product_id: Mapped[int] = mapped_column(
+        ForeignKey("products.id", ondelete="CASCADE"), nullable=False
+    )
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
+
+    # Product quality rating (1-5 stars)
+    product_rating: Mapped[int] = mapped_column(Integer, nullable=False)
+
+    # Information accuracy rating (1-5 stars) - for price, specs, etc.
+    info_rating: Mapped[int] = mapped_column(Integer, nullable=False)
+
+    # Optional review comment
+    comment: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    # Track helpful votes (for future feature)
+    helpful_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )
+
+    # Relationships
+    product: Mapped["Product"] = relationship(back_populates="reviews")
+    user: Mapped[User] = relationship(back_populates="reviews")

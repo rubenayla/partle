@@ -4,7 +4,7 @@ from sqlalchemy import or_, func, and_, not_
 from fastapi import APIRouter, Depends, HTTPException, Response, UploadFile, File
 from sqlalchemy.orm import Session, joinedload
 
-from app.db.models import Product, User, Tag, Store
+from app.db.models import Product, User, Tag, Store, ProductReview
 from app.schemas import product as schema
 from app.auth.security import get_current_user
 from app.api.deps import get_db
@@ -15,6 +15,45 @@ from app.utils.test_data import get_excluded_test_tags
 
 router = APIRouter()
 logger = get_logger("api.products")
+
+
+def enrich_products_with_ratings(products: list[Product], db: Session) -> list[Product]:
+    """Add rating statistics to products."""
+    if not products:
+        return products
+
+    product_ids = [p.id for p in products]
+
+    # Get rating stats for all products in one query
+    rating_stats = db.query(
+        ProductReview.product_id,
+        func.avg(ProductReview.product_rating).label('avg_product_rating'),
+        func.avg(ProductReview.info_rating).label('avg_info_rating'),
+        func.count(ProductReview.id).label('review_count')
+    ).filter(
+        ProductReview.product_id.in_(product_ids)
+    ).group_by(
+        ProductReview.product_id
+    ).all()
+
+    # Create a lookup dict
+    stats_dict = {
+        stat.product_id: {
+            'average_product_rating': round(stat.avg_product_rating, 1) if stat.avg_product_rating else None,
+            'average_info_rating': round(stat.avg_info_rating, 1) if stat.avg_info_rating else None,
+            'review_count': stat.review_count
+        }
+        for stat in rating_stats
+    }
+
+    # Enrich products with rating data
+    for product in products:
+        stats = stats_dict.get(product.id, {})
+        product.average_product_rating = stats.get('average_product_rating')
+        product.average_info_rating = stats.get('average_info_rating')
+        product.review_count = stats.get('review_count', 0)
+
+    return products
 
 
 # ───────────────────────────────────────────
@@ -135,7 +174,8 @@ def list_products(
         # Default sort by last modification date if no valid sort_by specified
         query = query.order_by(Product.updated_at.desc())
 
-    return query.offset(offset).limit(limit).all()
+    products = query.offset(offset).limit(limit).all()
+    return enrich_products_with_ratings(products, db)
 
 
 @router.get("/my", response_model=list[schema.ProductOut])
@@ -144,7 +184,7 @@ def list_my_products(
     current_user: User = Depends(get_current_user),
 ):
     """List products created by the current user - with eager loading to prevent N+1 queries."""
-    return (
+    products = (
         db.query(Product)
         .options(
             joinedload(Product.store),
@@ -155,6 +195,7 @@ def list_my_products(
         .order_by(Product.created_at.desc())
         .all()
     )
+    return enrich_products_with_ratings(products, db)
 
 
 @router.get("/store/{store_id}", response_model=list[schema.ProductOut])
@@ -186,13 +227,14 @@ def list_products_by_store(
             )
             query = query.filter(~Product.id.in_(excluded_products))
 
-    return query.order_by(func.random()).all()
+    products = query.order_by(func.random()).all()
+    return enrich_products_with_ratings(products, db)
 
 
 @router.get("/user/{user_id}", response_model=list[schema.ProductOut])
 def list_products_by_user(user_id: int, db: Session = Depends(get_db)):
     """List products uploaded by a specific user - with eager loading to prevent N+1 queries."""
-    return (
+    products = (
         db.query(Product)
         .options(
             joinedload(Product.store),
@@ -203,6 +245,7 @@ def list_products_by_user(user_id: int, db: Session = Depends(get_db)):
         .order_by(Product.created_at.desc())
         .all()
     )
+    return enrich_products_with_ratings(products, db)
 
 
 # TODO HOW TO UPDATE PRODUCT
@@ -288,7 +331,10 @@ def get_product(product_id: int, db: Session = Depends(get_db)):
     ).filter(Product.id == product_id).first()
     if not product:
         raise HTTPException(404, "Product not found")
-    return product
+
+    # Enrich with ratings
+    enriched = enrich_products_with_ratings([product], db)
+    return enriched[0] if enriched else product
 
 
 @router.patch("/{product_id}", response_model=schema.ProductOut)

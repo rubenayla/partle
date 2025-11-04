@@ -675,6 +675,87 @@ The deploy.sh script should be updated to use systemctl restart partle-backend i
   killing processes and starting them in the background. This would prevent future deployment
 failures.
 
-# 
+#
 APPLY THIS ASAP: https://youtu.be/2C4Cs6503gw?si=EPN_plFFi9W3dqON
 
+# 2025-11-04 Performance Analysis - Rating System Impact
+
+**Context**: User reported website feeling slow after adding rating system
+
+**Investigation findings**:
+- Database: 2,392 products, 0 reviews
+- Rating enrichment query adds ~1 extra DB call per product list request
+- Query uses `IN` clause to fetch all ratings in single query (good - no N+1)
+- Proper indexes exist on `product_reviews.product_id` (btree)
+- With 0 reviews, the rating query is essentially empty/fast
+
+**Actual performance issue**: Not the ratings feature
+- Loading 2,392 products at once on homepage
+- Each product card renders with image, store info, creator, etc.
+- Frontend rendering 2,392 DOM elements = slow
+- Image loading: 2,392 images at once
+
+**Potential solutions** (for later):
+1. **Pagination**: Limit to 50-100 products per page
+2. **Virtual scrolling**: Only render visible products
+3. **Lazy loading**: Load images as they enter viewport
+4. **Make ratings optional**: Only load on individual product pages
+5. **Add caching**: Cache product list responses
+
+**Current status**: Rating system is fine, pagination needed for product list
+
+#
+ 2025-11-04 Performance Analysis UPDATE - Pagination IS Working!
+
+**CORRECTION**: Previous analysis was wrong about pagination.
+
+**Actual implementation**:
+- ✅ Frontend: Loads 20 products at a time with infinite scroll (Home.tsx)
+- ✅ Backend: Supports `limit` and `offset` query params (products.py)
+- ✅ SQL: Uses `.offset(offset).limit(limit)` correctly
+
+**Testing confirms pagination works**:
+```bash
+curl "/v1/products/?limit=5"          # Returns 5 products
+curl "/v1/products/?limit=5&offset=5" # Returns different 5 products  
+```
+
+**So why does it feel slow?** Unknown - needs browser DevTools profiling
+Possible causes:
+1. Network latency to Hetzner server
+2. Rating enrichment query (even with 0 reviews, adds DB roundtrip)
+3. Image loading
+4. Frontend rendering time
+
+**Quick optimization**: Skip rating query when review_count = 0 in database
+This would eliminate unnecessary JOIN on every product list request.
+
+
+**DevTools Profiling Results (2025-11-04):**
+
+Network timing analysis from Chrome DevTools:
+```
+/v1/products/ API calls:  79ms, 216ms  ✅ FAST
+Images (15+ shown):       69-216ms each 🐌 SLOW
+Total visible images:     ~300 KB
+```
+
+**Root cause identified**: Images are the bottleneck, NOT the rating system!
+- API is fast (79-216ms is good for database queries)
+- Images served from PostgreSQL via `/v1/products/{id}/image` endpoint
+- Each image = database read + binary data transfer
+- 20 images × ~120ms avg = 2.4 seconds cumulative
+
+**Why images are slow**:
+1. Stored as BYTEA in PostgreSQL (database not optimized for binary blobs)
+2. Each image request = full database query + binary transfer
+3. No CDN/caching layer
+4. Images not optimized/compressed for web
+
+**Optimization priority** (when we do this later):
+1. **HIGH**: Add image CDN (Cloudflare/S3) or nginx static file serving
+2. **MEDIUM**: Generate thumbnails (small for list view, full for detail)
+3. **MEDIUM**: Add HTTP cache headers for images (Cache-Control: max-age=86400)
+4. **LOW**: Consider moving images out of PostgreSQL to filesystem/object storage
+
+**Conclusion**: Rating system is innocent! Images need optimization. 📸

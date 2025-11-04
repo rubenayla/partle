@@ -11,6 +11,7 @@ import type { Product, Store, User } from '../types';
 import { getProductImageSrc, hasProductImage } from '../utils/imageUtils';
 import { getProductIdentifierWithLabel } from '../utils/product';
 import { trackProductView, trackExternalLink, trackStoreVisit } from '../utils/analytics';
+import ReviewsSection from '../components/ReviewsSection';
 
 /**
  * Form data interface for product editing
@@ -755,6 +756,11 @@ export default function ProductDetail(): JSX.Element {
               </div>
             </div>
           )}
+
+          {/* Reviews Section */}
+          <div className="border-t border-gray-200 dark:border-gray-600 pt-6 mt-6">
+            <ReviewsSection productId={product.id} />
+          </div>
 
           {/* Creator Information */}
           {product.creator && product.creator.username && (
