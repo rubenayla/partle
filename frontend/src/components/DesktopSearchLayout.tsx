@@ -61,7 +61,7 @@ export default function DesktopSearchLayout({
   setTheme,
 }: DesktopSearchLayoutProps) {
   return (
-    <div className="w-full max-w-screen-2xl mx-auto flex items-center justify-between px-2 sm:px-4 py-3">
+    <div className="w-full max-w-screen-2xl mx-auto flex items-center justify-between gap-4 px-4 sm:px-6 py-3 rounded-[28px] border border-white/40 dark:border-slate-800/70 bg-gradient-to-br from-white/80 via-white/60 to-white/40 dark:from-slate-900/85 dark:via-slate-900/70 dark:to-slate-950/60 shadow-[0_30px_80px_-35px_rgba(15,23,42,0.55)] dark:shadow-[0_40px_85px_-45px_rgba(0,0,0,0.9)] backdrop-blur-2xl transition-[background,box-shadow,border-color] duration-300">
       <Tooltip text="Go home (Alt+N, H)">
         <a
           href="/"
@@ -73,7 +73,7 @@ export default function DesktopSearchLayout({
 
       <form
         onSubmit={handleSearch}
-        className="flex flex-1 mx-2 md:mx-4 lg:mx-6 bg-gray-100 dark:bg-gray-800 rounded-full pl-3 md:pl-4 pr-1 sm:pr-2 h-12 items-center"
+        className="flex flex-1 mx-2 md:mx-4 lg:mx-6 rounded-full border border-white/50 dark:border-slate-800/70 bg-white/60 dark:bg-slate-950/40 pl-3 md:pl-4 pr-1 sm:pr-2 h-12 items-center backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition-colors"
       >
         <input
           type="search"
@@ -83,7 +83,7 @@ export default function DesktopSearchLayout({
           className="flex-1 h-full bg-transparent placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none"
         />
 
-        <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-2 md:mx-3" />
+        <div className="h-6 border-l border-white/50 dark:border-slate-800/70 mx-2 md:mx-3" />
 
         {/* Desktop Filters */}
         <DropdownMenu.Root>
@@ -172,7 +172,7 @@ export default function DesktopSearchLayout({
           </DropdownMenu.Portal>
         </DropdownMenu.Root>
 
-        <div className="hidden md:block h-6 border-l border-gray-300 dark:border-gray-600 mx-2 md:mx-3" />
+        <div className="hidden md:block h-6 border-l border-white/50 dark:border-slate-800/70 mx-2 md:mx-3" />
 
         {/* Desktop Sort */}
         <DropdownMenu.Root>
@@ -216,7 +216,7 @@ export default function DesktopSearchLayout({
       <div className="flex items-center gap-2 md:gap-3">
         {isLoggedIn && (
           <DropdownMenu.Root>
-            <DropdownMenu.Trigger className="bg-transparent text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none p-2">
+            <DropdownMenu.Trigger className="rounded-full bg-transparent text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-white/40 dark:hover:bg-slate-800/70 focus:outline-none p-2 transition-colors">
               <Plus className="h-6 w-6" />
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
@@ -242,7 +242,7 @@ export default function DesktopSearchLayout({
 
         <DropdownMenu.Root>
           <DropdownMenu.Trigger
-            className="bg-transparent text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none p-2"
+            className="rounded-full bg-transparent text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-white/40 dark:hover:bg-slate-800/70 focus:outline-none p-2 transition-colors"
             onClick={!isLoggedIn ? onAccountClick : undefined}
           >
             <User className="h-7 w-7" />
@@ -306,7 +306,7 @@ export default function DesktopSearchLayout({
         </DropdownMenu.Root>
 
         <DropdownMenu.Root>
-          <DropdownMenu.Trigger className="bg-transparent text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none p-2">
+          <DropdownMenu.Trigger className="rounded-full bg-transparent text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-white/40 dark:hover:bg-slate-800/70 focus:outline-none p-2 transition-colors">
             <Info className="h-6 w-6" />
           </DropdownMenu.Trigger>
           <DropdownMenu.Portal>

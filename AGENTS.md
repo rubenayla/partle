@@ -1,4 +1,4 @@
-# Partle Project - Claude Notes
+# Partle Project - Agent Notes
 
 ## 🚫 DO NOT ADD WITHOUT PERMISSION
 - **NO new environment variables** without explicit user approval
@@ -235,10 +235,10 @@ export function ProductCard({ product, onEdit, className }: ProductCardProps) {
 }
 ```
 
-## Claude MCP (Model Context Protocol) Servers - LOCAL ONLY
+## MCP (Model Context Protocol) Servers - LOCAL ONLY
 
-### ✅ CORRECT MCP CONFIGURATION FOR CLAUDE DESKTOP
-MCP servers allow Claude Desktop to interact with local tools and APIs. These run on your local machine, NOT on production servers.
+### ✅ Example MCP configuration (Claude Desktop)
+MCP servers allow AI agents (Claude Desktop, ChatGPT Desktop, etc.) to interact with local tools and APIs. These run on your local machine, NOT on production servers.
 
 **Working Configuration in `.mcp.json`:**
 ```json
@@ -269,14 +269,14 @@ MCP servers allow Claude Desktop to interact with local tools and APIs. These ru
 - Shell script wrappers (permission issues)
 - Missing the `--directory` flag (causes "UV could not find a pyproject.toml" error)
 
-**Local MCP Server Files (Claude Desktop only):**
+**Local MCP Server Files (Claude Desktop example):**
 - **Configuration**: `/home/rubenayla/repos/partle/.mcp.json` (project-scoped)
 - **Launch Scripts**: `/home/rubenayla/repos/partle/backend/scripts/run_mcp_*.py`
 - **Server Code**: `/home/rubenayla/repos/partle/backend/app/mcp/`
 - **Debug Logs**: `/home/rubenayla/.cache/claude-cli-nodejs/-home-rubenayla-repos-partle/mcp-logs-*/`
-- **Settings**: `/home/rubenayla/repos/partle/.claude/settings.local.json`
+- **Settings (if using Claude Desktop)**: `/home/rubenayla/repos/partle/.claude/settings.local.json`
 
-**Available MCP Servers (local Claude Desktop tools):**
+**Available MCP Servers (local agent tools):**
 - `partle-products` - Product management
 - `partle-stores` - Store management
 - `partle-analytics` - Analytics tools
@@ -291,7 +291,7 @@ cd /home/rubenayla/repos/partle/backend
 uv run python test_mcp.py
 ```
 
-**Enable in Claude Desktop:**
+**Enable in Claude Desktop (example):**
 1. Set `enableAllProjectMcpServers: true` in `.claude/settings.local.json`
 2. Run `/mcp` command in Claude to see status
 3. Servers should show as "connected" not "failed"

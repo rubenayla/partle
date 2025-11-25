@@ -138,7 +138,7 @@ export default function SearchBar({
         />
       </div>
       {/* Desktop header uses separate component to prevent re-renders */}
-      <header className="hidden sm:block fixed top-0 left-0 right-0 z-20 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+      <header className="hidden sm:block fixed top-0 left-0 right-0 z-30 px-3 sm:px-6 lg:px-10 py-2 bg-gradient-to-b from-white/80 via-white/20 to-transparent dark:from-slate-950/80 dark:via-slate-950/40 dark:to-transparent backdrop-blur-sm">
         <DesktopSearchLayout
           query={query}
           setQuery={setQuery}

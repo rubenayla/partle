@@ -299,6 +299,48 @@ This must be:
 * Set in `frontend/.env` locally for dev (`VITE_API_BASE=http://localhost:8000`)
 * Set in production environment for prod (`VITE_API_BASE=https://...`)
 
+## 🖥️ Server Quick Reference
+
+### Public access
+- **Website:** https://partle.rubenayla.xyz
+- **API docs:** https://partle.rubenayla.xyz/docs
+
+### Port map
+
+| Service | Port | Scope |
+|---------|------|-------|
+| Frontend (React) | 3000 | Internal/dev |
+| Backend (FastAPI) | 8000 | Internal/dev |
+| PostgreSQL | 5432 | Internal |
+| Elasticsearch | 9200 | Internal |
+| Nginx HTTP | 80 | Public |
+| Nginx HTTPS | 443 | Public |
+
+### Operational shortcuts
+
+```bash
+# Start backend on server
+sudo /srv/partle/start-backend.sh
+
+# Start frontend on server
+sudo /srv/partle/start-frontend.sh
+
+# Check both processes
+ps aux | grep -E "(uvicorn|vite)"
+```
+
+### Key server paths
+- `/srv/partle/backend/.env` – backend secrets/config
+- `/srv/partle/frontend/.env` – frontend runtime config
+- `/etc/nginx/sites-available/partle.rubenayla.xyz` – reverse proxy config
+- `/srv/partle/PORTS.md` – extended port reference
+
+### Database snapshot
+- **Connection:** `postgresql://partle_user:partle_secure_password@localhost:5432/partle`
+- **Products:** ~37 items
+- **Users:** ~12 accounts
+- **Stores:** ~4,000 locations
+
 ---
 
 ## 🚀 Development Quick Start
