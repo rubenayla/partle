@@ -4,6 +4,9 @@
 
 This guide explains how to connect ChatGPT to your Partle MCP servers, enabling ChatGPT to access your Partle platform data and perform sophisticated analysis through natural language queries.
 
+!!! warning "Status"
+    This integration is not fully operational yet. Use the steps below for experimentation only; expect to troubleshoot manual connections and MCP discovery issues.
+
 ## Prerequisites
 
 1. **Running Partle Backend**: Your FastAPI server must be running on `http://localhost:8000`

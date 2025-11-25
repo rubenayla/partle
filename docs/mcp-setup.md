@@ -2,6 +2,9 @@
 
 ## Overview
 
+!!! warning "Status"
+    MCP server integration is still experimental—end-to-end ChatGPT connectivity has not been reliable yet. Treat this guide as a work-in-progress checklist rather than a production-ready solution.
+
 The Partle Model Context Protocol (MCP) servers provide ChatGPT and other AI assistants with direct access to your Partle platform data and functionality. These servers enable sophisticated analysis, recommendations, and insights through natural language interactions.
 
 ## Available MCP Servers

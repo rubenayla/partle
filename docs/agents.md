@@ -2,6 +2,9 @@
 
 This is a summary for any AI agent or MCP client that interacts with Partle. For the full rulebook see [`AGENTS.md`](../AGENTS.md).
 
+!!! warning "MCP tools still experimental"
+    The MCP servers, ChatGPT integration, and other AI tooling are being prototyped. Validate every workflow manually before relying on automated interactions.
+
 ## Ground rules
 - **Single production database**: `postgresql://partle_user@91.98.68.236:5432/partle`. Never create or migrate against local databases unless explicitly told.
 - **Secrets** live in per-service `.env` files (`backend/.env`, `frontend/.env`). Do not invent new environment variables without approval.

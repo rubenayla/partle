@@ -112,6 +112,30 @@ sudo systemctl restart partle-backend
 sudo systemctl reload nginx
 ```
 
+## Publishing the documentation site
+MkDocs outputs static HTML under `site/`. Serve it from `/documentation` on Hetzner with Nginx.
+
+1. Build the docs locally (or on the server):
+   ```bash
+   cd backend
+   uv sync --extra docs
+   uv run mkdocs build -f ../mkdocs.yml
+   ```
+2. Copy the generated `site/` directory to the server, e.g. `/srv/partle/docs_site`.
+   ```bash
+   rsync -av site/ deploy@91.98.68.236:/srv/partle/docs_site/
+   ```
+3. Update `/etc/nginx/sites-enabled/partle.rubenayla.xyz` with:
+   ```
+   location /documentation/ {
+       alias /srv/partle/docs_site/;
+       try_files $uri $uri/ /index.html;
+   }
+   ```
+4. Reload Nginx: `sudo nginx -t && sudo systemctl reload nginx`.
+
+You can integrate these steps into `deploy.sh` so the docs publish automatically during deployment.
+
 ## Deploy checklists
 
 **Pre-deploy**
