@@ -105,6 +105,9 @@
 - **Credential Rotation**: Update ALL environment files and restart services
 - **Notify user** immediately of any credential exposure
 
+### Incident log
+- **2025-09-05 – Git credential exposure**: `backend/downloaded_server.env` was committed accidentally. All related secrets were rotated afterwards; always double-check `.env` artifacts before committing.
+
 ## Image Storage System
 - **Storage Method**: Binary data (BYTEA) stored directly in PostgreSQL database
 - **Database Fields**: 

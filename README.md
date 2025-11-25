@@ -372,6 +372,12 @@ sudo ufw allow 80/tcp && sudo ufw allow 443/tcp
 sudo ufw deny 3000/tcp 8000/tcp 5432/tcp 9200/tcp
 ```
 
+### Common issues & quick fixes
+- **Frontend shows “Network Error”** – Backend likely isn’t running or `VITE_API_BASE` points to the wrong host; restart FastAPI on port 8000.
+- **Emails not sending** – Check that the Resend DNS records have propagated and that the `RESEND_API_KEY` secret exists in the Cloudflare Worker.
+- **GitHub Actions fail because `uv` isn’t found** – Add `/home/deploy/.local/bin` to the PATH for the runner or deployment user.
+- **Need mock/test data** – By default `/v1/products/` hides items tagged `mock-data`; append `?include_test_data=true` to include them.
+
 ---
 
 ## 🚀 Development Quick Start
@@ -411,6 +417,36 @@ Frontend (3000) ──HTTP Requests──→ Backend (8000) ──→ PostgreSQL
 - Vite defaults to port `5173`. We pin to `3000` with `npm run dev -- --port 3000`, but if 3000 is busy Vite will auto-increment. Check which PID uses the port (`sudo lsof -i :3000`) and kill it (`kill -9 <PID>`) before restarting.
 - Production build: `npm run build` generates `frontend/dist/` ready for any static host.
 - `npm WARN Unknown env config "http-proxy"` usually comes from stale npm config. Clear it with `npm config delete http-proxy` / `npm config delete https-proxy`, or remove the setting from `~/.npmrc`.
+
+## Email delivery (Cloudflare Worker → Resend)
+
+MailChannels removed their free Cloudflare Worker tier on **2024-08-31**, so all outbound mail now uses [Resend](https://resend.com/).
+
+### Setup flow
+1. Create a Resend account (free tier: 100 emails/day, 3000/month).
+2. Use the “Sign in with Cloudflare” integration so Resend adds DNS records automatically.
+3. Add the Resend API key to the Worker (`RESEND_API_KEY` secret) and update `/stuff/cloudflare-email-worker.js` to call `https://api.resend.com/emails`.
+4. Only send from verified addresses (e.g., `noreply@rubenayla.xyz`).
+
+### Required DNS (added by the integration)
+- MX: `send` → `feedback-smtp.eu-west-1.amazonses.com`
+- DKIM: `resend._domainkey` → Resend-provided DKIM value
+- SPF: `v=spf1 include:amazonses.com ~all`
+
+### Migration notes
+- Old MailChannels flow (`api.mailchannels.net` + `_mailchannels` TXT Domain Lockdown) no longer authenticates.
+- Cloudflare Email Routing is receive-only; it cannot send mail.
+- Resend silently drops mail until DNS verification propagates—double-check via their dashboard.
+
+### References
+- [Cloudflare Workers email docs](https://developers.cloudflare.com/email-routing/email-workers/send-email-workers/)
+- [MailChannels shutdown notes](https://support.mailchannels.com/hc/en-us/articles/16918954360845)
+- [Resend + Cloudflare tutorial](https://resend.com/docs/send-with-cloudflare-workers)
+
+### Key files
+- `stuff/cloudflare-email-worker.js` – Worker script that calls Resend
+- `backend/app/auth/utils.py` – Backend helpers that trigger emails
+- `backend/test_email_debug.py` – Manual test harness
 
 ## DB Structure
 tags
