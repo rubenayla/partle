@@ -115,21 +115,29 @@ sudo systemctl reload nginx
 ## Publishing the documentation site
 MkDocs outputs static HTML under `site/`. Serve it from `/documentation` on Hetzner with Nginx.
 
-1. Build the docs locally (or on the server):
+1. Build the docs locally (or on the server). Every `deploy.sh` run already does this, but you can trigger it manually for a fresh server:
    ```bash
    cd backend
    uv sync --extra docs
-   uv run mkdocs build -f ../mkdocs.yml
+   uv run mkdocs build -f ../mkdocs.yml -d /srv/partle/docs_site.tmp
+   rsync -av --delete /srv/partle/docs_site.tmp/ /srv/partle/docs_site/
+   rm -rf /srv/partle/docs_site.tmp
    ```
-2. Copy the generated `site/` directory to the server, e.g. `/srv/partle/docs_site`.
+2. Point Nginx at the repo-managed config once (pick `nginx-fixed.conf` or `nginx-optimized.conf`):
    ```bash
-   rsync -av site/ deploy@91.98.68.236:/srv/partle/docs_site/
+   sudo ln -sf /srv/partle/nginx-fixed.conf /etc/nginx/sites-enabled/partle.rubenayla.xyz
+   # or sudo ln -sf /srv/partle/nginx-optimized.conf ...
    ```
-3. Update `/etc/nginx/sites-enabled/partle.rubenayla.xyz` with:
+3. Ensure the config contains the documentation blocks:
    ```
+   location = /documentation {
+       return 301 /documentation/;
+   }
+
    location /documentation/ {
        alias /srv/partle/docs_site/;
        try_files $uri $uri/ /index.html;
+       add_header Cache-Control "no-cache";
    }
    ```
 4. Reload Nginx: `sudo nginx -t && sudo systemctl reload nginx`.
