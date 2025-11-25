@@ -62,7 +62,7 @@ export default function DesktopSearchLayout({
 }: DesktopSearchLayoutProps) {
   return (
     <div className="w-full max-w-screen-2xl mx-auto flex items-center gap-4 px-4 sm:px-6 py-3">
-      <div className="flex flex-1 items-center gap-3 rounded-[32px] border border-white/20 dark:border-white/5 bg-gradient-to-br from-white/40 via-white/20 to-white/10 dark:from-slate-900/90 dark:via-slate-900/70 dark:to-slate-950/60 backdrop-blur-2xl px-5 py-3 shadow-[0_20px_45px_-30px_rgba(15,23,42,0.6)] dark:shadow-[0_30px_50px_-35px_rgba(0,0,0,0.95)]">
+      <div className="flex flex-1 items-center gap-3 rounded-[32px] border border-white/15 dark:border-white/5 bg-gradient-to-br from-white/25 via-white/12 to-white/5 dark:from-slate-900/85 dark:via-slate-900/70 dark:to-slate-950/60 backdrop-blur-md px-5 py-3 shadow-[0_15px_30px_-25px_rgba(15,23,42,0.55)] dark:shadow-[0_25px_35px_-30px_rgba(0,0,0,0.85)] ring-1 ring-white/10 dark:ring-white/5">
         <Tooltip text="Go home (Alt+N, H)">
           <a
             href="/"
@@ -215,7 +215,7 @@ export default function DesktopSearchLayout({
         </form>
       </div>
 
-      <div className="flex items-center gap-2 md:gap-3 rounded-[32px] border border-white/20 dark:border-white/5 bg-gradient-to-br from-white/35 via-white/20 to-white/10 dark:from-slate-900/90 dark:via-slate-900/70 dark:to-slate-950/60 backdrop-blur-2xl px-4 py-3 shadow-[0_15px_35px_-25px_rgba(15,23,42,0.6)] dark:shadow-[0_25px_45px_-35px_rgba(0,0,0,0.95)]">
+      <div className="flex items-center gap-2 md:gap-3 rounded-[32px] border border-white/15 dark:border-white/5 bg-gradient-to-br from-white/20 via-white/10 to-white/5 dark:from-slate-900/85 dark:via-slate-900/70 dark:to-slate-950/60 backdrop-blur-md px-4 py-3 shadow-[0_12px_30px_-25px_rgba(15,23,42,0.55)] dark:shadow-[0_20px_35px_-30px_rgba(0,0,0,0.85)] ring-1 ring-white/10 dark:ring-white/5">
         {isLoggedIn && (
           <DropdownMenu.Root>
             <DropdownMenu.Trigger className="rounded-full bg-transparent text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-white/40 dark:hover:bg-slate-800/70 focus:outline-none p-2 transition-colors">
