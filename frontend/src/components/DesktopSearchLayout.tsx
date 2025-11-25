@@ -61,20 +61,21 @@ export default function DesktopSearchLayout({
   setTheme,
 }: DesktopSearchLayoutProps) {
   return (
-    <div className="w-full max-w-screen-2xl mx-auto flex items-center justify-between gap-4 px-4 sm:px-6 py-3 rounded-[28px] border border-white/20 dark:border-white/5 bg-gradient-to-br from-white/40 via-white/25 to-white/15 dark:from-slate-900/90 dark:via-slate-900/70 dark:to-slate-950/60 shadow-[0_25px_60px_-30px_rgba(15,23,42,0.6)] dark:shadow-[0_35px_70px_-40px_rgba(0,0,0,0.95)] backdrop-blur-2xl transition-[background,box-shadow,border-color] duration-300">
-      <Tooltip text="Go home (Alt+N, H)">
-        <a
-          href="/"
-          className="text-2xl font-bold text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
-        >
-          Partle
-        </a>
-      </Tooltip>
+    <div className="w-full max-w-screen-2xl mx-auto flex items-center gap-4 px-4 sm:px-6 py-3">
+      <div className="flex flex-1 items-center gap-3 rounded-[32px] border border-white/20 dark:border-white/5 bg-gradient-to-br from-white/40 via-white/20 to-white/10 dark:from-slate-900/90 dark:via-slate-900/70 dark:to-slate-950/60 backdrop-blur-2xl px-5 py-3 shadow-[0_20px_45px_-30px_rgba(15,23,42,0.6)] dark:shadow-[0_30px_50px_-35px_rgba(0,0,0,0.95)]">
+        <Tooltip text="Go home (Alt+N, H)">
+          <a
+            href="/"
+            className="text-2xl font-bold text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+          >
+            Partle
+          </a>
+        </Tooltip>
 
-      <form
-        onSubmit={handleSearch}
-        className="flex flex-1 mx-2 md:mx-4 lg:mx-6 rounded-[9999px] h-11 items-center pl-3 md:pl-4 pr-1 sm:pr-2 bg-transparent border border-transparent focus-within:bg-white/10 dark:focus-within:bg-white/5 focus-within:shadow-[0_0_25px_rgba(255,255,255,0.15)] transition-all"
-      >
+        <form
+          onSubmit={handleSearch}
+          className="flex flex-1 rounded-[9999px] h-11 items-center pl-3 md:pl-4 pr-1 sm:pr-2 bg-transparent border border-transparent focus-within:bg-white/10 dark:focus-within:bg-white/5 focus-within:shadow-[0_0_25px_rgba(255,255,255,0.15)] transition-all"
+        >
         <input
           type="search"
           placeholder="Search products around you"
@@ -83,7 +84,7 @@ export default function DesktopSearchLayout({
           className="flex-1 h-full bg-transparent placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none"
         />
 
-        <div className="h-6 border-l border-white/30 dark:border-white/10 mx-2 md:mx-3" />
+          <div className="h-6 border-l border-white/30 dark:border-white/10 mx-2 md:mx-3" />
 
         {/* Desktop Filters */}
         <DropdownMenu.Root>
@@ -172,7 +173,7 @@ export default function DesktopSearchLayout({
           </DropdownMenu.Portal>
         </DropdownMenu.Root>
 
-        <div className="hidden md:block h-6 border-l border-white/30 dark:border-white/10 mx-2 md:mx-3" />
+          <div className="hidden md:block h-6 border-l border-white/30 dark:border-white/10 mx-2 md:mx-3" />
 
         {/* Desktop Sort */}
         <DropdownMenu.Root>
@@ -204,16 +205,17 @@ export default function DesktopSearchLayout({
 
         <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-2 md:mx-3" />
 
-        <button
-          type="submit"
-          aria-label="Search"
-          className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 dark:hover:bg-blue-400 focus:outline-none transition-colors"
-        >
-          <Search className="h-5 w-5" />
-        </button>
-      </form>
+          <button
+            type="submit"
+            aria-label="Search"
+            className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 dark:hover:bg-blue-400 focus:outline-none transition-colors"
+          >
+            <Search className="h-5 w-5" />
+          </button>
+        </form>
+      </div>
 
-      <div className="flex items-center gap-2 md:gap-3">
+      <div className="flex items-center gap-2 md:gap-3 rounded-[32px] border border-white/20 dark:border-white/5 bg-gradient-to-br from-white/35 via-white/20 to-white/10 dark:from-slate-900/90 dark:via-slate-900/70 dark:to-slate-950/60 backdrop-blur-2xl px-4 py-3 shadow-[0_15px_35px_-25px_rgba(15,23,42,0.6)] dark:shadow-[0_25px_45px_-35px_rgba(0,0,0,0.95)]">
         {isLoggedIn && (
           <DropdownMenu.Root>
             <DropdownMenu.Trigger className="rounded-full bg-transparent text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-white/40 dark:hover:bg-slate-800/70 focus:outline-none p-2 transition-colors">
