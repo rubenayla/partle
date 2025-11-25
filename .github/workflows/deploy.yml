@@ -77,6 +77,11 @@ jobs:
         fi
         echo "✓ Build contains API base URL"
 
+    - name: Build documentation site
+      run: |
+        pip install mkdocs mkdocs-material
+        mkdocs build
+
   deploy:
     needs: test
     runs-on: ubuntu-latest

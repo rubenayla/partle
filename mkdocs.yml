@@ -1,0 +1,24 @@
+site_name: Partle Documentation
+site_url: https://partle.rubenayla.xyz/documentation
+repo_url: https://github.com/rubenayla/partle
+repo_name: rubenayla/partle
+theme:
+  name: material
+  features:
+    - navigation.tracking
+    - navigation.sections
+    - toc.integrate
+nav:
+  - Overview: index.md
+  - Deployment: deployment.md
+  - API:
+      - Public API: public-api-guide.md
+  - AI Integrations:
+      - MCP Setup: mcp-setup.md
+      - ChatGPT Integration: chatgpt-integration.md
+      - Agent Guide: agents.md
+markdown_extensions:
+  - admonition
+  - codehilite
+  - toc:
+      permalink: true

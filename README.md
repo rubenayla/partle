@@ -379,6 +379,19 @@ sudo ufw deny 3000/tcp 8000/tcp 5432/tcp 9200/tcp
 - **GitHub Actions fail because `uv` isn’t found** – Add `/home/deploy/.local/bin` to the PATH for the runner or deployment user.
 - **Need mock/test data** – By default `/v1/products/` hides items tagged `mock-data`; append `?include_test_data=true` to include them.
 
+## 📚 MkDocs documentation site
+- Source files live in `/docs`; the static site is meant to be served at `https://partle.rubenayla.xyz/documentation`.
+- Preview locally:
+  ```bash
+  pip install mkdocs mkdocs-material
+  mkdocs serve
+  ```
+- Build static assets (deployable to any static host or the `/documentation` route):
+  ```bash
+  mkdocs build
+  ```
+- CI now runs `mkdocs build` on every push to ensure the docs compile before deployment.
+
 ---
 
 ## 🚀 Development Quick Start
