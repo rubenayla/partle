@@ -65,7 +65,7 @@ export default function DesktopSearchLayout({
       <div className="flex flex-1 items-center gap-3">
         <form
           onSubmit={handleSearch}
-          className="flex flex-1 rounded-[9999px] h-14 items-center pl-5 md:pl-7 pr-3 sm:pr-4 bg-white/60 dark:bg-slate-950/50 backdrop-blur-xl border border-white/30 dark:border-white/20 shadow-md focus-within:bg-white/70 dark:focus-within:bg-slate-900/60 focus-within:shadow-[0_0_25px_rgba(255,255,255,0.15)] transition-all"
+          className="flex flex-1 rounded-[9999px] h-14 items-center pl-5 md:pl-7 pr-3 sm:pr-4 bg-white/60 dark:bg-slate-950/65 backdrop-blur-xl border border-white/30 dark:border-white/20 shadow-md focus-within:bg-white/70 dark:focus-within:bg-slate-900/75 focus-within:shadow-[0_0_25px_rgba(255,255,255,0.15)] transition-all"
         >
           <Tooltip text="Go home (Alt+N, H)">
             <a
@@ -217,7 +217,7 @@ export default function DesktopSearchLayout({
       <div className="flex items-center gap-2 md:gap-3 px-4 py-3">
         {isLoggedIn && (
           <DropdownMenu.Root>
-            <DropdownMenu.Trigger className="rounded-full bg-white/60 dark:bg-slate-950/50 backdrop-blur-xl border border-white/30 dark:border-white/20 shadow-md text-gray-700 dark:text-white hover:text-gray-900 dark:hover:text-gray-100 hover:bg-white/70 dark:hover:bg-slate-900/60 focus:outline-none p-3.5 transition-colors">
+            <DropdownMenu.Trigger className="rounded-full bg-white/60 dark:bg-slate-950/65 backdrop-blur-xl border border-white/30 dark:border-white/20 shadow-md text-gray-700 dark:text-white hover:text-gray-900 dark:hover:text-gray-100 hover:bg-white/70 dark:hover:bg-slate-900/75 focus:outline-none p-3.5 transition-colors">
               <Plus className="h-6 w-6" />
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
@@ -243,7 +243,7 @@ export default function DesktopSearchLayout({
 
         <DropdownMenu.Root>
           <DropdownMenu.Trigger
-            className="rounded-full bg-white/60 dark:bg-slate-950/50 backdrop-blur-xl border border-white/30 dark:border-white/20 shadow-md text-gray-700 dark:text-white hover:text-gray-900 dark:hover:text-gray-100 hover:bg-white/70 dark:hover:bg-slate-900/60 focus:outline-none p-3.5 transition-colors"
+            className="rounded-full bg-white/60 dark:bg-slate-950/65 backdrop-blur-xl border border-white/30 dark:border-white/20 shadow-md text-gray-700 dark:text-white hover:text-gray-900 dark:hover:text-gray-100 hover:bg-white/70 dark:hover:bg-slate-900/75 focus:outline-none p-3.5 transition-colors"
             onClick={!isLoggedIn ? onAccountClick : undefined}
           >
             <User className="h-6 w-6" />
@@ -307,7 +307,7 @@ export default function DesktopSearchLayout({
         </DropdownMenu.Root>
 
         <DropdownMenu.Root>
-          <DropdownMenu.Trigger className="rounded-full bg-white/60 dark:bg-slate-950/50 backdrop-blur-xl border border-white/30 dark:border-white/20 shadow-md text-gray-700 dark:text-white hover:text-gray-900 dark:hover:text-gray-100 hover:bg-white/70 dark:hover:bg-slate-900/60 focus:outline-none p-3.5 transition-colors">
+          <DropdownMenu.Trigger className="rounded-full bg-white/60 dark:bg-slate-950/65 backdrop-blur-xl border border-white/30 dark:border-white/20 shadow-md text-gray-700 dark:text-white hover:text-gray-900 dark:hover:text-gray-100 hover:bg-white/70 dark:hover:bg-slate-900/75 focus:outline-none p-3.5 transition-colors">
             <Info className="h-6 w-6" />
           </DropdownMenu.Trigger>
           <DropdownMenu.Portal>
