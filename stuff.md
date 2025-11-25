@@ -93,14 +93,14 @@ To run with venv but then come back: poetry run ...
 
 # to login with terminal
 ```bash
-LOGIN_RESPONSE=$(
+LOGIN_RESPONSE=(
   curl -s -X POST http://localhost:8000/auth/login \
     -F "username=ruben.jimenezmejias@gmail.com" \
     -F "password=partle"
 )
 TOKEN=$(echo $LOGIN_RESPONSE | jq -r .access_token)
 echo "$TOKEN"
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZXhwIjoxNzUwMzU4NTMwfQ.ASnHKm2AQda8nZYc4Ct5GRt5VYBkiw_EqGi0VeXiU6g
+etjeJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZXhwIjoxNzUwMzU4NTMwfQ.ASnHKm2AQda8nZYc4Ct5GRt5VYBkiw_EqGi0VeXiU6g
 curl -X POST http://localhost:8000/v1/products/ \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
@@ -157,7 +157,7 @@ curl -X POST http://localhost:8000/v1/auth/fido/register/begin \
      -d '{"email":"ruben.jimenezmejias@gmail.com"}'
 ```
 
-# i'm having problems with this
+# i\'m having problems with this
 ```bash
 (.venv) rubenayla@y5curl -XPOST http://127.0.0.1:8000/v1/auth/register \0.1:8000/v1/auth/register \
      -H 'Content-Type: application/json' \
@@ -387,7 +387,7 @@ First deployment attempts
 Initially used various hosting services for deployment testing.
 
 
-Thinking about Pieter Levels setup, he'd probably move backend to GCE (Google Compute Engine) VM, gpt says i'd need either docker-compose or tmux to keep FastAPI + PostgreSQL running. Big big apps use Kubernetes but he doesn't use it. Stick to simple.
+Thinking about Pieter Levels setup, he\'d probably move backend to GCE (Google Compute Engine) VM, gpt says i\'d need either docker-compose or tmux to keep FastAPI + PostgreSQL running. Big big apps use Kubernetes but he doesn\'t use it. Stick to simple.
 
 Serve frontend with GCS (Google Cloud Storage) bucket or cloudflare pages.
 
@@ -460,14 +460,14 @@ partle=#
 
 learned my lesson. Use a GCE directly.
 e2-micro VM should be cheap.
-BUT, remember, i have a laptop 24/7, I'm gonna use that.
+BUT, remember, i have a laptop 24/7, I\'m gonna use that.
 
 # 2025-07-27
-For now i'll use my laptop as the backend server, the page will go down everytime i turn it off since i'm still in development
+For now i\'ll use my laptop as the backend server, the page will go down everytime i turn it off since i\'m still in development
 
 # format and scraping
 ## Leroy Merlin
-uses productos in the link so it's easy to distinguish. Maybe the spider crawler and that's it
+uses productos in the link so it\'s easy to distinguish. Maybe the spider crawler and that\'s it
 https://www.leroymerlin.es/productos/perfil-forma-cuadrada-de-acero-en-bruto-standers-alt-25-x-an-25mm-x-l-1-m-87825775.html
 BLOCKED, BOT DETECTION. HARD
 
@@ -514,7 +514,7 @@ OpenStreetMap
 # 2025-07-29  
 ● The Problem Explained in Detail
 
-  The search functionality failure was caused by a timing/lifecycle bug in how React components communicate. Here's exactly what was happening:
+  The search functionality failure was caused by a timing/lifecycle bug in how React components communicate. Here\'s exactly what was happening:
 
   🔥 The Core Issue: Component Communication Timing
 
@@ -523,7 +523,7 @@ OpenStreetMap
   onSearch={isHomePage ? (window as any).homeSearchHandler : undefined}
 
   1. Layout component renders first when the app loads
-  2. At this moment, window.homeSearchHandler is undefined (Home component hasn't mounted yet)
+  2. At this moment, window.homeSearchHandler is undefined (Home component hasn\'t mounted yet)
   3. Layout passes undefined to SearchBar as the onSearch prop
   4. SearchBar defaults undefined to an empty function: onSearch = () => { }
   5. Home component mounts later and sets window.homeSearchHandler
@@ -539,7 +539,7 @@ OpenStreetMap
     }
   } : undefined}
 
-  Instead of passing the handler directly, we pass a wrapper function that checks for the handler's existence at runtime, not at render time.
+  Instead of passing the handler directly, we pass a wrapper function that checks for the handler\'s existence at runtime, not at render time.
 
   🔍 Additional Issues Found & Fixed
 
@@ -572,9 +572,9 @@ OpenStreetMap
 
 **Root causes discovered:**
 1. **Database misconfiguration**: `DATABASE_URL` was pointing to `localhost` instead of Hetzner server (`91.98.68.236:5432`)
-2. **Missing backend service**: `partle-backend.service` wasn't installed/running properly 
+2. **Missing backend service**: `partle-backend.service` wasn\'t installed/running properly 
 3. **Wrong service paths**: Systemd service files had `/root/partle` paths instead of `/srv/partle`
-4. **Missing directories**: `/var/log/partle` didn't exist
+4. **Missing directories**: `/var/log/partle` didn\'t exist
 5. **Incorrect poetry paths**: Service used `/usr/bin/poetry` instead of `/home/deploy/.local/bin/poetry`
 6. **Frontend serving mismatch**: Nginx configured for static files from `dist/` but frontend was running in dev mode
 
@@ -635,7 +635,7 @@ OpenStreetMap
   5. Photo-based updates - They send photos, you OCR/AI extract data
 
   Partnership Pitch for Small Stores:
-  "We'll list your products for free, drive local customers to you. Just share your
+  "We\'ll list your products for free, drive local customers to you. Just share your
   inventory spreadsheet or let us connect to your Square/Clover account."
 
 
@@ -646,10 +646,10 @@ not yet, i just test in localhost
 # 
  Why did the backend fail?
 
-The backend failed during the deployment of the SSE implementation because the deployment script's
+The backend failed during the deployment of the SSE implementation because the deployment script\'s
   health check timed out. The error was curl: (56) Recv failure: Connection reset by peer - this
 happened because the old deploy.sh script was killing processes and restarting with a basic
-background process that wasn't properly managed.
+background process that wasn\'t properly managed.
 
 Why did the latest deploy fail?
 
@@ -660,7 +660,7 @@ processes
 3. The health check at the end of deploy.sh (curl -f http://localhost:8000/health) timed out after
   the backend was killed
 
-How it's fixed now:
+How it\'s fixed now:
 
 1. You manually restarted the backend using systemd (systemctl restart partle-backend) which
 properly manages the service
@@ -759,3 +759,17 @@ Total visible images:     ~300 KB
 4. **LOW**: Consider moving images out of PostgreSQL to filesystem/object storage
 
 **Conclusion**: Rating system is innocent! Images need optimization. 📸
+
+# 2025-11-25 Deployment Fix Explanation
+
+The GitHub Actions deployment was failing to rebuild the frontend because of a conflict between the `deploy.yml` workflow and the `deploy.sh` script.
+
+1.  **The Problem:** There were two separate processes trying to manage the code update, and they were conflicting with each other.
+    *   **Process 1 (GitHub Action):** The `deploy.yml` workflow would connect to your server and immediately run `git pull` to get the latest code.
+    *   **Process 2 (Deployment Script):** Right after that, the workflow would run your `deploy.sh` script. This script was designed to be smart and check *if* there were any new changes before doing any work.
+
+2.  **The Conflict:** Because the GitHub Action had *already* pulled the code, by the time `deploy.sh` ran its check, it saw that the local code was identical to the remote code. It concluded there was nothing to do and exited immediately, skipping the frontend build and all other deployment steps.
+
+3.  **The Fix:** The `git pull` command was removed from the GitHub Action workflow (`deploy.yml`). Now, the workflow simply tells the `deploy.sh` script to run. The `deploy.sh` script is now solely in charge of the update, and its "is there new code?" check works as intended, allowing it to proceed with the full deployment, including rebuilding the frontend.
+
+```
