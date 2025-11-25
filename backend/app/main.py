@@ -100,7 +100,7 @@ app.add_middleware(
         "http://localhost:5173",
         "http://192.168.1.117:3000",
         "https://chatgpt.com",
-        "https://chat.openai.com"
+        "https://chat.openai.com",
     ],
     allow_credentials=True,
     allow_methods=["*"],
