@@ -5,6 +5,8 @@ This folder collects references for two audiences:
 ## 1. Product & API users
 - **Public API guide** → `docs/public-api-guide.md`
   - Explains authentication, rate limits, endpoints, and sample responses for consumer apps and AI assistants that call the hosted API.
+- **Deployment & operations** → `docs/deployment.md`
+  - How to deploy on the Hetzner server, manage services, run health checks, and roll back.
 - **General project README** → `../README.md`
   - Contains environment setup (frontend/backend), email + search infrastructure, and server operations.
 

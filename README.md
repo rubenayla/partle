@@ -346,6 +346,7 @@ cd backend && uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 - `/srv/partle/backend/.env` – backend secrets/config
 - `/srv/partle/frontend/.env` – frontend runtime config
 - `/etc/nginx/sites-available/partle.rubenayla.xyz` – reverse proxy config
+- Detailed deployment/ops steps → `docs/deployment.md`
 
 ### Database snapshot
 - **Connection:** `postgresql://partle_user:partle_secure_password@localhost:5432/partle`
