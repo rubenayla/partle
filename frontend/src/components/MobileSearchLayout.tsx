@@ -169,7 +169,7 @@ export default function MobileSearchLayout({
                 sideOffset={8}
               >
                 <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
-                  <a href="/documentation" className="block text-inherit">Documentation</a>
+                  <a href="/documentation" target="_blank" rel="noopener noreferrer" className="block text-inherit">Documentation</a>
                 </DropdownMenu.Item>
                 <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
                   <a href="/about" className="block text-inherit">About</a>
