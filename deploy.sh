@@ -12,6 +12,7 @@ export PATH="$HOME/.local/bin:$PATH"
 REPO_DIR="/srv/partle"
 BACKUP_DIR="/srv/partle/backups"
 LOG_FILE="/var/log/partle/deploy.log"
+DOCS_DIR="/srv/partle/docs_site"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
 # Colors
@@ -24,6 +25,7 @@ NC='\033[0m'
 # Create directories
 mkdir -p "$BACKUP_DIR"
 mkdir -p /var/log/partle
+mkdir -p "$DOCS_DIR"
 
 # Logging function
 log() {
@@ -91,7 +93,7 @@ log "${BLUE}🔧 Updating backend...${NC}"
 cd "$REPO_DIR/backend"
 
 # Install dependencies
-uv sync
+uv sync --extra docs
 if [ $? -eq 0 ]; then
     log "${GREEN}✅ Backend dependencies installed${NC}"
 else
@@ -128,6 +130,20 @@ if [ $? -eq 0 ]; then
     log "${GREEN}✅ Frontend built successfully${NC}"
 else
     log "${RED}❌ Frontend build failed${NC}"
+    exit 1
+fi
+
+# Build documentation site
+log "${BLUE}📘 Building documentation site...${NC}"
+cd "$REPO_DIR/backend"
+uv run mkdocs build -f ../mkdocs.yml -d "$DOCS_DIR.tmp"
+if [ $? -eq 0 ]; then
+    rsync -a --delete "$DOCS_DIR.tmp"/ "$DOCS_DIR"/
+    rm -rf "$DOCS_DIR.tmp"
+    log "${GREEN}✅ Documentation built and synced${NC}"
+else
+    log "${RED}❌ MkDocs build failed${NC}"
+    rm -rf "$DOCS_DIR.tmp"
     exit 1
 fi
 
