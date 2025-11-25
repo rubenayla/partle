@@ -448,6 +448,52 @@ MailChannels removed their free Cloudflare Worker tier on **2024-08-31**, so all
 - `backend/app/auth/utils.py` – Backend helpers that trigger emails
 - `backend/test_email_debug.py` – Manual test harness
 
+## Search engine (Elasticsearch)
+
+Elasticsearch powers fuzzy matching, geo filters, and aggregations. The backend falls back to `/v1/products/` if the cluster is offline, but you get the best results when search is running.
+
+### Local setup
+```bash
+# Start Elasticsearch container
+docker compose up -d elasticsearch
+
+# Initialize mappings + index + seed
+cd backend
+uv run python manage_search.py setup   # init + reindex + info
+```
+
+Additional helpers:
+```bash
+uv run python manage_search.py check       # ping cluster
+uv run python manage_search.py init        # create index
+uv run python manage_search.py init-force  # recreate index
+uv run python manage_search.py reindex     # bulk index products
+uv run python manage_search.py info        # show stats
+```
+
+### API surface
+- `GET /v1/search/products/` – main endpoint (`q`, `min_price`, `max_price`, `tags`, `store_id`, `lat/lon/distance_km`, `sort_by`, `limit`, `offset`, `include_aggregations`).
+- `GET /v1/products/` – legacy fallback when search is unavailable.
+- `GET /v1/search/health` – health probe.
+
+### Configuration
+```
+ELASTICSEARCH_HOST=localhost
+ELASTICSEARCH_PORT=9200
+ELASTICSEARCH_INDEX=products
+```
+
+### Monitoring & troubleshooting
+```bash
+curl http://localhost:9200/products/_stats
+curl http://localhost:9200                 # verify service
+docker logs partle-elasticsearch
+```
+- “Elasticsearch not available” → ensure Docker container is running.
+- “Index not found” → `uv run python manage_search.py init`.
+- Empty results → `uv run python manage_search.py reindex`.
+- Docker permission errors → add your user to the docker group (`sudo usermod -aG docker $USER`).
+
 ## DB Structure
 tags
 - id (PK)
