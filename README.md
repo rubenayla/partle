@@ -316,6 +316,15 @@ This must be:
 | Nginx HTTP | 80 | Public |
 | Nginx HTTPS | 443 | Public |
 
+### Local development ports
+
+| Service | Port | URL | Purpose |
+|---------|------|-----|---------|
+| Frontend (Vite) | 3000 | http://localhost:3000 | React dev server |
+| Backend (FastAPI) | 8000 | http://localhost:8000 | API server |
+| PostgreSQL | 5432 | localhost | App database |
+| Elasticsearch | 9200 | http://localhost:9200 | Search engine |
+
 ### Operational shortcuts
 
 ```bash
@@ -327,19 +336,41 @@ sudo /srv/partle/start-frontend.sh
 
 # Check both processes
 ps aux | grep -E "(uvicorn|vite)"
+
+# Local dev servers
+cd frontend && npm run dev -- --port 3000
+cd backend && uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ### Key server paths
 - `/srv/partle/backend/.env` – backend secrets/config
 - `/srv/partle/frontend/.env` – frontend runtime config
 - `/etc/nginx/sites-available/partle.rubenayla.xyz` – reverse proxy config
-- `/srv/partle/PORTS.md` – extended port reference
 
 ### Database snapshot
 - **Connection:** `postgresql://partle_user:partle_secure_password@localhost:5432/partle`
 - **Products:** ~37 items
 - **Users:** ~12 accounts
 - **Stores:** ~4,000 locations
+
+### Internal services
+- **Frontend dev server:** on :3000 (Vite) and proxied by Nginx for `/`
+- **Backend API:** on :8000 (FastAPI) and proxied to `/api`, `/docs`, `/health`
+- **PostgreSQL:** on :5432 (backend only)
+- **Elasticsearch:** on :9200 (backend only)
+
+### Service checks & firewall
+```bash
+# Inspect listeners
+sudo netstat -tlnp | grep -E "(3000|8000|5432|9200|80|443)"
+
+# Restart key services
+sudo systemctl restart nginx postgresql elasticsearch
+
+# Firewall helpers
+sudo ufw allow 80/tcp && sudo ufw allow 443/tcp
+sudo ufw deny 3000/tcp 8000/tcp 5432/tcp 9200/tcp
+```
 
 ---
 
