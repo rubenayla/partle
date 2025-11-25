@@ -61,149 +61,148 @@ export default function DesktopSearchLayout({
   setTheme,
 }: DesktopSearchLayoutProps) {
   return (
-    <div className="w-full max-w-screen-2xl mx-auto flex items-center gap-4 px-4 sm:px-6 py-3">
-      <div className="flex flex-1 items-center gap-3 rounded-[32px] border border-white/15 dark:border-white/5 bg-gradient-to-br from-white/25 via-white/12 to-white/5 dark:from-slate-900/85 dark:via-slate-900/70 dark:to-slate-950/60 px-5 py-3 shadow-[0_15px_30px_-25px_rgba(15,23,42,0.45)] dark:shadow-[0_20px_30px_-25px_rgba(0,0,0,0.75)] ring-1 ring-white/10 dark:ring-white/5">
-        <Tooltip text="Go home (Alt+N, H)">
-          <a
-            href="/"
-            className="text-2xl font-bold text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
-          >
-            Partle
-          </a>
-        </Tooltip>
-
+    <div className="w-full max-w-screen-2xl mx-auto flex items-center gap-4 px-4 sm:px-6 py-1">
+      <div className="flex flex-1 items-center gap-3">
         <form
           onSubmit={handleSearch}
-          className="flex flex-1 rounded-[9999px] h-11 items-center pl-3 md:pl-4 pr-1 sm:pr-2 bg-transparent border border-transparent focus-within:bg-white/10 dark:focus-within:bg-white/5 focus-within:shadow-[0_0_25px_rgba(255,255,255,0.15)] transition-all"
+          className="flex flex-1 rounded-[9999px] h-14 items-center pl-5 md:pl-7 pr-3 sm:pr-4 bg-white/60 dark:bg-slate-950/50 backdrop-blur-xl border border-white/30 dark:border-white/20 shadow-md focus-within:bg-white/70 dark:focus-within:bg-slate-900/60 focus-within:shadow-[0_0_25px_rgba(255,255,255,0.15)] transition-all"
         >
-        <input
-          type="search"
-          placeholder="Search products around you"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="flex-1 h-full bg-transparent placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none"
-        />
+          <Tooltip text="Go home (Alt+N, H)">
+            <a
+              href="/"
+              className="text-xl font-bold text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-200 transition-colors whitespace-nowrap mr-3 md:mr-4"
+            >
+              Partle
+            </a>
+          </Tooltip>
+
+          <div className="h-6 border-l border-white/30 dark:border-white/10 mr-3 md:mr-4" />
+
+          <input
+            type="search"
+            placeholder="Search products around you"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="flex-1 h-full bg-transparent placeholder-gray-500 dark:placeholder-white/70 text-gray-900 dark:text-white focus:outline-none"
+          />
 
           <div className="h-6 border-l border-white/30 dark:border-white/10 mx-2 md:mx-3" />
 
-        {/* Desktop Filters */}
-        <DropdownMenu.Root>
-          <DropdownMenu.Trigger className="h-full px-2 md:px-3 text-sm text-gray-600 dark:text-gray-400 bg-transparent hover:text-gray-900 dark:hover:text-gray-100 focus:outline-none transition-colors">
-            Filters
-          </DropdownMenu.Trigger>
-          <DropdownMenu.Portal>
-            <DropdownMenu.Content
-              className="w-64 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-[100] border border-gray-200 dark:border-gray-600 space-y-4"
-              align="end"
-              sideOffset={8}
-            >
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Search Type</label>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setSearchType('products')}
-                    className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      searchType === 'products'
+          {/* Desktop Filters */}
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger className="h-full px-2 md:px-3 text-sm text-gray-600 dark:text-white bg-transparent hover:text-gray-900 dark:hover:text-gray-200 focus:outline-none transition-colors">
+              Filters
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content
+                className="w-64 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 z-[100] border border-gray-200 dark:border-gray-600 space-y-4"
+                align="end"
+                sideOffset={8}
+              >
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700 dark:text-white">Search Type</label>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setSearchType('products')}
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${searchType === 'products'
                         ? 'bg-gray-700 dark:bg-gray-600 text-white'
-                        : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'
-                    }`}
-                  >
-                    Products
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSearchType('stores')}
-                    className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      searchType === 'stores'
+                        : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-white'
+                        }`}
+                    >
+                      Products
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSearchType('stores')}
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${searchType === 'stores'
                         ? 'bg-gray-700 dark:bg-gray-600 text-white'
-                        : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'
-                    }`}
-                  >
-                    Stores
-                  </button>
+                        : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-white'
+                        }`}
+                    >
+                      Stores
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Price Range</label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="number"
-                    min="0"
-                    value={priceMin}
-                    onChange={(e) => setPriceMin(Number(e.target.value))}
-                    placeholder="Min"
-                    className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700 dark:text-white"
-                  />
-                  <span className="text-gray-500">-</span>
-                  <input
-                    type="number"
-                    min="0"
-                    value={priceMax}
-                    onChange={(e) => setPriceMax(Number(e.target.value))}
-                    placeholder="Max"
-                    className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700 dark:text-white"
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700 dark:text-white">Price Range</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      min="0"
+                      value={priceMin}
+                      onChange={(e) => setPriceMin(Number(e.target.value))}
+                      placeholder="Min"
+                      className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700 dark:text-white"
+                    />
+                    <span className="text-gray-500">-</span>
+                    <input
+                      type="number"
+                      min="0"
+                      value={priceMax}
+                      onChange={(e) => setPriceMax(Number(e.target.value))}
+                      placeholder="Max"
+                      className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700 dark:text-white"
+                    />
+                  </div>
+                </div>
+
+                {/* Tags */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700 dark:text-white">Tags</label>
+                  <TagFilter
+                    selectedTags={selectedTags}
+                    onTagChange={(tags) => {
+                      setSelectedTags(tags);
+                    }}
                   />
                 </div>
-              </div>
 
-              {/* Tags */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Tags</label>
-                <TagFilter
-                  selectedTags={selectedTags}
-                  onTagChange={(tags) => {
-                    setSelectedTags(tags);
-                  }}
-                />
-              </div>
-
-              {/* Stores */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Stores</label>
-                <StoreFilter
-                  selectedStores={selectedStores}
-                  onStoreChange={(stores) => {
-                    setSelectedStores(stores);
-                  }}
-                />
-              </div>
-            </DropdownMenu.Content>
-          </DropdownMenu.Portal>
-        </DropdownMenu.Root>
+                {/* Stores */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700 dark:text-white">Stores</label>
+                  <StoreFilter
+                    selectedStores={selectedStores}
+                    onStoreChange={(stores) => {
+                      setSelectedStores(stores);
+                    }}
+                  />
+                </div>
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Root>
 
           <div className="hidden md:block h-6 border-l border-white/30 dark:border-white/10 mx-2 md:mx-3" />
 
-        {/* Desktop Sort */}
-        <DropdownMenu.Root>
-          <DropdownMenu.Trigger className="hidden md:block h-full px-2 md:px-3 text-sm text-gray-600 dark:text-gray-400 bg-transparent hover:text-gray-900 dark:hover:text-gray-100 focus:outline-none whitespace-nowrap transition-colors">
-            <span className="hidden lg:inline">Sort: </span>{sortOptions[sortBy]}
-          </DropdownMenu.Trigger>
-          <DropdownMenu.Portal>
-            <DropdownMenu.Content
-              className="w-40 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-2 z-[100] border border-gray-200 dark:border-gray-600"
-              align="end"
-              sideOffset={8}
-            >
-              {Object.entries(sortOptions).map(([value, label]) => (
-                <DropdownMenu.Item
-                  key={value}
-                  className={`block w-full text-left px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer focus:outline-none ${
-                    sortBy === value
+          {/* Desktop Sort */}
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger className="hidden md:block h-full px-2 md:px-3 text-sm text-gray-600 dark:text-white bg-transparent hover:text-gray-900 dark:hover:text-gray-200 focus:outline-none whitespace-nowrap transition-colors">
+              <span className="hidden lg:inline">Sort: </span>{sortOptions[sortBy]}
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content
+                className="w-40 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-2 z-[100] border border-gray-200 dark:border-gray-600"
+                align="end"
+                sideOffset={8}
+              >
+                {Object.entries(sortOptions).map(([value, label]) => (
+                  <DropdownMenu.Item
+                    key={value}
+                    className={`block w-full text-left px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer focus:outline-none ${sortBy === value
                       ? 'font-semibold text-gray-900 dark:text-white'
-                      : 'text-gray-700 dark:text-gray-300'
-                  }`}
-                  onSelect={() => setSortBy(value)}
-                >
-                  {label}
-                </DropdownMenu.Item>
-              ))}
-            </DropdownMenu.Content>
-          </DropdownMenu.Portal>
-        </DropdownMenu.Root>
+                      : 'text-gray-700 dark:text-white'
+                      }`}
+                    onSelect={() => setSortBy(value)}
+                  >
+                    {label}
+                  </DropdownMenu.Item>
+                ))}
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Root>
 
-        <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-2 md:mx-3" />
+          <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-2 md:mx-3" />
 
           <button
             type="submit"
@@ -215,10 +214,10 @@ export default function DesktopSearchLayout({
         </form>
       </div>
 
-      <div className="flex items-center gap-2 md:gap-3 rounded-[32px] border border-white/15 dark:border-white/5 bg-gradient-to-br from-white/20 via-white/10 to-white/5 dark:from-slate-900/85 dark:via-slate-900/70 dark:to-slate-950/60 px-4 py-3 shadow-[0_12px_25px_-25px_rgba(15,23,42,0.45)] dark:shadow-[0_18px_30px_-28px_rgba(0,0,0,0.75)] ring-1 ring-white/10 dark:ring-white/5">
+      <div className="flex items-center gap-2 md:gap-3 px-4 py-3">
         {isLoggedIn && (
           <DropdownMenu.Root>
-            <DropdownMenu.Trigger className="rounded-full bg-transparent text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-white/40 dark:hover:bg-slate-800/70 focus:outline-none p-2 transition-colors">
+            <DropdownMenu.Trigger className="rounded-full bg-white/60 dark:bg-slate-950/50 backdrop-blur-xl border border-white/30 dark:border-white/20 shadow-md text-gray-700 dark:text-white hover:text-gray-900 dark:hover:text-gray-100 hover:bg-white/70 dark:hover:bg-slate-900/60 focus:outline-none p-3.5 transition-colors">
               <Plus className="h-6 w-6" />
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
@@ -244,10 +243,10 @@ export default function DesktopSearchLayout({
 
         <DropdownMenu.Root>
           <DropdownMenu.Trigger
-            className="rounded-full bg-transparent text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-white/40 dark:hover:bg-slate-800/70 focus:outline-none p-2 transition-colors"
+            className="rounded-full bg-white/60 dark:bg-slate-950/50 backdrop-blur-xl border border-white/30 dark:border-white/20 shadow-md text-gray-700 dark:text-white hover:text-gray-900 dark:hover:text-gray-100 hover:bg-white/70 dark:hover:bg-slate-900/60 focus:outline-none p-3.5 transition-colors"
             onClick={!isLoggedIn ? onAccountClick : undefined}
           >
-            <User className="h-7 w-7" />
+            <User className="h-6 w-6" />
           </DropdownMenu.Trigger>
           {isLoggedIn && (
             <DropdownMenu.Portal>
@@ -257,19 +256,19 @@ export default function DesktopSearchLayout({
                 sideOffset={8}
               >
                 <div className="px-2 pb-3 mb-2 border-b border-gray-200 dark:border-gray-600">
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Logged in as</div>
+                  <div className="text-sm text-gray-500 dark:text-white">Logged in as</div>
                   <div className="font-medium text-gray-900 dark:text-white">
                     {user?.username ? `@${user.username}` : user?.email}
                   </div>
                 </div>
-                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
                   <a href="/products/my" className="block text-inherit">My Products</a>
                 </DropdownMenu.Item>
-                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
                   <a href="/account" className="block text-inherit">Account</a>
                 </DropdownMenu.Item>
                 <div className="mt-2 px-2 py-1">
-                  <div className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Theme</div>
+                  <div className="text-sm font-semibold text-gray-600 dark:text-white mb-2">Theme</div>
                   <ThemeSwitch value={currentTheme} onChange={setTheme} />
                 </div>
                 <DropdownMenu.Separator className="border-t border-gray-200 dark:border-gray-600 my-2" />
@@ -299,7 +298,7 @@ export default function DesktopSearchLayout({
                   Delete account
                 </DropdownMenu.Item>
                 <DropdownMenu.Separator className="border-t border-gray-200 dark:border-gray-600 my-2" />
-                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
                   <a href="/premium" className="block text-inherit">Premium</a>
                 </DropdownMenu.Item>
               </DropdownMenu.Content>
@@ -308,7 +307,7 @@ export default function DesktopSearchLayout({
         </DropdownMenu.Root>
 
         <DropdownMenu.Root>
-          <DropdownMenu.Trigger className="rounded-full bg-transparent text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-white/40 dark:hover:bg-slate-800/70 focus:outline-none p-2 transition-colors">
+          <DropdownMenu.Trigger className="rounded-full bg-white/60 dark:bg-slate-950/50 backdrop-blur-xl border border-white/30 dark:border-white/20 shadow-md text-gray-700 dark:text-white hover:text-gray-900 dark:hover:text-gray-100 hover:bg-white/70 dark:hover:bg-slate-900/60 focus:outline-none p-3.5 transition-colors">
             <Info className="h-6 w-6" />
           </DropdownMenu.Trigger>
           <DropdownMenu.Portal>
@@ -317,19 +316,19 @@ export default function DesktopSearchLayout({
               align="end"
               sideOffset={8}
             >
-              <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+              <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
                 <a href="/documentation" target="_blank" rel="noopener noreferrer" className="block text-inherit">Documentation</a>
               </DropdownMenu.Item>
-              <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+              <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
                 <a href="/about" className="block text-inherit">About</a>
               </DropdownMenu.Item>
-              <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+              <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
                 <a href="/contact" className="block text-inherit">Contact</a>
               </DropdownMenu.Item>
-              <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+              <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
                 <a href="/terms" className="block text-inherit">Terms</a>
               </DropdownMenu.Item>
-              <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+              <DropdownMenu.Item className="block px-2 py-1 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
                 <a href="/privacy" className="block text-inherit">Privacy</a>
               </DropdownMenu.Item>
             </DropdownMenu.Content>
@@ -373,7 +372,7 @@ function ThemeSwitch({ value, onChange }: ThemeSwitchProps) {
             onClick={() => onChange(mode)}
             style={{ width: `${SEGMENT}px` }}
             className={`relative z-10 h-full flex items-center justify-center text-sm font-medium transition-colors
-              ${index === i ? 'text-white dark:text-white' : 'text-gray-700 dark:text-gray-300'}
+              ${index === i ? 'text-white dark:text-white' : 'text-gray-700 dark:text-white'}
               focus:outline-none border-none`}
           >
             {mode.charAt(0).toUpperCase() + mode.slice(1)}

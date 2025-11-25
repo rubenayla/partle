@@ -77,7 +77,7 @@ export default function Layout({ children, setTheme, currentTheme }: Props) {
   };
 
   return (
-    <div className="min-h-screen w-full bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+    <div className="min-h-screen w-full bg-white dark:bg-black text-gray-900 dark:text-white">
       <SearchBar
         isLoggedIn={isLoggedIn}
         onAccountClick={() => setAccountOpen(true)}
@@ -94,7 +94,7 @@ export default function Layout({ children, setTheme, currentTheme }: Props) {
       )}
 
       {/* Main content area with spacing to clear fixed SearchBar */}
-      <main className="mt-0 sm:mt-[72px] pt-16 sm:pt-6 pb-[140px] sm:pb-6 max-w-screen-2xl mx-auto w-full px-4">
+      <main className="mt-0 sm:mt-16 pt-16 sm:pt-6 pb-[140px] sm:pb-6 max-w-screen-2xl mx-auto w-full px-4">
         {children}
       </main>
     </div>

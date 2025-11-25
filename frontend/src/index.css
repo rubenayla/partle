@@ -70,7 +70,7 @@
 /* ─── Design tokens — dark theme ──────────────────────────────── */
 .dark {
   /* Layers */
-  --color-background:        #202020;   /* ≈ ChatGPT 212121 */
+  --color-background:        #000000;   /* Pure black for dark mode */
   --color-surface:           #2a2a2e;
   --color-surface-hover:     #333336;
 
