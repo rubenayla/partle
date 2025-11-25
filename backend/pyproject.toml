@@ -45,6 +45,10 @@ dev = [
     "ruff>=0.4",
     "pytest-dotenv>=0.5.2",
 ]
+docs = [
+    "mkdocs>=1.6.0",
+    "mkdocs-material>=9.5.0",
+]
 
 
 
@@ -72,6 +76,10 @@ quote-style = "single"
 [dependency-groups]
 dev = [
     "pytest>=8.4.2",
+]
+docs = [
+    "mkdocs>=1.6.0",
+    "mkdocs-material>=9.5.0",
 ]
 
 [project.scripts]

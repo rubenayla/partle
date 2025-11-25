@@ -79,8 +79,9 @@ jobs:
 
     - name: Build documentation site
       run: |
-        pip install mkdocs mkdocs-material
-        mkdocs build
+        cd backend
+        uv sync --extra docs
+        uv run mkdocs build -f ../mkdocs.yml
 
   deploy:
     needs: test

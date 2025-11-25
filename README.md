@@ -383,12 +383,15 @@ sudo ufw deny 3000/tcp 8000/tcp 5432/tcp 9200/tcp
 - Source files live in `/docs`; the static site is meant to be served at `https://partle.rubenayla.xyz/documentation`.
 - Preview locally:
   ```bash
-  pip install mkdocs mkdocs-material
-  mkdocs serve
+  cd backend
+  uv sync --extra docs          # installs mkdocs + theme
+  uv run mkdocs serve -f ../mkdocs.yml
   ```
 - Build static assets (deployable to any static host or the `/documentation` route):
   ```bash
-  mkdocs build
+  cd backend
+  uv sync --extra docs
+  uv run mkdocs build -f ../mkdocs.yml
   ```
 - CI now runs `mkdocs build` on every push to ensure the docs compile before deployment.
 
