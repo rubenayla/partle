@@ -1,3 +1,5 @@
+when i click the search box the outline below the bubble header goes away and fades with the background. it looks weird.
+
 let's create some system to save backups
 
 add to about: In the long term, when you're working with a project, the AI will use this service to find all the right components to buy, and even more possible suggestions that might be useful, all by itself. This will provide the data easily
