@@ -61,7 +61,7 @@ export default function DesktopSearchLayout({
   setTheme,
 }: DesktopSearchLayoutProps) {
   return (
-    <div className="w-full max-w-screen-2xl mx-auto flex items-center justify-between gap-4 px-4 sm:px-6 py-3 rounded-[28px] border border-white/30 dark:border-white/5 bg-gradient-to-br from-white/65 via-white/45 to-white/30 dark:from-slate-900/85 dark:via-slate-900/70 dark:to-slate-950/60 shadow-[0_25px_50px_-25px_rgba(15,23,42,0.55)] dark:shadow-[0_35px_60px_-35px_rgba(0,0,0,0.9)] backdrop-blur-2xl transition-[background,box-shadow,border-color] duration-300">
+    <div className="w-full max-w-screen-2xl mx-auto flex items-center justify-between gap-4 px-4 sm:px-6 py-3 rounded-[28px] border border-white/20 dark:border-white/5 bg-gradient-to-br from-white/40 via-white/25 to-white/15 dark:from-slate-900/90 dark:via-slate-900/70 dark:to-slate-950/60 shadow-[0_25px_60px_-30px_rgba(15,23,42,0.6)] dark:shadow-[0_35px_70px_-40px_rgba(0,0,0,0.95)] backdrop-blur-2xl transition-[background,box-shadow,border-color] duration-300">
       <Tooltip text="Go home (Alt+N, H)">
         <a
           href="/"
@@ -73,7 +73,7 @@ export default function DesktopSearchLayout({
 
       <form
         onSubmit={handleSearch}
-        className="flex flex-1 mx-2 md:mx-4 lg:mx-6 rounded-[9999px] h-11 items-center pl-3 md:pl-4 pr-1 sm:pr-2 bg-transparent border border-transparent ring-1 ring-white/20 dark:ring-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] focus-within:ring-2 focus-within:ring-white/40 dark:focus-within:ring-white/20 transition-all"
+        className="flex flex-1 mx-2 md:mx-4 lg:mx-6 rounded-[9999px] h-11 items-center pl-3 md:pl-4 pr-1 sm:pr-2 bg-transparent border border-transparent focus-within:bg-white/10 dark:focus-within:bg-white/5 focus-within:shadow-[0_0_25px_rgba(255,255,255,0.15)] transition-all"
       >
         <input
           type="search"
