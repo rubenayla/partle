@@ -407,6 +407,11 @@ Frontend (3000) ──HTTP Requests──→ Backend (8000) ──→ PostgreSQL
   * [http://localhost:8000/v1/stores/](http://localhost:8000/v1/stores/) (Stores API)
   * [http://localhost:8000/v1/products/286/image](http://localhost:8000/v1/products/286/image) (Sample image)
 
+### Frontend tips & troubleshooting
+- Vite defaults to port `5173`. We pin to `3000` with `npm run dev -- --port 3000`, but if 3000 is busy Vite will auto-increment. Check which PID uses the port (`sudo lsof -i :3000`) and kill it (`kill -9 <PID>`) before restarting.
+- Production build: `npm run build` generates `frontend/dist/` ready for any static host.
+- `npm WARN Unknown env config "http-proxy"` usually comes from stale npm config. Clear it with `npm config delete http-proxy` / `npm config delete https-proxy`, or remove the setting from `~/.npmrc`.
+
 ## DB Structure
 tags
 - id (PK)
