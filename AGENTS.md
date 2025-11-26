@@ -7,6 +7,11 @@
 - **NO new abstractions** that make debugging harder
 - **NO new dependencies** without asking first
 
+## Naming conventions
+- **Python (backend)**: snake_case for functions/vars/files, PascalCase for classes.
+- **React/TypeScript (frontend)**: PascalCase for components/types/interfaces; camelCase for functions, hooks, and local variables.
+- **API/DB fields**: keep existing snake_case in models and JSON responses; only use camelCase at the UI layer if you must map for ergonomics.
+
 ## 🚨 CRITICAL DATABASE WARNING 🚨
 **ONLY ONE DATABASE EXISTS: Hetzner Production (91.98.68.236:5432/partle)**
 **NEVER CREATE LOCAL DATABASES - USER EXPLICITLY FORBID THIS TWICE**

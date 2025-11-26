@@ -4,7 +4,9 @@ from fastapi import APIRouter
 router = APIRouter()
 
 
-@router.get('/health/')
+# Canonical path is without trailing slash; we also accept the slash form to avoid redirects.
+@router.get('/health')
+@router.get('/health/', include_in_schema=False)
 def health_check():
     # Check required environment variables
     required_vars = {
@@ -21,4 +23,3 @@ def health_check():
         'environment': required_vars,
         'warnings': [] if all_set else ['Missing environment variables: ' + ', '.join(k for k, v in required_vars.items() if not v)]
     }
-
