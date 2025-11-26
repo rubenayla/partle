@@ -773,3 +773,8 @@ The GitHub Actions deployment was failing to rebuild the frontend because of a c
 3.  **The Fix:** The `git pull` command was removed from the GitHub Action workflow (`deploy.yml`). Now, the workflow simply tells the `deploy.sh` script to run. The `deploy.sh` script is now solely in charge of the update, and its "is there new code?" check works as intended, allowing it to proceed with the full deployment, including rebuilding the frontend.
 
 ```
+
+
+# 
+thinking that I just need to put ads for some products with the cost covered partly by the store itself, so the ads redirect to this page, the product view in here. Or, let stores with no website use ads to their products which will only be in here, letting my app naturally grow while being of benefit to them.
+
