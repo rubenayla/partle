@@ -37,7 +37,7 @@ def get_current_user(
     except JWTError:
         raise credentials_exc
 
-    user = db.query(User).get(int(user_id))
+    user = db.get(User, int(user_id))
     if not user:
         raise credentials_exc
     return user
@@ -63,5 +63,5 @@ def get_optional_user(
     except JWTError:
         return None
 
-    user = db.query(User).get(int(user_id))
+    user = db.get(User, int(user_id))
     return user
