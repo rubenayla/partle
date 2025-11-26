@@ -92,6 +92,17 @@ fi
 log "${BLUE}🔧 Updating backend...${NC}"
 cd "$REPO_DIR/backend"
 
+# Load backend environment so migrations and builds have DATABASE_URL and secrets
+if [ -f ".env" ]; then
+    set -a
+    # shellcheck disable=SC1091
+    source ".env"
+    set +a
+else
+    log "${RED}❌ backend/.env not found; cannot load DATABASE_URL for migrations${NC}"
+    exit 1
+fi
+
 # Install dependencies
 uv sync --extra docs
 if [ $? -eq 0 ]; then
