@@ -140,6 +140,9 @@ uv run mkdocs build -f ../mkdocs.yml -d "$DOCS_DIR.tmp"
 if [ $? -eq 0 ]; then
     rsync -a --delete "$DOCS_DIR.tmp"/ "$DOCS_DIR"/
     rm -rf "$DOCS_DIR.tmp"
+    # Fix permissions so nginx can read the docs
+    chmod -R 755 "$DOCS_DIR"
+    chown -R deploy:www-data "$DOCS_DIR"
     log "${GREEN}✅ Documentation built and synced${NC}"
 else
     log "${RED}❌ MkDocs build failed${NC}"
